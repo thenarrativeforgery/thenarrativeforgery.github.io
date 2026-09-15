@@ -383,6 +383,8 @@ html.view-phone .cab-bar .cb-swipe{display:inline;}
 .cab.cab-mobile-art,
 html.view-phone .cab.cab-mobile-art{width:100% !important;}
 .cab-wrap.cab-mobile-art .cb-swipe{display:none !important;}
+.cab-mobile-video-btn{display:none;}
+.cab-wrap.cab-mobile-art .cab-mobile-video-btn{display:block;}
 /* calibration mode (?calibrate=1) — same drag-a-box flow as the dossier map */
 .cab.calib .cab-hot{pointer-events:none; border:1px solid #37D67A; background:rgba(55,214,122,.13);}
 .cab.calib .cab-face, .cab.calib .cab-plate, .cab.calib::after{display:none;}
@@ -775,6 +777,10 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
       <div class="cab-scroll">
         <div class="cab" id="cab"><img id="cabImg" alt="Pen-and-ink drawing of a file room: six cabinets holding eighteen numbered drawers, each drawer opening one chapter"></div>
       </div>
+      <!-- the mobile grid has no room for the desktop art's TV fixture, so its
+           one job — opening the video library — gets a plain button instead;
+           hidden on desktop, where the TV hotspot already does this. -->
+      <button type="button" class="intro-btn cab-mobile-video-btn" id="cabMobileVideoBtn" onclick="openVideoLibrary()">▶ Watch every video</button>
     </div>
   </div>
 </section>
