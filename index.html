@@ -34,11 +34,9 @@ a{color:var(--navy); text-decoration:none;}
 a:hover{text-decoration:underline;}
 .wrap{max-width:1200px; margin:0 auto; padding:0 28px;}
 
-/* MOBILE HERO — phone-only masthead image, hidden on desktop. Reuses the
-   Volume One cover art already embedded for the overview book-card above. */
+/* MOBILE HERO — disabled per request: stays hidden on phone too (was a
+   phone-only masthead reusing the Volume One cover art). */
 #mobileHero{display:none;}
-html.view-phone #mobileHero{display:block; line-height:0; background:var(--navy);}
-html.view-phone #mobileHero img{display:block; width:100%; height:auto;}
 
 /* INTRO — phone-only artwork with two tap zones, replacing the plain button
    and embedded video below it (still there for desktop, untouched). */
@@ -612,7 +610,7 @@ html.view-phone #nav ul li{border-bottom:1px solid #333; padding:14px 0;}
 html.view-phone #nav ul a{display:block; font-size:16px;}
 html.view-phone #navSearch{width:100%; max-width:160px;}
 html.view-phone .wrap{padding-left:16px; padding-right:16px;}
-html.view-phone .two-book,
+html.view-phone .two-book{display:none !important;}
 html.view-phone .standard-grid{grid-template-columns:1fr !important;}
 html.view-phone .ledger-table-wrap{display:none !important;}
 html.view-phone #ledgerCards{display:block !important;}
