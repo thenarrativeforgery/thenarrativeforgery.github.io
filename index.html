@@ -870,6 +870,78 @@ html.view-room{scroll-snap-type:y mandatory;}
 }
 .chalk-note b{font-weight:400; color:#fff;}
 
+/* ── STATION: THE FILING CABINET ───────────────────────────────────────────
+   Three cabinets, six drawers each, one drawer per chapter, numbered across
+   the rows. Hover a drawer and the strip below says what is filed in it;
+   pull one and its card slides out with the explainer, the debate, the
+   chapter itself and the mechanisms it deploys. */
+.station[data-station="cabinet"]{height:var(--sh-tall, 640px); margin-top:calc(var(--sh-tall, 640px) / -2);}
+.cabinet{position:relative; width:100%; height:100%; display:flex; flex-direction:column; color:#ECECE8; padding:1cqh 2.4cqw 0;}
+.cab-crown{flex:0 0 auto; display:flex; justify-content:center; align-items:flex-end; height:9.5cqh; padding-bottom:.4cqh;}
+.cab-book{height:8.6cqh; width:auto; opacity:.92;}
+.cab-body{position:relative; flex:1 1 auto; min-height:0; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:0 1.4cqw; padding:1cqh 0 .6cqh;}
+.cab-col{
+  position:relative; display:grid; grid-template-rows:repeat(6, minmax(0,1fr)); gap:.45cqh;
+  padding:.7cqh .7cqw .8cqh; border:1px solid #8E8E8A;
+  background:linear-gradient(180deg, rgba(255,255,255,.035) 0, rgba(255,255,255,0) 60%);
+}
+/* the slab across the top of each cabinet, and the floor line under it */
+.cab-col::before{content:""; position:absolute; left:-1px; right:-1px; top:-1cqh; height:1cqh; border:1px solid #8E8E8A; border-bottom:0; background:#0A0A0A;}
+.cab-col::after{content:""; position:absolute; left:8%; right:8%; bottom:-.9cqh; height:.9cqh; border:1px solid #6E6E6A; border-top:0; border-radius:0 0 2px 2px; background:#050505;}
+.drawer{
+  position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.85cqh;
+  min-height:0; padding:0; background:#070707; border:1px solid #9A9A96; border-radius:1px; color:inherit; cursor:pointer;
+  transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.drawer-plate{
+  font-family:var(--serif); font-size:min(2.3cqh, 4cqw); line-height:1; letter-spacing:.05em;
+  padding:.4cqh .9cqw; border:1px solid #C9C9C6; background:#050505;
+}
+.drawer-handle{position:relative; width:min(30%, 64px); height:max(4px, .75cqh); border:1px solid #C9C9C6; border-radius:2px;}
+.drawer-handle::before, .drawer-handle::after{
+  content:""; position:absolute; top:-45%; width:max(3px, .5cqw); height:190%; border:1px solid #C9C9C6; border-radius:1px; background:#070707;
+}
+.drawer-handle::before{left:-8%;} .drawer-handle::after{right:-8%;}
+.drawer:hover, .drawer:focus-visible, .drawer.is-open{
+  border-color:#fff; background:#0E0E0E; z-index:2; outline:none;
+  box-shadow:0 0 0 1px rgba(255,255,255,.22), 0 12px 26px rgba(0,0,0,.75);
+  transform:translateY(-2px) scale(1.03);
+}
+.drawer.is-open{transform:translateY(-3px) scale(1.06); border-color:#fff;}
+.cabinet.has-open .drawer:not(.is-open){opacity:.55;}
+.cab-note{
+  flex:0 0 auto; margin-top:1.6cqh; min-height:4.4cqh; padding:0 .4cqw;
+  font-family:var(--mono); font-size:min(1.6cqh, 3cqw); line-height:1.4; letter-spacing:.04em; color:rgba(236,236,232,.6);
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.cab-note b{font-weight:400; color:#fff;}
+
+/* the drawer's card — dark cousin of the file room's panel */
+.drawer-card{
+  position:absolute; z-index:6; width:min(48%, 340px); box-sizing:border-box;
+  background:#050505; border:1px solid #8E8E8A; box-shadow:0 24px 60px rgba(0,0,0,.85);
+  padding:1.6cqh 1.9cqw 1.8cqh; color:#ECECE8;
+}
+.drawer-card[hidden]{display:none;}
+.drawer-card .cd-num{color:#E0574A; font-size:min(1.5cqh, 2.9cqw);}
+.drawer-card .cd-x{color:#C9C9C6; font-size:min(2.6cqh, 5cqw);}
+.drawer-card .cd-x:hover, .drawer-card .cd-x:focus-visible{color:#fff; outline:none;}
+.drawer-card h4{font-family:var(--sans); font-size:min(2.5cqh, 4.6cqw); font-weight:600; color:#fff; margin:.5cqh 0 1.2cqh; line-height:1.25;}
+.drawer-card .cd-label{color:#8C8C88; font-size:min(1.3cqh, 2.5cqw); margin-bottom:.7cqh;}
+.drawer-card .chip-row{margin-bottom:1.4cqh; gap:.6cqh .8cqw;}
+.drawer-card .chip{background:#141414; border-color:#3A3A38; color:#ECECE8; font-size:min(1.6cqh, 3cqw);}
+.drawer-card .chip:hover{border-color:#8A8A86;}
+.drawer-card .chip.reflective{background:#161C22; border-color:#3D5A73;}
+.drawer-card .media-row{gap:.7cqh .8cqw; margin-top:0;}
+.drawer-card .media-btn{border-color:#8A8A86; color:#ECECE8; background:none; font-size:min(1.45cqh, 2.8cqw); padding:.6cqh 1cqw;}
+.drawer-card .media-btn:hover{border-color:#fff; text-decoration:none;}
+.drawer-card .media-btn.read{border-color:#E0574A; color:#E0574A;}
+.drawer-card .media-btn.pending{color:#6E6E6A; border-color:#4A4A46;}
+/* narrow (a phone, full screen): the card is a sheet along the bottom */
+@container (max-width: 560px){
+  .drawer-card{left:0 !important; right:0 !important; top:auto !important; bottom:0 !important; width:auto;}
+}
+
 /* Reduced motion: the room still turns — the turn is driven by your own
    scrolling, which is the kind of motion the preference permits — but
    nothing glides or fades on its own. The Index toggle remains the fully
@@ -2496,10 +2568,13 @@ function buildRoom(){
     + '</section>'
   ).join('');
 
-  // stations that have been drawn replace their placeholder plate
+  // stations that have been drawn replace their placeholder plate. Each
+  // station keeps a handle on its body: the body moves into the full-screen
+  // view and back, so querying for it is not reliable.
   track.querySelectorAll('.station').forEach(el => {
+    el.__body = el.querySelector('.station-body');
     const build = STATION_BUILDERS[el.dataset.station];
-    if(build) build(el.querySelector('.station-body'));
+    if(build) build(el.__body);
   });
   track.addEventListener('click', e => {
     const st = e.target.closest('.station');
@@ -2554,6 +2629,8 @@ function buildRoom(){
     // whichever station is nearest dead ahead is the one you can touch
     const idx = Math.round(turn / (360 / N)) % N;
     if(idx !== live){
+      // turning away from a station shuts whatever it had open
+      if(live >= 0 && stations[live].__body && stations[live].__body.__closeDrawer) stations[live].__body.__closeDrawer(false);
       live = idx;
       stations.forEach((el,i) => el.classList.toggle('is-live', i === idx));
       dots.forEach((d,i) => { d.classList.toggle('on', i === idx); d.setAttribute('aria-selected', i === idx); });
@@ -2581,6 +2658,8 @@ function buildRoom(){
   });
 
   exit.addEventListener('click', () => setRoom(false));
+  window.roomTurnTo = turnTo;
+  window.roomLiveStation = () => stations[live];
   measure();
   paint();
 }
@@ -2621,11 +2700,15 @@ function closeStationFocus(){
   if(focus._from) focus._from.querySelector('.station-open').focus();
 }
 document.querySelector('#stationFocus .sf-x').addEventListener('click', closeStationFocus);
-// capture phase, so this runs before the reader's own Escape handler: if the
-// reader is open, Escape is its to take; otherwise it closes the station
+// capture phase, so this runs before the reader's own Escape handler. Escape
+// peels one layer: the reader if it is open, else an open drawer card, else
+// the full-screen station.
 document.addEventListener('keydown', e => {
   if(e.key !== 'Escape') return;
   if(document.getElementById('readerOverlay').classList.contains('open')) return;
+  const live = window.roomLiveStation && window.roomLiveStation();
+  const body = live && live.__body;
+  if(body && body.__closeDrawer && body.querySelector('.drawer.is-open')){ body.__closeDrawer(true); return; }
   closeStationFocus();
 }, true);
 // the reader unlocks body scroll when it closes; if it was opened from inside a
@@ -2637,13 +2720,13 @@ document.addEventListener('keydown', e => {
     if(document.getElementById('stationFocus').classList.contains('open')) document.body.style.overflow = 'hidden';
   };
 }
-// the reader's chapter chips pull a drawer in the cabinet section, which the
-// room hides — until the cabinet station exists, open the chapter itself
+// the reader's chapter chips pull a drawer in the file-room section, which the
+// room hides — inside the room they walk to the cabinet station instead
 {
   const _openChapterDrawer = window.openChapterDrawer;
   window.openChapterDrawer = function(chN){
-    if(document.documentElement.classList.contains('view-room')){ openReader(chN); return; }
-    _openChapterDrawer(chN);
+    if(document.documentElement.classList.contains('view-room')){ roomOpenDrawer(chN); return; }
+    if(_openChapterDrawer) _openChapterDrawer(chN);
   };
 }
 
@@ -2708,9 +2791,160 @@ function buildChalkboard(host){
   });
 }
 
-const STATION_BUILDERS = { chalkboard: buildChalkboard };
+/* ── STATION: THE FILING CABINET ─────────────────────────────────────────── */
+const CAB_BOOK = '<svg class="cab-book" viewBox="0 0 84 64" fill="none" stroke="#ECECE8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+  + '<path d="M16 6h42l8 5v43l-8 5H16z"/><path d="M16 6v53"/><path d="M58 6l8 5M58 59l8-5M58 6v53"/>'
+  + '<path d="M24 17h28M24 23h28M24 29h28M24 35h28M24 41h28M24 47h20" opacity=".6"/>'
+  + '<path d="M50 30c3 3 5 7 4 12M50 30c-2 4-1 8 1 11" opacity=".8"/>'
+  + '</svg>';
+const CAB_NOTE_DEFAULT = matchMedia('(hover:none)').matches
+  ? 'Eighteen drawers, one per chapter. Tap one to pull it out.'
+  : 'Eighteen drawers, one per chapter. Hover one to see what is filed in it &middot; click it to pull it out.';
+
+function buildCabinet(host){
+  const pad2 = n => String(n).padStart(2,'0');
+  const chapterOf = n => CHAPTERS.find(c => c.n === n);
+  const mechsOf   = n => MECHANISMS.filter(m => m.chapters.includes(n));
+
+  // what the drawer holds, in the note's shorthand
+  const holdsOf = ch => {
+    const out = [];
+    ch.media.forEach(m => {
+      if(!m.url) return;
+      if(m.label === 'VIDEO EXPLAINER')        out.push('Explainer');
+      else if(m.label === 'LISTEN: DEBATE')    out.push('Debate');
+      else if(m.label === 'LISTEN: DEEP DIVE') out.push('Deep dive');
+      else out.push(m.label);
+    });
+    if(CHAPTER_TEXT[ch.n] || ch.gamma) out.push('Full text');
+    const k = mechsOf(ch.n).length;
+    out.push(k + ' mechanism' + (k === 1 ? '' : 's'));
+    return out.join(' &middot; ');
+  };
+
+  // numbered across the rows: 01 02 03 on top, 16 17 18 along the floor
+  let cols = '';
+  for(let c = 0; c < 3; c++){
+    let drawers = '';
+    for(let r = 0; r < 6; r++){
+      const n = r * 3 + c + 1, ch = chapterOf(n);
+      if(!ch) continue;
+      drawers += '<button type="button" class="drawer" data-n="' + n + '" data-col="' + c + '" aria-expanded="false" aria-label="Chapter ' + pad2(n) + ': ' + esc(ch.title) + '">'
+        + '<span class="drawer-plate">' + pad2(n) + '</span><span class="drawer-handle"></span></button>';
+    }
+    cols += '<div class="cab-col">' + drawers + '</div>';
+  }
+  host.innerHTML = '<div class="cabinet">'
+    + '<div class="cab-crown">' + CAB_BOOK + '</div>'
+    + '<div class="cab-body">' + cols + '</div>'
+    + '<div class="cab-note">' + CAB_NOTE_DEFAULT + '</div>'
+    + '<div class="drawer-card" role="dialog" aria-label="Chapter drawer" tabindex="-1" hidden></div>'
+    + '</div>';
+
+  const cabinet = host.querySelector('.cabinet');
+  const body    = host.querySelector('.cab-body');
+  const note    = host.querySelector('.cab-note');
+  const card    = host.querySelector('.drawer-card');
+  let open = null;
+
+  const describe = n => {
+    const ch = chapterOf(n); if(!ch) return;
+    note.innerHTML = '<b>Chapter ' + pad2(n) + ' &middot; ' + esc(ch.title) + '</b> &mdash; ' + holdsOf(ch);
+  };
+  body.addEventListener('mouseover', e => { const d = e.target.closest('.drawer'); if(d) describe(+d.dataset.n); });
+  body.addEventListener('focusin',   e => { const d = e.target.closest('.drawer'); if(d) describe(+d.dataset.n); });
+  body.addEventListener('mouseleave', () => { if(!open) note.innerHTML = CAB_NOTE_DEFAULT; });
+
+  function closeDrawer(refocus){
+    if(!open) return;
+    const d = open; open = null;
+    d.classList.remove('is-open'); d.setAttribute('aria-expanded', 'false');
+    cabinet.classList.remove('has-open');
+    card.hidden = true;
+    note.innerHTML = CAB_NOTE_DEFAULT;
+    if(refocus) d.focus();
+  }
+  // The card hangs beside its drawer — to the right of the left two cabinets,
+  // to the left of the third — and never leaves the station. Measured with
+  // layout offsets, not bounding rects: the station sits on a rotated 3D
+  // track, and rects come back already projected.
+  const offsetWithin = (el, root) => {
+    let x = 0, y = 0;
+    for(let n = el; n && n !== root; n = n.offsetParent){ x += n.offsetLeft; y += n.offsetTop; }
+    return {x, y};
+  };
+  function placeCard(d){
+    const gap = 10, w = card.offsetWidth, h = card.offsetHeight;
+    const o = offsetWithin(d, cabinet);
+    const cw = cabinet.clientWidth, chh = cabinet.clientHeight;
+    let left = (+d.dataset.col < 2) ? (o.x + d.offsetWidth + gap) : (o.x - gap - w);
+    left = Math.max(0, Math.min(left, cw - w));
+    let top = Math.max(0, Math.min(o.y, chh - h));
+    card.style.left = left + 'px'; card.style.top = top + 'px';
+  }
+  function openDrawer(d){
+    if(open === d){ closeDrawer(true); return; }
+    closeDrawer(false);
+    const n = +d.dataset.n, ch = chapterOf(n), mechs = mechsOf(n);
+    const media = ch.media.map(m => m.url
+      ? '<a class="media-btn" href="' + esc(m.url) + '" target="_blank" rel="noopener">' + mediaLabelHtml(m.label) + '</a>'
+      : '<span class="media-btn pending" title="URL pending">' + mediaLabelHtml(m.label) + '</span>'
+    ).join('') + (CHAPTER_TEXT[n]
+      ? '<button type="button" class="media-btn read" data-read="' + n + '">READ CHAPTER &rarr;</button>'
+      : (ch.gamma ? '<a class="media-btn read" href="' + esc(ch.gamma) + '" target="_blank" rel="noopener">READ CHAPTER &rarr;</a>' : ''));
+    card.innerHTML =
+        '<div class="cd-head"><span class="cd-num">CHAPTER ' + pad2(n) + '</span>'
+      + '<button type="button" class="cd-x" data-close="1" aria-label="Close drawer">&times;</button></div>'
+      + '<h4>' + esc(ch.title) + '</h4>'
+      + (mechs.length
+          ? '<span class="cd-label">Mechanisms deployed</span><div class="chip-row">'
+            + mechs.map(m => '<button type="button" class="chip' + (isReflective(m.n, n) ? ' reflective' : '') + '" data-mech="' + m.n + '" title="' + esc(m.title) + '">M' + pad2(m.n) + '</button>').join('')
+            + '</div>'
+          : '')
+      + '<span class="cd-label">In the drawer</span><div class="media-row">' + media + '</div>';
+    d.classList.add('is-open'); d.setAttribute('aria-expanded', 'true');
+    cabinet.classList.add('has-open');
+    open = d;
+    describe(n);
+    card.hidden = false;
+    placeCard(d);
+    card.focus({preventScroll:true});
+  }
+  body.addEventListener('click', e => { const d = e.target.closest('.drawer'); if(d) openDrawer(d); });
+  cabinet.addEventListener('click', e => { if(open && !e.target.closest('.drawer, .drawer-card')) closeDrawer(false); });
+  card.addEventListener('click', e => {
+    if(e.target.closest('[data-close]')){ closeDrawer(true); return; }
+    const chip = e.target.closest('.chip[data-mech]');
+    if(chip){ openMechReader(+chip.dataset.mech); return; }
+    const read = e.target.closest('[data-read]');
+    if(read) openReader(+read.dataset.read);
+  });
+  window.addEventListener('resize', () => { if(open) placeCard(open); });
+
+  host.__closeDrawer = closeDrawer;
+  host.__openDrawer  = n => { const d = body.querySelector('.drawer[data-n="' + n + '"]'); if(d && open !== d) openDrawer(d); };
+}
+
+const STATION_BUILDERS = { chalkboard: buildChalkboard, cabinet: buildCabinet };
 
 buildRoom();
+
+/* Walk to the cabinet and pull a drawer — what the reader's chapter chips do
+   inside the room. On a phone the cabinet is too small to use from the middle
+   of the room, so it opens full screen first. */
+function roomOpenDrawer(chN){
+  const st = document.querySelector('.station[data-station="cabinet"]');
+  const idx = STATIONS.findIndex(s => s.id === 'cabinet');
+  if(!st || idx < 0) return;
+  closeStationFocus();
+  const pull = () => {
+    if(matchMedia('(max-width:700px)').matches) openStationFocus(st);
+    if(st.__body && st.__body.__openDrawer) st.__body.__openDrawer(chN);
+  };
+  if(st.classList.contains('is-live')){ pull(); return; }
+  window.roomTurnTo(idx);
+  setTimeout(pull, matchMedia('(prefers-reduced-motion: reduce)').matches ? 60 : 650);
+}
 
 // a way in from the linear page, at the top of the overview
 (function addRoomDoor(){
