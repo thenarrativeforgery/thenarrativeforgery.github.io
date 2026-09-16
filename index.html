@@ -84,8 +84,7 @@ section#intro{background:var(--navy); color:var(--cream);}
 section#intro .section-num{color:var(--red-light);}
 section#intro .section-title{color:var(--cream);}
 section#intro .section-desc{color:#B9B9B7;}
-.lattice-field{position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:-1; pointer-events:none; opacity:0; transition:opacity .6s ease;}
-.lattice-field.visible{opacity:.34;}
+.lattice-field{position:fixed; inset:0; width:100vw; height:100vh; z-index:1; pointer-events:none; opacity:.62;}
 
 .section-head{margin-bottom:36px;}
 #chapters .section-head, #compendium .section-head{text-align:center;}
@@ -187,40 +186,6 @@ h2.section-title{font-size:clamp(24px,3vw,34px); font-weight:700; color:var(--na
 @media(prefers-reduced-motion:reduce){
   .stage-box, .tape-label, .tape-play{transition:opacity .15s ease;}
   .stage-box:hover, .stage-box:focus-visible{transform:none;}
-}
-
-/* ENTRENCHMENT DIAL — hand control of the root system growing behind the compendium.
-   The mechanism index used to drive it; it sits at the head of the board instead,
-   in flow, so it can never land on top of the page at any width. */
-.entrench{display:inline-flex; align-items:center; gap:11px; margin-bottom:11px; padding:7px 13px 7px 11px;
-  background:#0C0C0C; border:1px solid #2E2E2E; border-radius:3px;
-  font-family:var(--mono); box-shadow:0 6px 18px rgba(0,0,0,.18);}
-.entrench-label{font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:#8A8A87; white-space:nowrap;}
-.entrench-val{font-size:10px; font-weight:700; letter-spacing:.1em; color:#E0574A; white-space:nowrap; min-width:74px;}
-.entrench input[type=range]{-webkit-appearance:none; appearance:none; width:104px; height:3px; margin:0; padding:0;
-  background:linear-gradient(90deg, var(--red-light) 0%, var(--red-light) var(--fill,0%), #3A3A3A var(--fill,0%), #3A3A3A 100%);
-  border-radius:2px; outline:none; cursor:ew-resize;}
-.entrench input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; width:14px; height:14px; border-radius:50%;
-  background:#ECECEA; border:2px solid var(--red-light); cursor:ew-resize; transition:transform .16s ease, box-shadow .16s ease;}
-.entrench input[type=range]:hover::-webkit-slider-thumb,
-.entrench input[type=range]:focus-visible::-webkit-slider-thumb{transform:scale(1.2); box-shadow:0 0 0 5px rgba(184,36,26,.25);}
-.entrench input[type=range]::-moz-range-thumb{width:14px; height:14px; border-radius:50%; background:#ECECEA; border:2px solid var(--red-light); cursor:ew-resize;}
-.entrench input[type=range]::-moz-range-track{height:3px; background:#3A3A3A; border-radius:2px;}
-/* narrow: label on its own line so the slider and readout always fit */
-@media(max-width:560px){
-  .entrench{display:flex; flex-wrap:wrap; width:100%; gap:9px 12px;}
-  .entrench-label{width:100%;}
-  .entrench input[type=range]{flex:1 1 auto; width:auto;}
-  .entrench-val{min-width:0; text-align:right;}
-}
-/* touch: a 3px rail is not a touch target — give the thumb and the row real height */
-@media(hover:none){
-  .entrench{gap:13px; padding:11px 15px 11px 13px;}
-  .entrench input[type=range]{width:132px; height:22px; background:none;}
-  .entrench input[type=range]::-webkit-slider-runnable-track{height:4px; border-radius:2px;
-    background:linear-gradient(90deg, var(--red-light) 0%, var(--red-light) var(--fill,0%), #3A3A3A var(--fill,0%), #3A3A3A 100%);}
-  .entrench input[type=range]::-webkit-slider-thumb{width:22px; height:22px; margin-top:-9px;}
-  .entrench input[type=range]::-moz-range-thumb{width:22px; height:22px;}
 }
 
 /* THE DOSSIER — the eighteen mechanisms as index cards, in five packs, one
@@ -807,12 +772,6 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
     </div>
 
     <div class="mech-map-wrap" id="mechMapWrap">
-      <div class="entrench">
-        <label class="entrench-label" for="entrenchRange">Neural entrenchment</label>
-        <input type="range" id="entrenchRange" min="0" max="18" step="1" value="0"
-               aria-label="Neural entrenchment of the background root system, 0 to 18">
-        <span class="entrench-val" id="entrenchVal">AUTO · 0 / 18</span>
-      </div>
       <div class="mech-map-bar">
         <span><span class="mm-tag">EXHIBIT C</span>The dossier — eighteen index cards in five packs. Click any card to open that mechanism</span>
       </div>
@@ -1190,19 +1149,10 @@ function buildDossier(){
     + '<div class="dossier-note">' + DOSSIER_NOTE_DEFAULT + '</div>';
   if(artSrc) host.querySelector('.dossier-art').style.setProperty('--art', 'url("' + artSrc + '")');
 
-  // working across the dossier feeds the root system growing behind the section
-  const explored = window.mechMapExplored = new Set();
-  const markExplored = n => {
-    if(explored.has(n)) return;
-    explored.add(n);
-    if(window.__mechMapGrew) window.__mechMapGrew();
-  };
-
   const note = host.querySelector('.dossier-note');
   const show = n => {
     const m = byN(n); if(!m) return;
     note.innerHTML = '<b>' + pad2(n) + ' &middot; ' + escHtml(m.title) + '</b> &mdash; ' + escHtml(m.def);
-    markExplored(n);
   };
   host.addEventListener('mouseover', e => {
     const c = e.target.closest('.dcard'); if(c){ show(+c.dataset.mech); return; }
@@ -1213,7 +1163,7 @@ function buildDossier(){
   host.addEventListener('mouseleave', () => { note.innerHTML = DOSSIER_NOTE_DEFAULT; });
   host.addEventListener('click', e => {
     const c = e.target.closest('.dcard');
-    if(c){ markExplored(+c.dataset.mech); openMechReader(+c.dataset.mech); }
+    if(c) openMechReader(+c.dataset.mech);
   });
 }
 buildDossier();
@@ -1449,18 +1399,17 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
     return [a[0] + (b[0]-a[0])*t, a[1] + (b[1]-a[1])*t, a[2] + (b[2]-a[2])*t];
   }
 
-  // ── Compendium: three converging root systems (top/left/right), pinned to the viewport
-  //    so they stay visible while scrolling, live-driven by how many mechanisms are open ──
+  // ── The roots: two root systems anchored at the top corners of the viewport and
+  //    kept to the page's side gutters, growing down the edges as you scroll ──
   (function(){
     const canvas = document.getElementById('compendiumLattice');
     if (!canvas) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const ink = hexToRgb('#1b2a4a'), attr = hexToRgb('#910d0d');
-    const BASELINE = 0.16;   // arrival state: each source is just a root + first fork or two
     const SOFTNESS = 0.12;   // how gradually each branch fades/extends in as growth passes its birth
     let W = 0, H = 0, master = null;
 
-    function growTree(anchorX, anchorY, angle, startLen, seed, maxDepth, angleSpread){
+    function growTree(anchorX, anchorY, angle, startLen, seed, maxDepth, angleSpread, minX, maxX){
       const rng = mulberry32(seed);
       const branches = [];
       function noise(x, y, z){ return noise2(x + (z||0)*13.1, y - (z||0)*7.3, seed); }
@@ -1470,7 +1419,7 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
         const a = ang + jitter;
         let x2 = x + Math.cos(a) * len;
         let y2 = y + Math.sin(a) * len;
-        x2 = Math.min(Math.max(x2, -40), W + 40);
+        x2 = Math.min(Math.max(x2, minX), maxX);
         y2 = Math.min(Math.max(y2, -40), H + 40);
         const endPathLen = startPathLen + len;
         const node = {x1:x, y1:y, x2, y2, depth, startPathLen, endPathLen, children:[]};
@@ -1507,16 +1456,17 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
       canvas.height = Math.round(H * dpr);
       canvas.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const topLen = Math.min(H * 0.16, 300) * (W < 700 ? 0.8 : 1);
-      const sideLen = Math.min(W * 0.13, 260) * (W < 700 ? 0.8 : 1);
+      // the gutters: whatever lies outside the 1200px content column, never less
+      // than a thin strip on a phone
+      const gutter = Math.max(30, (W - 1200) / 2 + 22);
+      const len = Math.min(H * 0.21, 270);
 
-      const top = growTree(W/2, 0, Math.PI/2, topLen, 2016, 10, 26);
-      const left = growTree(0, H/2, 0, sideLen, 2044, 9, 30);
-      const right = growTree(W, H/2, Math.PI, sideLen, 2071, 9, 30);
+      const left  = growTree(gutter * 0.45, -12, Math.PI/2, len, 2044, 11, 30, -24, gutter);
+      const right = growTree(W - gutter * 0.45, -12, Math.PI/2, len, 2071, 11, 30, W - gutter, W + 24);
 
-      const branches = top.branches.concat(left.branches, right.branches);
+      const branches = left.branches.concat(right.branches);
       branches.sort((a,b)=>a.birth-b.birth);
-      const clusters = top.clusters.concat(left.clusters, right.clusters);
+      const clusters = left.clusters.concat(right.clusters);
       master = { branches, clusters };
     }
 
@@ -1544,8 +1494,10 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
         if (local <= 0) continue;
         const colorT = Math.max(0, Math.min(1, local*0.55 + growth*0.45 - 0.25));
         const rgb = lerpRgb(ink, attr, colorT);
-        ctx.strokeStyle = `rgba(${rgb[0]|0},${rgb[1]|0},${rgb[2]|0},${(0.04 + local*0.46).toFixed(3)})`;
-        ctx.lineWidth = 0.5 + local*4.6;
+        // heavier the deeper you are: weight and presence both scale with growth
+        const heft = 0.55 + growth * 0.95;
+        ctx.strokeStyle = `rgba(${rgb[0]|0},${rgb[1]|0},${rgb[2]|0},${((0.04 + local*0.46) * (0.6 + growth*0.4)).toFixed(3)})`;
+        ctx.lineWidth = (0.5 + local*4.6) * heft;
         ctx.lineCap = 'round';
         const reach = Math.min(1, local*1.6);
         ctx.beginPath();
@@ -1559,71 +1511,32 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
       }
     }
 
-    let current = BASELINE, target = BASELINE, timer = null;
+    // Growth is how far down the page you are: a sprout at the top, and by the
+    // foot of the page the roots have reached the bottom of the viewport, thick
+    // and red. Scrolling back up is the same function run backwards, so the
+    // roots thin and withdraw. A short ease keeps a flick of the wheel from
+    // snapping.
+    const SPROUT = 0.06;
+    let current = SPROUT, target = SPROUT, timer = null;
     function step(){
-      current += (target - current) * 0.2;
+      current += (target - current) * 0.18;
       if (Math.abs(target-current) < 0.002){ current = target; clearInterval(timer); timer = null; }
       render(current);
     }
-    function setTarget(openN){
-      target = BASELINE + (1-BASELINE) * Math.max(0, Math.min(18, openN)) / 18;
+    function depth(){
+      const span = document.documentElement.scrollHeight - window.innerHeight;
+      return span > 0 ? Math.max(0, Math.min(1, window.scrollY / span)) : 0;
+    }
+    function setTarget(p){
+      target = SPROUT + (1 - SPROUT) * p;
       if (!timer) timer = setInterval(step, 16);
     }
-    // The roots used to grow as you opened cards in the index. The index is now the
-    // dossier map, so they grow as you work your way across its file cards instead.
-    function openCount(){ return window.mechMapExplored ? window.mechMapExplored.size : 0; }
 
     function init(){
       buildMasters();
-      current = target = BASELINE;
+      current = target = SPROUT + (1 - SPROUT) * depth();
       render(current);
-      setTarget(openCount());
-
-      // The dial: hand control of the same growth the index used to drive.
-      // It tracks exploration until you touch it, then it's yours.
-      const dial    = document.getElementById('entrenchRange');
-      const dialVal = document.getElementById('entrenchVal');
-      let manual = false;
-
-      function paintDial(n){
-        if (dial){ dial.value = n; dial.style.setProperty('--fill', (n / 18 * 100) + '%'); }
-        if (dialVal) dialVal.textContent = (manual ? 'SET' : 'AUTO') + ' · ' + n + ' / 18';
-      }
-      paintDial(openCount());
-
-      if (dial){
-        dial.addEventListener('input', function(){
-          manual = true;
-          const n = parseInt(dial.value, 10);
-          setTarget(n);
-          paintDial(n);
-        });
-        // double-click the dial to hand it back to the map
-        dial.addEventListener('dblclick', function(){
-          manual = false;
-          setTarget(openCount());
-          paintDial(openCount());
-        });
-      }
-
-      window.__mechMapGrew = function(){
-        if (manual) return;
-        const n = openCount();
-        setTarget(n);
-        paintDial(n);
-      };
-
-      const compendiumEl = document.getElementById('compendium');
-      if (compendiumEl && 'IntersectionObserver' in window){
-        new IntersectionObserver(function(entries){
-          entries.forEach(function(e){
-            canvas.classList.toggle('visible', e.isIntersecting);
-          });
-        }, {rootMargin: '20% 0px 20% 0px'}).observe(compendiumEl);
-      } else {
-        canvas.classList.add('visible');
-      }
-
+      window.addEventListener('scroll', function(){ setTarget(depth()); }, {passive:true});
       let resizeTimer;
       window.addEventListener('resize', function(){
         clearTimeout(resizeTimer);
