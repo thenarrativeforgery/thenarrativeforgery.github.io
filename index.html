@@ -10,6 +10,7 @@
     var v = localStorage.getItem('tnf-view');
     if(v!=='desktop' && v!=='phone') v = 'phone';
     document.documentElement.classList.add('view-'+v);
+    if(localStorage.getItem('tnf-room')==='1') document.documentElement.classList.add('view-room');
   }catch(e){ document.documentElement.classList.add('view-phone'); }
 })();
 </script>
@@ -121,7 +122,7 @@ h2.section-title{font-size:clamp(24px,3vw,34px); font-weight:700; color:var(--na
 .book-card .kicker{font-family:var(--mono); font-size:13px; color:#E0574A; letter-spacing:.1em; text-transform:uppercase; display:flex; align-items:center; justify-content:space-between; gap:10px;}
 .book-card .kicker .go{opacity:0; transform:translateX(-4px); transition:opacity .18s ease, transform .18s ease;}
 .book-card:hover .kicker .go, .book-card:focus-visible .kicker .go{opacity:1; transform:translateX(0);}
-.book-card img{border:1px solid #2E2E2E; transition:border-color .18s ease;}
+.book-card img{display:block; width:50%; height:auto; margin:0 auto; border:1px solid #2E2E2E; transition:border-color .18s ease;}
 .book-card:hover img, .book-card:focus-visible img{border-color:var(--red);}
 .book-card h3{font-family:var(--sans); font-size:24px; color:#FFFFFF; margin:8px 0 12px;}
 .book-card p{color:#C9C9C6;}
@@ -181,6 +182,7 @@ h2.section-title{font-size:clamp(24px,3vw,34px); font-weight:700; color:var(--na
   font-family:'Permanent Marker', var(--mono), monospace;
   font-size:clamp(15px, 1.5vw, 19px); line-height:1; color:#1A1A1A;
   letter-spacing:.02em; text-transform:uppercase; transform:rotate(-1.2deg);
+  white-space:nowrap; max-width:100%;
 }
 .stage-box .stage-title{
   font-family:var(--mono); font-size:10px; font-weight:700; line-height:1.25;
@@ -208,7 +210,7 @@ h2.section-title{font-size:clamp(24px,3vw,34px); font-weight:700; color:var(--na
    do not turn into a page of scrolling */
 @media(max-width:560px){
   .stage-box{aspect-ratio:16/8;}
-  .stage-box .stage-num{font-size:22px;}
+  .stage-box .stage-num{font-size:clamp(14px, 5.2vw, 19px);}
   .stage-box .stage-title{font-size:11px;}
   .tape-play{opacity:1; transform:none;}
 }
@@ -656,9 +658,122 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   .view-toggle button{padding:3px 6px; font-size:10px;}
 }
 
+/* ── THE ROOM ──────────────────────────────────────────────────────────────
+   You stand in the middle; scrolling turns you. Six stations sit on a
+   hexagon around you, 60 degrees apart. The scroll is never hijacked — a
+   tall rail in normal flow does the scrolling, and the room just reads how
+   far down it you are. That keeps the scrollbar, momentum, keyboard paging
+   and screen readers working for free. */
+html.view-room, html.view-room body{background:#000; overflow-x:hidden;}
+/* only the linear page's own top-level furniture hides — scoped to body's
+   direct children so it cannot reach the stations inside the room */
+html.view-room body > #ticker,
+html.view-room body > #nav,
+html.view-room body > section,
+html.view-room body > footer{display:none !important;}
+html:not(.view-room) #room{display:none;}
+
+.room{color:#F4F4F2;}
+/* the rail is the only thing that actually scrolls: one screen per station,
+   plus one so the last station can reach centre */
+.room-rail{position:relative; z-index:0;}
+.room-rail > div{height:100vh; height:100dvh; scroll-snap-align:start;}
+html.view-room{scroll-snap-type:y mandatory;}
+
+.room-viewport{
+  position:fixed; inset:0; z-index:1; overflow:hidden;
+  background:radial-gradient(ellipse 120% 90% at 50% 55%, #14141A 0, #000 70%);
+  perspective:1200px; perspective-origin:50% 48%;
+}
+/* the floor line, so the room has a ground to stand on */
+.room-viewport::after{
+  content:""; position:absolute; left:0; right:0; bottom:0; height:34%;
+  background:linear-gradient(180deg, transparent 0, rgba(255,255,255,.035) 40%, transparent 100%);
+  pointer-events:none;
+}
+.room-track{
+  position:absolute; inset:0;
+  transform-style:preserve-3d;
+  transform:translateZ(var(--radius, 560px)) rotateY(var(--turn, 0deg));
+  will-change:transform;
+}
+.station{
+  position:absolute; left:50%; top:50%;
+  width:var(--sw, 640px); height:var(--sh, 420px);
+  margin-left:calc(var(--sw, 640px) / -2); margin-top:calc(var(--sh, 420px) / -2);
+  transform:rotateY(calc(var(--i) * 60deg)) translateZ(var(--radius, 560px));
+  backface-visibility:hidden;
+  display:flex; align-items:center; justify-content:center;
+  opacity:.28; transition:opacity .35s ease;
+  pointer-events:none;
+}
+.station.is-live{opacity:1; pointer-events:auto;}
+/* Phase 0: a plain plate standing in for the artwork, so the turn can be
+   judged before anything is drawn. */
+.station-plate{
+  width:100%; height:100%; border:1px solid #3A3A38; border-radius:3px;
+  background:linear-gradient(180deg, rgba(255,255,255,.035) 0, rgba(255,255,255,.01) 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  transition:border-color .35s ease, background .35s ease;
+}
+.station.is-live .station-plate{border-color:#6E6E6A; background:linear-gradient(180deg, rgba(255,255,255,.07) 0, rgba(255,255,255,.02) 100%);}
+.station-n{font-family:var(--mono); font-size:12px; letter-spacing:.32em; color:#7A7A76;}
+.station-name{font-family:var(--sans); font-size:clamp(20px,2.4vw,30px); font-weight:600; letter-spacing:.02em; text-align:center; padding:0 18px;}
+.station-holds{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#8C8C88; text-align:center; padding:0 18px;}
+
+/* HUD — the compass tells you where you are facing and gets you out */
+.room-hud{position:fixed; z-index:3; inset:auto 0 0 0; pointer-events:none;}
+.room-compass{
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  padding:0 0 22px; pointer-events:auto;
+}
+.room-dot{
+  width:8px; height:8px; padding:0; border:1px solid #5A5A56; border-radius:50%;
+  background:transparent; cursor:pointer; transition:background .25s ease, border-color .25s ease, transform .25s ease;
+}
+.room-dot.on{background:#F4F4F2; border-color:#F4F4F2; transform:scale(1.35);}
+.room-dot:focus-visible{outline:2px solid #B8241A; outline-offset:3px;}
+.room-exit{
+  position:fixed; z-index:3; top:20px; right:20px; pointer-events:auto;
+  font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+  color:#C9C9C6; background:rgba(0,0,0,.55); border:1px solid #444440; border-radius:2px;
+  padding:9px 14px; cursor:pointer; transition:color .2s ease, border-color .2s ease;
+}
+.room-exit:hover, .room-exit:focus-visible{color:#fff; border-color:#8A8A86; outline:none;}
+.room-enter{
+  display:block; width:100%; margin:0 0 28px; padding:16px;
+  font-family:var(--sans); font-size:15px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:#F4F4F2; background:#000; border:1px solid #3A3A38; border-radius:2px; cursor:pointer;
+  transition:border-color .2s ease;
+}
+.room-enter:hover, .room-enter:focus-visible{border-color:#B8241A; outline:none;}
+
+/* phone: the room still turns, but a station opens full-screen rather than
+   trying to fit an eighteen-drawer cabinet into 390px */
+@media(max-width:700px){
+  .room-viewport{perspective:820px;}
+  .station-name{font-size:19px;}
+}
+/* no motion: drop the cylinder, stack the stations as a plain list */
+@media(prefers-reduced-motion:reduce){
+  html.view-room{scroll-snap-type:none;}
+  .room-viewport{position:static; height:auto; perspective:none; background:#000;}
+  .room-track{position:static; transform:none; transform-style:flat; display:grid; gap:14px; padding:20px;}
+  .station{position:static; width:auto; height:auto; margin:0; transform:none; opacity:1; pointer-events:auto; min-height:180px;}
+  .room-rail{display:none;}
+}
+
 </style>
 </head>
 <body>
+<div id="room" class="room">
+  <div class="room-viewport">
+    <div class="room-track" id="roomTrack"></div>
+  </div>
+  <div class="room-hud"><div class="room-compass" id="roomCompass" role="tablist" aria-label="Room stations"></div></div>
+  <button type="button" class="room-exit" id="roomExit">Index</button>
+  <div class="room-rail" id="roomRail" aria-hidden="true"></div>
+</div>
 <div class="grain-overlay" aria-hidden="true"></div>
 <canvas id="compendiumLattice" class="lattice-field" aria-hidden="true"></canvas>
 
@@ -2223,6 +2338,126 @@ document.getElementById('ledgerCards').addEventListener('click', (e)=>{
   if(article) article.classList.toggle('expanded');
 });
 
+/* ── THE ROOM ──────────────────────────────────────────────────────────────
+   Six stations on a hexagon, 60 degrees apart. Scroll position drives the
+   turn; the room never calls preventDefault, so native scrolling keeps all
+   of its behaviour. Phase 0: placeholder plates, no artwork, no content —
+   the turn is the only thing being judged. */
+const STATIONS = [
+  {id:'chalkboard', name:'The Chalkboard',     holds:'18 mechanisms'},
+  {id:'cabinet',    name:'The Filing Cabinet', holds:'18 chapters'},
+  {id:'desk',       name:'The Desk',           holds:'The receipts ledger'},
+  {id:'screen',     name:'The Screen',         holds:'Every video · the meta song'},
+  {id:'turntable',  name:'The Record Player',  holds:'The songs'},
+  {id:'telephone',  name:'The Telephone',      holds:'Recommended reading'}
+];
+
+function buildRoom(){
+  const track   = document.getElementById('roomTrack');
+  const rail    = document.getElementById('roomRail');
+  const compass = document.getElementById('roomCompass');
+  const exit    = document.getElementById('roomExit');
+  if(!track || !rail) return;
+
+  const N = STATIONS.length;
+  const pad2 = n => String(n).padStart(2,'0');
+
+  track.innerHTML = STATIONS.map((s,i) =>
+    '<section class="station" data-station="' + s.id + '" style="--i:' + i + '" aria-label="' + esc(s.name) + '">'
+    + '<div class="station-plate">'
+    +   '<span class="station-n">' + pad2(i+1) + ' / ' + pad2(N) + '</span>'
+    +   '<span class="station-name">' + esc(s.name) + '</span>'
+    +   '<span class="station-holds">' + esc(s.holds) + '</span>'
+    + '</div></section>'
+  ).join('');
+
+  // one screen of rail per station, plus one so the last can reach centre
+  rail.innerHTML = new Array(N + 1).fill('<div></div>').join('');
+
+  compass.innerHTML = STATIONS.map((s,i) =>
+    '<button type="button" class="room-dot" data-to="' + i + '" role="tab" aria-label="' + esc(s.name) + '"></button>'
+  ).join('');
+
+  const stations = [...track.querySelectorAll('.station')];
+  const dots     = [...compass.querySelectorAll('.room-dot')];
+
+  // The hexagon's radius: how far back each face sits so six of them ring the
+  // viewer without overlapping. r = (w/2) / tan(180/6), widened a little so
+  // the stations read as separate objects in a room, not a solid drum.
+  function measure(){
+    const sw = Math.min(window.innerWidth  * 0.72, 720);
+    const sh = Math.min(window.innerHeight * 0.58, 460);
+    const r  = (sw / 2) / Math.tan(Math.PI / N) * 1.18;
+    const root = document.getElementById('room');
+    root.style.setProperty('--sw', sw + 'px');
+    root.style.setProperty('--sh', sh + 'px');
+    root.style.setProperty('--radius', r + 'px');
+  }
+
+  let ticking = false, live = -1;
+  function paint(){
+    ticking = false;
+    const span = rail.offsetHeight - window.innerHeight;
+    const p = span > 0 ? Math.min(Math.max(window.scrollY / span, 0), 1) : 0;
+    // A full turn across the rail. The rail is N+1 screens, so its N+1 snap
+    // points sit at p = 0, 1/N … 1 — which is exactly 60 degrees apart, and
+    // the last one completes the lap back to the first station.
+    const turn = p * 360;
+    track.style.setProperty('--turn', (-turn) + 'deg');
+
+    // whichever station is nearest dead ahead is the one you can touch
+    const idx = Math.round(turn / (360 / N)) % N;
+    if(idx !== live){
+      live = idx;
+      stations.forEach((el,i) => el.classList.toggle('is-live', i === idx));
+      dots.forEach((d,i) => { d.classList.toggle('on', i === idx); d.setAttribute('aria-selected', i === idx); });
+    }
+  }
+  function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(paint); } }
+
+  function turnTo(i){
+    const span = rail.offsetHeight - window.innerHeight;
+    window.scrollTo({top: span * (i / N), behavior:'smooth'});
+  }
+  compass.addEventListener('click', e => {
+    const d = e.target.closest('.room-dot');
+    if(d) turnTo(parseInt(d.dataset.to, 10));
+  });
+
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', () => { measure(); paint(); });
+  document.addEventListener('keydown', e => {
+    if(!document.documentElement.classList.contains('view-room')) return;
+    if(e.key === 'ArrowRight'){ e.preventDefault(); turnTo((live + 1) % N); }
+    if(e.key === 'ArrowLeft'){  e.preventDefault(); turnTo((live - 1 + N) % N); }
+  });
+
+  exit.addEventListener('click', () => setRoom(false));
+  measure();
+  paint();
+}
+
+function setRoom(on){
+  document.documentElement.classList.toggle('view-room', on);
+  try{ localStorage.setItem('tnf-room', on ? '1' : '0'); }catch(e){}
+  window.scrollTo(0, 0);
+  if(on) window.dispatchEvent(new Event('scroll'));
+}
+window.setRoom = setRoom;
+
+buildRoom();
+
+// a way in from the linear page, at the top of the overview
+(function addRoomDoor(){
+  const host = document.querySelector('#overview .wrap');
+  if(!host) return;
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.className = 'room-enter';
+  b.textContent = 'Enter the room';
+  b.addEventListener('click', () => setRoom(true));
+  host.insertBefore(b, host.firstChild);
+})();
 
 </script>
 </body>
