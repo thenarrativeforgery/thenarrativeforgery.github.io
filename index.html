@@ -870,14 +870,13 @@ html.view-room{scroll-snap-type:y mandatory;}
 }
 .chalk-note b{font-weight:400; color:#fff;}
 
-/* no motion: drop the cylinder, stack the stations as a plain list */
+/* Reduced motion: the room still turns — the turn is driven by your own
+   scrolling, which is the kind of motion the preference permits — but
+   nothing glides or fades on its own. The Index toggle remains the fully
+   static path. */
 @media(prefers-reduced-motion:reduce){
-  html.view-room{scroll-snap-type:none;}
-  .room-viewport{position:static; height:auto; perspective:none; background:#000;}
-  .room-track{position:static; transform:none; transform-style:flat; display:grid; gap:14px; padding:20px;}
-  .station{position:static; width:auto; height:auto; margin:0; transform:none; opacity:1; pointer-events:auto; min-height:180px;}
-  .station[data-station="chalkboard"]{height:min(150vw, 900px);}
-  .room-rail{display:none;}
+  html.view-room{scroll-behavior:auto;}
+  .station, .station-plate, .station-open, .room-dot, .room-exit, .chalk-line{transition:none !important;}
 }
 
 </style>
@@ -2562,9 +2561,10 @@ function buildRoom(){
   }
   function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(paint); } }
 
+  const stillPlease = matchMedia('(prefers-reduced-motion: reduce)');
   function turnTo(i){
     const span = rail.offsetHeight - window.innerHeight;
-    window.scrollTo({top: span * (i / N), behavior:'smooth'});
+    window.scrollTo({top: span * (i / N), behavior: stillPlease.matches ? 'auto' : 'smooth'});
   }
   compass.addEventListener('click', e => {
     const d = e.target.closest('.room-dot');
