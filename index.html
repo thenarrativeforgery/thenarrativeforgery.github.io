@@ -689,7 +689,7 @@ html.view-room{scroll-snap-type:y mandatory;}
 /* the floor line, so the room has a ground to stand on */
 .room-viewport::after{
   content:""; position:absolute; left:0; right:0; bottom:0; height:34%;
-  background:linear-gradient(180deg, transparent 0, rgba(255,255,255,.035) 40%, transparent 100%);
+  background:linear-gradient(180deg, transparent 0, rgba(255,255,255,.07) 40%, transparent 100%);
   pointer-events:none;
 }
 .room-track{
@@ -699,7 +699,7 @@ html.view-room{scroll-snap-type:y mandatory;}
   will-change:transform;
 }
 .station{
-  position:absolute; left:50%; top:50%;
+  position:absolute; left:50%; top:50%; padding:0;
   width:var(--sw, 640px); height:var(--sh, 420px);
   margin-left:calc(var(--sw, 640px) / -2); margin-top:calc(var(--sh, 420px) / -2);
   /* rotate to the station's bearing, then step back by the radius: every face
@@ -709,7 +709,7 @@ html.view-room{scroll-snap-type:y mandatory;}
   transform:rotateY(calc(var(--i) * 60deg)) translateZ(calc(-1 * var(--radius, 560px)));
   backface-visibility:hidden;
   display:flex; align-items:center; justify-content:center;
-  opacity:.28; transition:opacity .35s ease;
+  opacity:.45; transition:opacity .35s ease;
   pointer-events:none;
 }
 .station.is-live{opacity:1; pointer-events:auto;}
@@ -717,18 +717,25 @@ html.view-room{scroll-snap-type:y mandatory;}
 /* Phase 0: a plain plate standing in for the artwork, so the turn can be
    judged before anything is drawn. */
 .station-plate{
-  width:100%; height:100%; border:1px solid #3A3A38; border-radius:3px;
-  background:linear-gradient(180deg, rgba(255,255,255,.035) 0, rgba(255,255,255,.01) 100%);
+  width:100%; height:100%; border:1px solid #6E6E6A; border-radius:3px;
+  background:linear-gradient(180deg, rgba(255,255,255,.05) 0, rgba(255,255,255,.015) 100%);
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
   transition:border-color .35s ease, background .35s ease;
 }
-.station.is-live .station-plate{border-color:#6E6E6A; background:linear-gradient(180deg, rgba(255,255,255,.07) 0, rgba(255,255,255,.02) 100%);}
-.station-n{font-family:var(--mono); font-size:12px; letter-spacing:.32em; color:#7A7A76;}
+.station.is-live .station-plate{border-color:#A8A8A4; background:linear-gradient(180deg, rgba(255,255,255,.08) 0, rgba(255,255,255,.025) 100%);}
+.station-n{font-family:var(--mono); font-size:12px; letter-spacing:.32em; color:#9A9A96;}
 .station-name{font-family:var(--sans); font-size:clamp(20px,2.4vw,30px); font-weight:600; letter-spacing:.02em; text-align:center; padding:0 18px;}
-.station-holds{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#8C8C88; text-align:center; padding:0 18px;}
+.station-holds{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#A0A09C; text-align:center; padding:0 18px;}
 
-/* HUD — the compass tells you where you are facing and gets you out */
+/* HUD — the caption says what you are facing, the compass where, and
+   Index gets you out */
 .room-hud{position:fixed; z-index:3; inset:auto 0 0 0; pointer-events:none;}
+.room-caption{
+  text-align:center; padding:0 20px 12px; font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#8C8C88;
+}
+.room-caption b{font-weight:400; color:#F4F4F2;}
+.room-caption .rc-hint{display:none; color:#E0574A;}
+@media(max-width:700px){ .room-caption .rc-hint{display:inline;} }
 .room-compass{
   display:flex; align-items:center; justify-content:center; gap:10px;
   padding:0 0 22px; pointer-events:auto;
@@ -798,7 +805,7 @@ html.view-room{scroll-snap-type:y mandatory;}
 .chalkboard{
   position:relative; width:100%; height:100%; box-sizing:border-box;
   background:#060606; color:#ECECE8;
-  border:1px solid #5E5E5A; outline:1px solid #232321; outline-offset:-6px;
+  border:1px solid #8A8A86; outline:1px solid #2E2E2C; outline-offset:-6px;
   box-shadow:0 0 0 5px #0C0C0C, 0 22px 60px rgba(0,0,0,.7);
   display:flex; flex-direction:column; padding:2.6cqh 4.2cqw 1.8cqh;
 }
@@ -881,15 +888,15 @@ html.view-room{scroll-snap-type:y mandatory;}
 .cab-body{position:relative; flex:1 1 auto; min-height:0; display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:0 1.4cqw; padding:1cqh 0 .6cqh;}
 .cab-col{
   position:relative; display:grid; grid-template-rows:repeat(6, minmax(0,1fr)); gap:.45cqh;
-  padding:.7cqh .7cqw .8cqh; border:1px solid #8E8E8A;
+  padding:.7cqh .7cqw .8cqh; border:1px solid #B0B0AC;
   background:linear-gradient(180deg, rgba(255,255,255,.035) 0, rgba(255,255,255,0) 60%);
 }
 /* the slab across the top of each cabinet, and the floor line under it */
-.cab-col::before{content:""; position:absolute; left:-1px; right:-1px; top:-1cqh; height:1cqh; border:1px solid #8E8E8A; border-bottom:0; background:#0A0A0A;}
+.cab-col::before{content:""; position:absolute; left:-1px; right:-1px; top:-1cqh; height:1cqh; border:1px solid #B0B0AC; border-bottom:0; background:#0A0A0A;}
 .cab-col::after{content:""; position:absolute; left:8%; right:8%; bottom:-.9cqh; height:.9cqh; border:1px solid #6E6E6A; border-top:0; border-radius:0 0 2px 2px; background:#050505;}
 .drawer{
   position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.85cqh;
-  min-height:0; padding:0; background:#070707; border:1px solid #9A9A96; border-radius:1px; color:inherit; cursor:pointer;
+  min-height:0; padding:0; background:#0A0A0A; border:1px solid #B8B8B4; border-radius:1px; color:inherit; cursor:pointer;
   transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
 }
 .drawer-plate{
@@ -957,7 +964,10 @@ html.view-room{scroll-snap-type:y mandatory;}
   <div class="room-viewport">
     <div class="room-track" id="roomTrack"></div>
   </div>
-  <div class="room-hud"><div class="room-compass" id="roomCompass" role="tablist" aria-label="Room stations"></div></div>
+  <div class="room-hud">
+    <div class="room-caption" id="roomCaption" aria-live="polite"></div>
+    <div class="room-compass" id="roomCompass" role="tablist" aria-label="Room stations"></div>
+  </div>
   <button type="button" class="room-exit" id="roomExit">Index</button>
   <div class="room-rail" id="roomRail" aria-hidden="true"></div>
 </div>
@@ -2458,6 +2468,7 @@ function buildRoom(){
   const track   = document.getElementById('roomTrack');
   const rail    = document.getElementById('roomRail');
   const compass = document.getElementById('roomCompass');
+  const caption = document.getElementById('roomCaption');
   const exit    = document.getElementById('roomExit');
   if(!track || !rail) return;
 
@@ -2512,8 +2523,10 @@ function buildRoom(){
     const root = document.getElementById('room');
     root.style.setProperty('--sw', sw + 'px');
     root.style.setProperty('--sh', sh + 'px');
-    // stations with a lot to say (the chalkboard) stand taller than the rest
-    root.style.setProperty('--sh-tall', Math.min(window.innerHeight * 0.86, 760) + 'px');
+    // stations with a lot to say (the chalkboard, the cabinet) stand taller
+    // than the rest — less so on a phone, where the caption needs the floor
+    const tall = window.innerWidth <= 700 ? 0.72 : 0.86;
+    root.style.setProperty('--sh-tall', Math.min(window.innerHeight * tall, 760) + 'px');
     root.style.setProperty('--radius', r + 'px');
   }
 
@@ -2544,6 +2557,9 @@ function buildRoom(){
       live = idx;
       stations.forEach((el,i) => el.classList.toggle('is-live', i === idx));
       dots.forEach((d,i) => { d.classList.toggle('on', i === idx); d.setAttribute('aria-selected', i === idx); });
+      const s = STATIONS[idx];
+      caption.innerHTML = '<b>' + esc(s.name) + '</b> &nbsp;&middot;&nbsp; ' + esc(s.holds)
+        + ' <span class="rc-hint">&nbsp;&middot;&nbsp; Tap to open</span>';
     }
   }
   function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(paint); } }
