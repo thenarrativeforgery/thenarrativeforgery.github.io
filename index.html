@@ -196,9 +196,19 @@ h2.section-title{font-size:clamp(24px,3vw,34px); font-weight:700; color:var(--na
 .mech-map-bar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:10px;}
 .mech-map-bar .mm-tag{background:var(--navy); color:var(--cream); padding:3px 9px; margin-right:8px; letter-spacing:.12em;}
 .dossier{background:#000; border:1px solid #000; box-shadow:0 14px 40px rgba(0,0,0,.28); padding:38px 22px 30px; color:#F4F4F2;}
-.dossier-head{text-align:center; margin:0 auto 30px;}
+.dossier-head{display:flex; align-items:center; justify-content:center; gap:36px 56px; flex-wrap:wrap; margin:0 auto 30px;}
 .dossier-brain{display:block; height:clamp(96px, 14vw, 150px); width:auto; margin:0 auto 14px; opacity:.94;}
-.dossier-cover{display:block; width:min(100%, 560px); height:auto; margin:0 auto; filter:invert(1); border:1px solid #2A2A28;}
+.dossier-cover{display:block; width:min(100%, 560px); height:auto; margin:0; filter:invert(1); border:1px solid #2A2A28;}
+/* the record beside the cover: plays the meta song, spins while it plays */
+.vinyl{display:flex; flex-direction:column; align-items:center; gap:14px; width:min(100%, 280px);}
+.vinyl-disc{width:min(240px, 62vw); aspect-ratio:1; padding:0; border:0; border-radius:50%; background:none; cursor:pointer; transition:transform .25s ease, filter .25s ease;}
+.vinyl-disc:hover, .vinyl-disc:focus-visible{transform:scale(1.03); filter:drop-shadow(0 0 18px rgba(255,255,255,.22)); outline:none;}
+.vinyl-disc svg{display:block; width:100%; height:100%; transform-origin:50% 50%; animation:vinyl-spin 1.8s linear infinite; animation-play-state:paused;}
+.vinyl.is-playing .vinyl-disc svg{animation-play-state:running;}
+@keyframes vinyl-spin{to{transform:rotate(360deg);}}
+.vinyl-caption{font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#8C8C88; text-align:center; line-height:1.7;}
+.vinyl-caption b{font-weight:400; color:#F4F4F2;}
+.vinyl.is-playing .vinyl-state{color:#E0574A;}
 /* the menu as the picture: a button over each card; a hovered card shows its
    own crop of the picture, lit and lifted, while the rest of the packs dim */
 .dossier-art{position:relative; width:min(100%, 1100px); margin:0 auto; line-height:0; container-type:inline-size;}
@@ -1047,6 +1057,24 @@ const DOSSIER_BRAIN = '<svg class="dossier-brain" viewBox="0 0 160 124" fill="no
   + '<path d="M104 100c-1 10-5 16-12 20"/>'
   + '<path d="M56 12c-2 6-1 10 2 14M120 20c4 4 6 8 5 14" opacity=".55"/>'
   + '</svg>';
+// a record in white line on black: grooves, a sheen, the label, the spindle hole
+const VINYL_SVG = (function(){
+  let grooves = '';
+  for(let r = 44; r <= 94; r += 2.6) grooves += '<circle cx="100" cy="100" r="' + r.toFixed(1) + '" stroke="rgba(244,244,242,' + (r % 7.8 < 2.6 ? '.22' : '.10') + ')" stroke-width=".7"/>';
+  return '<svg viewBox="0 0 200 200" fill="none" aria-hidden="true">'
+    + '<circle cx="100" cy="100" r="97" fill="#050505" stroke="#F4F4F2" stroke-width="1.6"/>'
+    + grooves
+    + '<path d="M40 62a70 70 0 0 1 24-25" stroke="rgba(244,244,242,.55)" stroke-width="2" stroke-linecap="round"/>'
+    + '<path d="M160 138a70 70 0 0 1-24 25" stroke="rgba(244,244,242,.4)" stroke-width="2" stroke-linecap="round"/>'
+    + '<circle cx="100" cy="100" r="36" fill="#0B0B0B" stroke="#F4F4F2" stroke-width="1.4"/>'
+    + '<circle cx="100" cy="100" r="30" stroke="rgba(244,244,242,.35)" stroke-width=".8"/>'
+    + '<text x="100" y="92" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="8.5" font-weight="600" letter-spacing="1.4" fill="#F4F4F2">LOADED</text>'
+    + '<text x="100" y="104" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="6.5" letter-spacing="1.2" fill="#F4F4F2">AND LOCKED</text>'
+    + '<text x="100" y="117" text-anchor="middle" font-family="Courier Prime, monospace" font-size="4.6" letter-spacing="1" fill="rgba(244,244,242,.7)">THE META SONG · TNF</text>'
+    + '<circle cx="100" cy="100" r="3.2" fill="#F4F4F2"/>'
+    + '</svg>';
+})();
+
 const DOSSIER_NOTE_DEFAULT = matchMedia('(hover:none)').matches
   ? 'Tap a card to open that mechanism.'
   : 'Hover a card to read what the mechanism does &middot; click it to open the entry.';
@@ -1112,9 +1140,16 @@ function buildDossier(){
   // the head is Volume Two's own cover — the pencil brain with its roots —
   // inverted to white on black. It carries the title, so none is repeated.
   const cover = document.getElementById('volumeTwoArt');
-  const head = cover
+  // beside the cover: a record that plays the meta song — the track that is
+  // the whole theory of the architecture — spinning while it plays
+  const vinyl = '<div class="vinyl" id="metaVinyl">'
+    + '<button type="button" class="vinyl-disc" aria-pressed="false" aria-label="Play Loaded and Locked, the meta song">' + VINYL_SVG + '</button>'
+    + '<div class="vinyl-caption"><b>Loaded and Locked</b> &middot; the meta song<br><span class="vinyl-state">Click the record to play</span></div>'
+    + '<audio id="metaAudio" preload="none" src="audio/loaded-and-locked.mp3"></audio>'
+    + '</div>';
+  const head = (cover
     ? '<img class="dossier-cover" src="' + cover.src + '" alt="Volume Two — The Neural Architecture of Deception: a compendium of psychological mechanisms in The Narrative Forgery">'
-    : DOSSIER_BRAIN + '<h3>The Neural Architecture of Deception:</h3>';
+    : DOSSIER_BRAIN + '<h3>The Neural Architecture of Deception:</h3>') + vinyl;
 
   // The menu itself is the picture of the packs when it is in the page, with
   // an invisible button over each card; a hovered card shows its own crop of
@@ -1148,6 +1183,21 @@ function buildDossier(){
     + body
     + '<div class="dossier-note">' + DOSSIER_NOTE_DEFAULT + '</div>';
   if(artSrc) host.querySelector('.dossier-art').style.setProperty('--art', 'url("' + artSrc + '")');
+
+  // the record: click to play or pause; it spins only while the song plays
+  (function(){
+    const v = host.querySelector('#metaVinyl'); if(!v) return;
+    const audio = v.querySelector('audio'), disc = v.querySelector('.vinyl-disc'), state = v.querySelector('.vinyl-state');
+    const set = (playing, text) => { v.classList.toggle('is-playing', playing); disc.setAttribute('aria-pressed', playing ? 'true' : 'false'); state.textContent = text; };
+    disc.addEventListener('click', () => {
+      if(audio.paused) audio.play().catch(() => set(false, 'The song could not be loaded.'));
+      else audio.pause();
+    });
+    audio.addEventListener('play',  () => set(true, 'Now playing · click to pause'));
+    audio.addEventListener('pause', () => set(false, audio.currentTime > 0 && audio.currentTime < audio.duration ? 'Paused · click to resume' : 'Click the record to play'));
+    audio.addEventListener('ended', () => set(false, 'Click the record to play again'));
+    audio.addEventListener('error', () => set(false, 'The song could not be loaded.'));
+  })();
 
   const note = host.querySelector('.dossier-note');
   const show = n => {
