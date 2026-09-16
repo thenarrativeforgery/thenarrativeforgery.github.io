@@ -378,6 +378,15 @@ tbody tr:hover{background:var(--cream-dark);}
 .ledger-table-wrap td:nth-child(4) .tier-badge, .ledger-table-wrap td:nth-child(5) .tier-badge{white-space:normal;}
 .row-note{display:block; margin-top:4px; font-family:var(--mono); font-size:11.5px; line-height:1.45; color:#8A8A86;}
 .row-note::before{content:"↳ ";}
+/* EXHIBIT D — the ledger framed like the other exhibits: a black stage, and a
+   red seal that draws itself around the frame as the ledger comes into view */
+.ledger-bar{margin-bottom:14px;}
+.ledger-exhibit{position:relative; background:#0C0C0C; border:1px solid #000; box-shadow:0 14px 40px rgba(0,0,0,.28); padding:14px;}
+.ledger-exhibit #ledgerCount{color:#C9C9C6;}
+.ledger-seal{position:absolute; inset:-1px; width:calc(100% + 2px); height:calc(100% + 2px); pointer-events:none; overflow:visible;}
+.ledger-seal rect{fill:none; stroke:var(--red-light); stroke-width:2; stroke-dasharray:1; stroke-dashoffset:1; transition:stroke-dashoffset 1.8s cubic-bezier(.4,0,.2,1);}
+.ledger-exhibit.is-seen .ledger-seal rect{stroke-dashoffset:0;}
+@media(prefers-reduced-motion:reduce){ .ledger-seal rect{transition:none; stroke-dashoffset:0;} }
 .ledger-table-wrap{max-height:720px; overflow:auto; border:1px solid var(--border); contain:content; overscroll-behavior:contain;}
 .ledger-table-wrap tr:not(.ledger-detail-row){content-visibility:auto; contain-intrinsic-size:auto 44px;}
 .no-link{color:#9C9C9C; font-style:italic; font-size:15px;}
@@ -809,11 +818,16 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
       <div class="tier-card"><div class="tier-name t-strong">STRONG</div><p>Documented in primary records with limited interpretive distance.</p></div>
       <div class="tier-card"><div class="tier-name t-supported">SUPPORTED</div><p>Rests on pattern-based or secondary corroboration rather than a single flagship document.</p></div>
     </div>
+    <div class="cab-bar ledger-bar">
+      <span><span class="cb-tag">EXHIBIT D</span>The receipts ledger — 173 documented events, FAC-001 through FAC-173. Click any row to open it.</span>
+    </div>
     <div class="ledger-controls">
       <input id="ledgerSearch" type="text" placeholder="Search event, chapter, FAC number, or notes…">
       <select id="tierFilter"><option value="">All tiers</option></select>
       <select id="chapterFilter"><option value="">All chapters</option></select>
     </div>
+    <div class="ledger-exhibit" id="ledgerExhibit">
+      <svg class="ledger-seal" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="100" height="100" pathLength="1" vector-effect="non-scaling-stroke"/></svg>
     <div id="ledgerCount"></div>
     <div id="ledgerCards" aria-live="polite"></div>
     <div class="ledger-table-wrap">
@@ -822,6 +836,7 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
         <thead><tr><th>FAC#</th><th>Ch</th><th>Event</th><th>Tier</th><th>Status</th><th>Source</th></tr></thead>
         <tbody id="ledgerBody"></tbody>
       </table>
+    </div>
     </div>
   </div>
 </section>
@@ -1217,6 +1232,16 @@ function buildDossier(){
   });
 }
 buildDossier();
+
+// EXHIBIT D — the seal draws itself around the ledger each time it comes into
+// view, and undraws as it leaves
+(function(){
+  const ex = document.getElementById('ledgerExhibit');
+  if(!ex || !('IntersectionObserver' in window)){ if(ex) ex.classList.add('is-seen'); return; }
+  new IntersectionObserver(entries => {
+    entries.forEach(e => ex.classList.toggle('is-seen', e.isIntersecting));
+  }, {threshold: 0.12}).observe(ex);
+})();
 
 function openIntroReader(){
   window.__tnfReaderCh = null;
