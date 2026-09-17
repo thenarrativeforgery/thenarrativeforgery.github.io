@@ -197,14 +197,19 @@ h2.section-title{font-size:clamp(24px,3vw,34px); font-weight:700; color:var(--na
 .dossier-cover{display:block; width:min(100%, 560px); height:auto; margin:0; filter:invert(1); border:1px solid #2A2A28;}
 /* the record beside the cover: plays the meta song, spins while it plays */
 .vinyl{display:flex; flex-direction:column; align-items:center; gap:14px; width:min(100%, 280px);}
-.vinyl-disc{position:relative; overflow:visible; width:min(240px, 62vw); aspect-ratio:1; padding:0; border:0; border-radius:50%; background:none; cursor:pointer; transition:transform .25s ease, filter .25s ease;}
+.vinyl-deck{position:relative; width:min(240px, 62vw); aspect-ratio:1;}
+.vinyl-disc{display:block; width:100%; height:100%; padding:0; border:0; border-radius:50%; background:none; cursor:pointer; transition:transform .25s ease, filter .25s ease;}
 .vinyl-disc:hover, .vinyl-disc:focus-visible{transform:scale(1.03); filter:drop-shadow(0 0 18px rgba(255,255,255,.22)); outline:none;}
 .vinyl-platter{display:block; width:100%; height:100%; transform-origin:50% 50%; animation:vinyl-spin 1.8s linear infinite; animation-play-state:paused;}
 .vinyl.is-playing .vinyl-platter{animation-play-state:running;}
-/* the arm sits off the platter until the song plays, then swings onto the groove */
-.vinyl-arm{position:absolute; top:-8%; right:-10%; width:46%; height:78%; pointer-events:none; overflow:visible; filter:drop-shadow(0 4px 6px rgba(0,0,0,.7));}
-.vinyl-arm-g{transform-box:view-box; transform-origin:80px 14px; transform:rotate(-24deg); transition:transform .9s cubic-bezier(.4,0,.2,1);}
-.vinyl.is-playing .vinyl-arm-g{transform:rotate(0deg);}
+/* the arm: on its rest until the song plays, then on the groove, walking
+   inward as the song goes; drag it to lift the needle and set it down
+   elsewhere. The svg lets clicks through; only the arm itself is grabbable. */
+.vinyl-arm{position:absolute; top:-8%; right:-10%; width:46%; height:78%; pointer-events:none; overflow:visible; filter:drop-shadow(0 4px 6px rgba(0,0,0,.7)); z-index:2;}
+.vinyl-arm-g{transform-box:view-box; transform-origin:80px 14px; transform:rotate(-24deg); transition:transform .9s cubic-bezier(.4,0,.2,1); pointer-events:visibleStroke; cursor:grab; touch-action:none;}
+.vinyl.is-tracking .vinyl-arm-g{transition-duration:.35s;}
+.vinyl.is-dragging .vinyl-arm-g{transition:none; cursor:grabbing;}
+.vinyl-arm-g:hover .vinyl-arm-grip{stroke:rgba(255,255,255,.06);}
 @keyframes vinyl-spin{to{transform:rotate(360deg);}}
 .vinyl-caption{font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#8C8C88; text-align:center; line-height:1.7;}
 .vinyl-caption b{font-weight:400; color:#F4F4F2;}
@@ -1035,6 +1040,7 @@ const VINYL_SVG = (function(){
 // the arm down to a headshell and needle. It does not turn with the record;
 // it swings onto the groove when the song plays and lifts off when it stops.
 const TONEARM_SVG = '<svg class="vinyl-arm" viewBox="0 0 100 160" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><g class="vinyl-arm-g">'
+  + '<path class="vinyl-arm-grip" d="M80 14L58 88 44 132" stroke="transparent" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>'
   + '<circle cx="80" cy="14" r="9" fill="#050505" stroke="#F4F4F2" stroke-width="1.6"/>'
   + '<circle cx="80" cy="14" r="3" fill="#F4F4F2"/>'
   + '<path d="M86 6l9-8" stroke="#F4F4F2" stroke-width="3.2" stroke-linecap="round"/>'
@@ -1094,7 +1100,7 @@ function buildDossier(){
   // beside the cover: a record that plays the meta song — the track that is
   // the whole theory of the architecture — spinning while it plays
   const vinyl = '<div class="vinyl" id="metaVinyl">'
-    + '<button type="button" class="vinyl-disc" aria-pressed="false" aria-label="Play Loaded and Locked, the meta song">' + VINYL_SVG + TONEARM_SVG + '</button>'
+    + '<div class="vinyl-deck"><button type="button" class="vinyl-disc" aria-pressed="false" aria-label="Play Loaded and Locked, the meta song">' + VINYL_SVG + '</button>' + TONEARM_SVG + '</div>'
     + '<div class="vinyl-caption"><b>Loaded and Locked</b> &middot; the meta song<br><span class="vinyl-state">Play</span></div>'
     + '<audio id="metaAudio" preload="none" src="audio/loaded-and-locked.mp3"></audio>'
     + '</div>';
@@ -1133,19 +1139,97 @@ function buildDossier(){
     + '<div class="dossier-note">' + DOSSIER_NOTE_DEFAULT + '</div>';
   if(artSrc) host.querySelector('.dossier-art').style.setProperty('--art', 'url("' + artSrc + '")');
 
-  // the record: click to play or pause; it spins only while the song plays
+  // The deck: the arm is a real tonearm. Its pivot and needle are measured from
+  // the drawing, the needle's distance from the spindle is read off the
+  // platter, and a record plays from the outer groove in — so where the needle
+  // sits IS where you are in the song. Playing walks the arm inward; dragging
+  // the arm lifts the needle, and setting it down plays from that groove (or
+  // stops, if you set it down off the platter).
   (function(){
     const v = host.querySelector('#metaVinyl'); if(!v) return;
     const audio = v.querySelector('audio'), disc = v.querySelector('.vinyl-disc'), state = v.querySelector('.vinyl-state');
+    const armSvg = v.querySelector('.vinyl-arm'), arm = v.querySelector('.vinyl-arm-g');
+    const REST = -24;                       // arm angle when it sits on its rest, clear of the platter
+    const OUTER = 0.94, INNER = 0.44;       // the first and last groove, as fractions of the platter radius
+    let theta = REST, dragging = false, pendingF = null, dur = 0;
+
+    const fmt = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+    const setArm = deg => { theta = deg; arm.style.transform = 'rotate(' + deg.toFixed(2) + 'deg)'; };
     const set = (playing, text) => { v.classList.toggle('is-playing', playing); disc.setAttribute('aria-pressed', playing ? 'true' : 'false'); state.textContent = text; };
+    const clock = () => dur ? fmt(audio.currentTime) + ' / ' + fmt(dur) : '';
+
+    // the measurements: pivot and needle tip in screen space, spindle and radius
+    function geo(){
+      const m = armSvg.getScreenCTM(); if(!m) return null;
+      const pt = (x, y) => ({x: m.a * x + m.c * y + m.e, y: m.b * x + m.d * y + m.f});
+      const d = disc.getBoundingClientRect();
+      return {P: pt(80, 14), N: pt(42, 138), C: {x: d.left + d.width / 2, y: d.top + d.height / 2}, R: d.width / 2};
+    }
+    const needleAt = (g, deg) => {
+      const a = deg * Math.PI / 180, dx = g.N.x - g.P.x, dy = g.N.y - g.P.y;
+      return {x: g.P.x + dx * Math.cos(a) - dy * Math.sin(a), y: g.P.y + dx * Math.sin(a) + dy * Math.cos(a)};
+    };
+    const radiusAt = (g, deg) => { const n = needleAt(g, deg); return Math.hypot(n.x - g.C.x, n.y - g.C.y) / g.R; };
+    // the arm angle that puts the needle on a given groove — the radius falls
+    // steadily as the arm swings in, until well past the last groove
+    function angleFor(g, r){ let lo = REST, hi = 30; for(let i = 0; i < 36; i++){ const mid = (lo + hi) / 2; if(radiusAt(g, mid) > r) lo = mid; else hi = mid; } return (lo + hi) / 2; }
+    const fracToRadius = f => OUTER - f * (OUTER - INNER);
+    const radiusToFrac = r => Math.max(0, Math.min(1, (OUTER - r) / (OUTER - INNER)));
+
+    function seekFraction(f){ if(dur){ audio.currentTime = f * dur; } else { pendingF = f; } }
+    function track(){
+      if(dragging || !dur) return;
+      const g = geo(); if(!g) return;
+      setArm(angleFor(g, fracToRadius(audio.currentTime / dur)));
+    }
+
     disc.addEventListener('click', () => {
       if(audio.paused) audio.play().catch(() => set(false, 'The song could not be loaded.'));
       else audio.pause();
     });
-    audio.addEventListener('play',  () => set(true, 'Playing'));
-    audio.addEventListener('pause', () => set(false, audio.currentTime > 0 && audio.currentTime < audio.duration ? 'Paused' : 'Play'));
-    audio.addEventListener('ended', () => set(false, 'Play again'));
-    audio.addEventListener('error', () => set(false, 'The song could not be loaded.'));
+    // arrow keys on the platter step through the song five seconds at a time
+    disc.addEventListener('keydown', e => {
+      if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      if(dur) audio.currentTime = Math.max(0, Math.min(dur, audio.currentTime + (e.key === 'ArrowRight' ? 5 : -5)));
+      track(); if(!audio.paused) state.textContent = 'Playing · ' + clock();
+    });
+
+    // lift, carry, set down
+    arm.addEventListener('pointerdown', e => {
+      const g = geo(); if(!g) return;
+      e.preventDefault();
+      try{ arm.setPointerCapture(e.pointerId); }catch(_){}
+      dragging = true; v.classList.add('is-dragging');
+      if(!audio.paused) audio.pause();
+      const ang = p => Math.atan2(p.y - g.P.y, p.x - g.P.x) * 180 / Math.PI;
+      const offset = ang({x: e.clientX, y: e.clientY}) - theta;
+      const innermost = angleFor(g, INNER);
+      const move = ev => {
+        const t = Math.max(REST, Math.min(innermost, ang({x: ev.clientX, y: ev.clientY}) - offset));
+        setArm(t);
+        const r = radiusAt(g, t);
+        state.textContent = r > OUTER ? 'Lifted' : (dur ? fmt(radiusToFrac(r) * dur) + ' / ' + fmt(dur) : 'Set it down to play');
+      };
+      const up = ev => {
+        try{ arm.releasePointerCapture(ev.pointerId); }catch(_){}
+        arm.removeEventListener('pointermove', move); arm.removeEventListener('pointerup', up); arm.removeEventListener('pointercancel', up);
+        dragging = false; v.classList.remove('is-dragging');
+        const r = radiusAt(g, theta);
+        if(r > OUTER + 0.015){ audio.pause(); audio.currentTime = 0; v.classList.remove('is-tracking'); setArm(REST); set(false, 'Play'); return; }
+        seekFraction(radiusToFrac(r));
+        audio.play().catch(() => set(false, 'The song could not be loaded.'));
+      };
+      arm.addEventListener('pointermove', move); arm.addEventListener('pointerup', up); arm.addEventListener('pointercancel', up);
+    });
+
+    audio.addEventListener('loadedmetadata', () => { dur = audio.duration || 0; if(pendingF != null){ audio.currentTime = pendingF * dur; pendingF = null; } track(); });
+    audio.addEventListener('play',       () => { set(true, 'Playing' + (dur ? ' · ' + clock() : '')); track(); });
+    audio.addEventListener('timeupdate', () => { if(!dragging){ v.classList.add('is-tracking'); track(); if(!audio.paused) state.textContent = 'Playing · ' + clock(); } });
+    audio.addEventListener('pause',      () => { if(dragging) return; set(false, audio.currentTime > 0 && audio.currentTime < dur ? 'Paused · ' + clock() : 'Play'); });
+    audio.addEventListener('ended',      () => { v.classList.remove('is-tracking'); setArm(REST); set(false, 'Play again'); });
+    audio.addEventListener('error',      () => set(false, 'The song could not be loaded.'));
+    window.addEventListener('resize',    track);
   })();
 
   const note = host.querySelector('.dossier-note');
