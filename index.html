@@ -250,18 +250,54 @@ h2.section-title{font-size:clamp(24px,3vw,34px); font-weight:700; color:var(--na
 .cab-wrap{margin:0 0 34px;}
 .cab-bar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:10px;}
 .cab-bar .cb-tag{background:var(--navy); color:var(--cream); padding:3px 9px; margin-right:8px; letter-spacing:.12em;}
-/* The stage holds the picture at the section's full width. On a phone the
-   room is wider than the screen and swipes sideways, opening on the
-   cabinets; the drawer card pins to whatever part is in view. */
+/* The stage holds the picture at the section's full width. A phone cannot
+   hold the whole room: there it is flattened to the part that matters — the
+   book on its three cabinets, cropped to fill the screen — and the two
+   things that stood either side of them, the reel cabinet and the burn bag,
+   become the words down the edges. */
 .cab-stage{
   position:relative; display:flex; justify-content:center; background:#000; border:1px solid #000;
   box-shadow:0 14px 40px rgba(0,0,0,.28); padding:0;
 }
-.cab-stage-host{position:relative; width:100%; aspect-ratio:var(--art-ar, 1 / 1); container-type:size;}
+/* the phone's crop, in percentages of the whole picture */
+.cab-stage-host{
+  position:relative; width:100%; aspect-ratio:var(--art-ar, 1 / 1); container-type:size;
+  --cx:38.2; --cy:2; --cw:41; --ch:91;
+}
+/* the edge words: off on a computer, where the reels and the bag are in the
+   picture itself and clickable there */
+.room-rail{display:none;}
 @media(max-width:700px){
-  .cab-stage{justify-content:flex-start; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
-  .cab-stage::-webkit-scrollbar{display:none;}
-  .cab-stage-host{width:170%; flex:0 0 auto;}
+  .cab-stage{align-items:stretch; overflow:hidden;}
+  /* the crop is a tall column, so the room is held to a height the screen can
+     take; on a wide phone the two words close in on it rather than stretch */
+  .cab-stage-host{
+    flex:1 1 auto; width:auto; min-width:0; overflow:hidden; aspect-ratio:var(--cw) / var(--ch);
+    max-width:min(100%, max(200px, calc(74vh * var(--cw) / var(--ch))));
+  }
+  .cab-stage-host .cabinet--art{overflow:hidden;}
+  /* the picture, blown up and pushed so the crop above sits in the window */
+  .cab-stage-host .cab-art{
+    position:absolute;
+    left:calc(var(--cx) / var(--cw) * -100%); top:calc(var(--cy) / var(--ch) * -100%);
+    width:calc(100 / var(--cw) * 100%); height:calc(100 / var(--ch) * 100%);
+  }
+  /* the reels and the bag are outside the crop; the edge words stand for them */
+  .cab-art .drawer.drawer--hot.drawer--fixture{display:none;}
+  .room-rail{
+    display:flex; align-items:center; justify-content:center; flex:0 0 clamp(38px, 11.5vw, 52px);
+    padding:0; background:#000; border:0; color:#ECECE8; cursor:pointer;
+    -webkit-tap-highlight-color:transparent; transition:background .2s ease, color .2s ease;
+  }
+  .room-rail--videos{border-right:1px solid #232321;}
+  .room-rail--receipts{border-left:1px solid #232321;}
+  .room-rail .rail-word{
+    writing-mode:vertical-rl; font-family:var(--sans); font-weight:700;
+    font-size:clamp(13px, 3.6vw, 16px); letter-spacing:.34em; text-transform:uppercase;
+  }
+  .room-rail--videos .rail-word{transform:rotate(180deg);}
+  .room-rail:hover, .room-rail:active{background:#141412; color:#fff;}
+  .room-rail:focus-visible{outline:2px solid var(--red-light); outline-offset:-3px;}
 }
 .cab-caption{font-family:var(--mono); font-size:12px; letter-spacing:.06em; line-height:1.45; color:var(--ink-soft); margin-top:10px; min-height:34px;}
 .cab-caption b{font-weight:400; color:var(--navy);}
@@ -677,7 +713,9 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
         <span><span class="cb-tag">EXHIBIT B</span>The file room</span>
       </div>
       <div class="cab-stage" id="cabStage">
+        <button type="button" class="room-rail room-rail--videos" id="roomRailVideos" aria-label="The archive: every video, in order"><span class="rail-word">Videos</span></button>
         <div class="cab-stage-host" id="cabHost" aria-label="Three filing cabinets holding eighteen numbered drawers, one per chapter, beneath the book"></div>
+        <button type="button" class="room-rail room-rail--receipts" id="roomRailReceipts" aria-label="The burn bag: the receipts ledger"><span class="rail-word">Receipts</span></button>
       </div>
       <div class="cab-caption" id="cabCaption" aria-live="polite"></div>
     </div>
@@ -1895,13 +1933,14 @@ function buildCabinet(host, opts){
     for(let n = el; n && n !== root; n = n.offsetParent){ x += n.offsetLeft; y += n.offsetTop; }
     return {x, y};
   };
+  // the phone's room: the same breakpoint the stylesheet crops the room at
+  const phoneRoom = () => window.matchMedia('(max-width:700px)').matches;
   function placeCard(d){
-    const stage = cabinet.closest('.cab-stage');
-    // a phone: the stage scrolls sideways, so the card is a sheet pinned to
-    // the part of the room in view
-    if(stage && stage.scrollWidth > stage.clientWidth + 1){
+    // a phone: the room is cropped to the cabinets and there is no space
+    // beside a drawer, so the card is a sheet across the foot of the picture
+    if(phoneRoom()){
       card.classList.add('is-sheet');
-      card.style.left = stage.scrollLeft + 'px'; card.style.width = stage.clientWidth + 'px'; card.style.top = 'auto';
+      card.style.left = '0px'; card.style.width = cabinet.clientWidth + 'px'; card.style.top = 'auto';
       return;
     }
     card.classList.remove('is-sheet'); card.style.width = '';
@@ -1913,8 +1952,6 @@ function buildCabinet(host, opts){
     let top = Math.max(0, Math.min(o.y, chh - h));
     card.style.left = left + 'px'; card.style.top = top + 'px';
   }
-  // keep the sheet under your thumb as the room is swiped
-  { const stage = cabinet.closest('.cab-stage'); if(stage) stage.addEventListener('scroll', () => { if(open) placeCard(open); }, {passive:true}); }
   function openDrawer(d){
     if(open === d){ closeDrawer(true); return; }
     closeDrawer(false);
@@ -1978,8 +2015,12 @@ function buildCabinet(host, opts){
   stage.classList.add('has-art');
   stage.style.setProperty('--art-ar', CAB_ART.ar);
   buildCabinet(host, {art: CAB_ART, noteEl: document.getElementById('cabCaption')});
-  // a phone opens on the cabinets, with the reels and the bag a swipe away
-  if(stage.scrollWidth > stage.clientWidth + 1) stage.scrollLeft = host.clientWidth * 0.59 - stage.clientWidth / 2;
+  // a phone crops the room to the cabinets, so the reel cabinet and the burn
+  // bag stand at the edges as words instead — same two doors, same two acts
+  const railVideos = document.getElementById('roomRailVideos');
+  const railReceipts = document.getElementById('roomRailReceipts');
+  if(railVideos) railVideos.addEventListener('click', () => { if(host.__closeDrawer) host.__closeDrawer(false); openVideoLibrary(); });
+  if(railReceipts) railReceipts.addEventListener('click', () => { if(host.__closeDrawer) host.__closeDrawer(false); scrollToId('ledger'); });
   // pull a drawer from anywhere on the page (the reader's chapter chips)
   window.openChapterDrawer = function(chN){
     const stage = document.getElementById('cabStage');
