@@ -85,24 +85,20 @@ section#intro .section-desc{color:#B9B9B7;}
    proscenium, the screen's light falling on rows of seats drawn in front of
    it, and a fire extinguisher on the right wall. The black runs on below the
    screen to hold the house. */
-section#intro{position:relative; padding-bottom:0; overflow:hidden;}
+section#intro{position:relative; overflow:hidden;}
 .theatre{position:relative;}
 .screen{position:relative; padding:14px; border:1px solid #F4F4F2; box-shadow:inset 0 0 0 5px #000, inset 0 0 0 6px rgba(244,244,242,.35), 0 0 80px rgba(244,244,242,.08);}
 .screen::before, .screen::after{content:""; position:absolute; top:-10px; bottom:-10px; width:14px; border-left:1px solid rgba(244,244,242,.5); border-right:1px solid rgba(244,244,242,.5);
   background:repeating-linear-gradient(90deg, transparent 0 3px, rgba(244,244,242,.16) 3px 4px);}
 .screen::before{left:-24px;} .screen::after{right:-24px;}
 .screen .video-wrap{border:0; border-radius:0;}
-.seats{display:block; width:100%; height:auto; margin-top:26px;}
-/* the light off the screen, on the backs of the seats */
-.theatre::after{content:""; position:absolute; left:-10%; right:-10%; bottom:0; height:52%; pointer-events:none;
-  background:radial-gradient(ellipse 60% 70% at 50% 0%, rgba(244,244,242,.10), transparent 70%);}
 .extinguisher{
-  position:absolute; z-index:2; top:38%; right:max(14px, calc((100vw - 1200px) / 2 - 92px)); width:52px; height:130px;
+  position:absolute; z-index:2; bottom:22px; right:max(14px, calc((100vw - 1200px) / 2 - 92px)); width:52px; height:130px;
   padding:0; border:0; background:none; cursor:pointer; opacity:.85; transition:opacity .2s ease, transform .25s ease;
 }
 .extinguisher svg{width:100%; height:100%; display:block; filter:drop-shadow(0 0 10px rgba(244,244,242,.25));}
 .extinguisher:hover, .extinguisher:focus-visible{opacity:1; transform:scale(1.06); outline:none;}
-@media(max-width:1300px){ .extinguisher{top:auto; bottom:26px; right:12px; width:34px; height:86px;} }
+@media(max-width:1300px){ .extinguisher{bottom:18px; right:12px; width:34px; height:86px;} }
 /* the picture behind the extinguisher (and behind a word in the ledger) */
 .secret{position:fixed; inset:0; z-index:300; background:rgba(0,0,0,.94); display:flex; align-items:center; justify-content:center; padding:24px;}
 .secret[hidden]{display:none;}
@@ -693,7 +689,6 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
         </div>
       </div>
       <div class="exhibit-foot"><span>SOURCE: VIMEO ARCHIVE</span></div>
-      <svg class="seats" viewBox="0 0 1200 250" preserveAspectRatio="none" aria-hidden="true" id="theatreSeats"></svg>
     </div>
   </div>
   <button type="button" class="extinguisher" id="extinguisher" aria-label="The fire extinguisher">
@@ -1284,29 +1279,6 @@ function buildDossier(){
 }
 buildDossier();
 
-// THE THEATRE — the house: three rows of seat backs, seen from behind, the
-// front row nearest and widest, an aisle down the middle
-(function drawTheatre(){
-  const svg = document.getElementById('theatreSeats'); if(!svg) return;
-  const rows = [
-    {y:18,  h:50, n:16, gap:6,  op:.42},
-    {y:86,  h:64, n:12, gap:8,  op:.62},
-    {y:166, h:80, n:9,  gap:10, op:.9}
-  ];
-  const aisle = 44, left = 40, span = 1120;
-  let out = '';
-  rows.forEach(r => {
-    const w = (span - aisle - r.gap * (r.n - 1)) / r.n, rx = Math.min(14, w * 0.18);
-    for(let i = 0; i < r.n; i++){
-      const x = left + i * (w + r.gap) + (i >= r.n / 2 ? aisle : 0);
-      out += '<path d="M' + x.toFixed(1) + ' ' + (r.y + r.h) + ' V' + (r.y + rx).toFixed(1) + ' a' + rx.toFixed(1) + ' ' + rx.toFixed(1) + ' 0 0 1 ' + rx.toFixed(1) + ' -' + rx.toFixed(1)
-        + ' h' + (w - 2 * rx).toFixed(1) + ' a' + rx.toFixed(1) + ' ' + rx.toFixed(1) + ' 0 0 1 ' + rx.toFixed(1) + ' ' + rx.toFixed(1) + ' V' + (r.y + r.h) + '"'
-        + ' fill="#0A0A0A" stroke="rgba(244,244,242,' + r.op + ')" stroke-width="1.6" stroke-linejoin="round"/>';
-      out += '<path d="M' + (x + w * 0.18).toFixed(1) + ' ' + (r.y + r.h * 0.34).toFixed(1) + ' h' + (w * 0.64).toFixed(1) + '" stroke="rgba(244,244,242,' + (r.op * 0.45).toFixed(2) + ')" stroke-width="1"/>';
-    }
-  });
-  svg.innerHTML = out;
-})();
 
 // The picture behind the fire extinguisher — and behind one word typed into
 // the ledger's search.
