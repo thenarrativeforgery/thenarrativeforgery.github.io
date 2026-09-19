@@ -218,7 +218,17 @@ h2.section-title{font-size:clamp(24px,3vw,34px); font-weight:700; color:var(--na
 .mech-map-bar .mm-tag{background:var(--navy); color:var(--cream); padding:3px 9px; margin-right:8px; letter-spacing:.12em;}
 .dossier{background:#000; border:1px solid #000; box-shadow:0 14px 40px rgba(0,0,0,.28); padding:38px 22px 30px; color:#F4F4F2;}
 .dossier-head{display:flex; align-items:center; justify-content:center; gap:36px 56px; flex-wrap:wrap; margin:0 auto 30px;}
-.dossier-cover{display:block; width:min(100%, 560px); height:auto; margin:0; filter:invert(1); border:1px solid #2A2A28;}
+.dossier-cover-wrap{position:relative; width:min(100%, 560px); flex:0 1 auto;}
+.dossier-cover{display:block; width:100%; height:auto; margin:0; filter:invert(1); border:1px solid #2A2A28;}
+/* the flowing copy: displaced, and masked to the roots and the brain's left edge */
+.dossier-cover--flow{
+  position:absolute; inset:0; pointer-events:none; border-color:transparent;
+  filter:invert(1) url(#goop);
+  -webkit-mask-image:radial-gradient(ellipse 8% 44% at 52% 54%, #000 45%, transparent 100%), radial-gradient(ellipse 28% 19% at 27% 77%, #000 50%, transparent 100%);
+          mask-image:radial-gradient(ellipse 8% 44% at 52% 54%, #000 45%, transparent 100%), radial-gradient(ellipse 28% 19% at 27% 77%, #000 50%, transparent 100%);
+}
+/* only while the cover is on screen — the field is repainted every frame */
+.dossier-cover-wrap:not(.is-live) .dossier-cover--flow{display:none;}
 /* the record beside the cover: plays the meta song, spins while it plays */
 .vinyl{display:flex; flex-direction:column; align-items:center; gap:14px; width:min(100%, 280px);}
 .vinyl-deck{position:relative; width:min(240px, 62vw); aspect-ratio:1;}
@@ -1132,7 +1142,23 @@ function buildDossier(){
     + '<div class="vinyl-caption"><b>Loaded and Locked</b> &middot; the meta song<br><span class="vinyl-state">Play</span></div>'
     + '<audio id="metaAudio" preload="none" src="audio/loaded-and-locked.mp3"></audio>'
     + '</div>';
-  const head = (cover ? '<img class="dossier-cover" src="' + cover.src + '" alt="Volume Two — The Neural Architecture of Deception: a compendium of psychological mechanisms in The Narrative Forgery">' : '') + vinyl;
+  // The cover's roots flow: a second copy of the cover sits over the first,
+  // put through a displacement field that drifts slowly and snaps to a new
+  // state every few seconds, masked to the roots and the brain's edge so the
+  // title holds still. Displacement moves pixels; it never scales them.
+  const goop = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="goop" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">'
+    + '<feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="1" seed="1" result="n">'
+    +   '<animate attributeName="baseFrequency" values="0.011;0.016;0.009;0.014;0.011" dur="11s" repeatCount="indefinite"/>'
+    +   '<animate attributeName="seed" values="1;7;3;12;5;9;2;11" dur="26s" calcMode="discrete" repeatCount="indefinite"/>'
+    + '</feTurbulence>'
+    + '<feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/>'
+    + '</filter></svg>';
+  const head = (cover
+    ? '<div class="dossier-cover-wrap" id="dossierCoverWrap">' + goop
+      + '<img class="dossier-cover" src="' + cover.src + '" alt="Volume Two — The Neural Architecture of Deception: a compendium of psychological mechanisms in The Narrative Forgery">'
+      + '<img class="dossier-cover dossier-cover--flow" src="' + cover.src + '" alt="" aria-hidden="true">'
+      + '</div>'
+    : '') + vinyl;
 
   // The menu is the picture of the packs, with an invisible button over each
   // card; a hovered card shows its own crop of the picture, lit, while the
@@ -1166,6 +1192,12 @@ function buildDossier(){
     + body
     + '<div class="dossier-note">' + DOSSIER_NOTE_DEFAULT + '</div>';
   if(artSrc) host.querySelector('.dossier-art').style.setProperty('--art', 'url("' + artSrc + '")');
+  // the roots flow only while the cover is on screen
+  (function(){
+    const w = host.querySelector('#dossierCoverWrap'); if(!w) return;
+    if(!('IntersectionObserver' in window)){ w.classList.add('is-live'); return; }
+    new IntersectionObserver(es => es.forEach(e => w.classList.toggle('is-live', e.isIntersecting)), {rootMargin:'10% 0px'}).observe(w);
+  })();
 
   // The deck: the arm is a real tonearm. Its pivot and needle are measured from
   // the drawing, the needle's distance from the spindle is read off the
