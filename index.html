@@ -249,12 +249,36 @@ h2.section-title{font-size:clamp(24px,3vw,34px); font-weight:700; color:var(--na
    relocated, so its links and styling stay exactly as they were */
 .dossier .stage-strip{margin:0 0 26px;}
 .dossier-art::after{content:""; position:absolute; inset:0; z-index:1; background:rgba(0,0,0,.6); opacity:0; transition:opacity .3s ease; pointer-events:none;}
-.dossier-art:has(.dcard--hot:hover)::after, .dossier-art:has(.dcard--hot:focus-visible)::after{opacity:1;}
-.dcard--hot{position:absolute; z-index:2; display:block; padding:0; margin:0; background:transparent; border:0; border-radius:6px; cursor:pointer; transition:box-shadow .2s ease, transform .2s ease;}
-.dcard--hot:hover, .dcard--hot:focus-visible{
+.dossier-art:has(.dcard--hot:focus-visible)::after, .dossier-art:has(.dcard--hot.is-on)::after{opacity:1;}
+.dcard--hot{position:absolute; z-index:2; display:block; padding:0; margin:0; background:transparent; border:0; border-radius:6px; cursor:pointer; transition:box-shadow .2s ease, transform .2s ease; touch-action:manipulation; -webkit-tap-highlight-color:transparent;}
+/* the hit area runs into the gutters, so a finger can't land between cards */
+.dcard--hot::before{content:""; position:absolute; inset:-3px;}
+.dcard--hot:focus-visible, .dcard--hot.is-on{
   z-index:3; background-color:#fff; background-image:var(--art); background-repeat:no-repeat; background-size:var(--bs); background-position:var(--bp);
   box-shadow:0 0 0 2px #fff, 0 18px 44px rgba(0,0,0,.8), 0 0 34px rgba(255,255,255,.25); transform:translateY(-3px) scale(1.04); outline:none;
 }
+/* a mouse gets the lit crop on hover; a finger gets it on the first tap,
+   and the second tap opens the chapter (see the touch flow in buildDossier) */
+@media(hover:hover){
+  .dossier-art:has(.dcard--hot:hover)::after{opacity:1;}
+  .dcard--hot:hover{
+    z-index:3; background-color:#fff; background-image:var(--art); background-repeat:no-repeat; background-size:var(--bs); background-position:var(--bp);
+    box-shadow:0 0 0 2px #fff, 0 18px 44px rgba(0,0,0,.8), 0 0 34px rgba(255,255,255,.25); transform:translateY(-3px) scale(1.04); outline:none;
+  }
+}
+@media(pointer:coarse){
+  .dcard--hot::before{inset:-7px;}
+  .dcard--hot.is-on{transform:scale(1.08);}
+}
+/* on touch, the caption follows the finger: a bar pinned to the bottom of
+   the screen with the picked card's title and an Open button */
+.dossier-pick{position:fixed; left:12px; right:12px; bottom:12px; z-index:60; display:none; align-items:center; gap:12px; padding:12px 14px; background:#0B0B0B; color:#F4F4F2; border:1px solid #F4F4F2; box-shadow:0 12px 40px rgba(0,0,0,.7); font-family:var(--mono); font-size:12px; letter-spacing:.06em; line-height:1.4;}
+.dossier-pick.is-open{display:flex;}
+.dossier-pick-text{flex:1; min-width:0;}
+.dossier-pick-text b{font-weight:400; display:block;}
+.dossier-pick-text span{color:#8C8C88; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+.dossier-pick-open, .dossier-pick-x{flex:none; font:inherit; letter-spacing:.1em; text-transform:uppercase; cursor:pointer; min-height:44px; padding:0 14px; border:1px solid #F4F4F2; background:#F4F4F2; color:#0B0B0B;}
+.dossier-pick-x{background:transparent; color:#F4F4F2; padding:0 12px;}
 .dossier-note{max-width:780px; margin:6px auto 0; font-family:var(--mono); font-size:12px; letter-spacing:.06em; color:#8C8C88; text-align:center; min-height:34px; line-height:1.45;}
 .dossier-note b{font-weight:400; color:#F4F4F2;}
 /* narrow */
@@ -1264,10 +1288,54 @@ function buildDossier(){
   host.addEventListener('mouseover', e => { const c = e.target.closest('.dcard'); if(c) show(+c.dataset.mech); });
   host.addEventListener('focusin',   e => { const c = e.target.closest('.dcard'); if(c) show(+c.dataset.mech); });
   host.addEventListener('mouseleave', () => { note.innerHTML = DOSSIER_NOTE_DEFAULT; });
+
+  // Touch: the first tap lights the card and pins its title to the bottom of
+  // the screen with an Open button; tapping the lit card again, or Open,
+  // opens the chapter. A mouse still opens on the first click.
+  let pick = document.getElementById('dossierPick');
+  if(!pick){
+    pick = document.createElement('div');
+    pick.id = 'dossierPick'; pick.className = 'dossier-pick';
+    pick.innerHTML = '<div class="dossier-pick-text"><b></b><span></span></div>'
+      + '<button type="button" class="dossier-pick-open">Open</button>'
+      + '<button type="button" class="dossier-pick-x" aria-label="Dismiss">&times;</button>';
+    document.body.appendChild(pick);
+  }
+  let picked = null;
+  const unpick = () => {
+    if(picked) picked.classList.remove('is-on');
+    picked = null; pick.classList.remove('is-open');
+  };
+  const doPick = c => {
+    if(picked) picked.classList.remove('is-on');
+    picked = c; c.classList.add('is-on');
+    const m = byN(+c.dataset.mech);
+    pick.querySelector('b').textContent = pad2(m.n) + ' · ' + m.title;
+    pick.querySelector('span').textContent = m.def;
+    pick.classList.add('is-open');
+    show(m.n);
+  };
+  let lastPointer = 'mouse';
+  host.addEventListener('pointerdown', e => { lastPointer = e.pointerType || 'mouse'; }, {passive:true});
   host.addEventListener('click', e => {
     const c = e.target.closest('.dcard');
-    if(c) openMechReader(+c.dataset.mech);
+    if(!c){ if(lastPointer === 'touch') unpick(); return; }
+    if(lastPointer === 'touch' && c !== picked){ doPick(c); return; }
+    unpick(); openMechReader(+c.dataset.mech);
   });
+  pick.querySelector('.dossier-pick-open').addEventListener('click', () => {
+    if(!picked) return; const n = +picked.dataset.mech; unpick(); openMechReader(n);
+  });
+  pick.querySelector('.dossier-pick-x').addEventListener('click', unpick);
+  document.addEventListener('click', e => {
+    if(picked && !host.contains(e.target) && !pick.contains(e.target)) unpick();
+  });
+  // a picked card far off screen is just a stale bar; let it go
+  window.addEventListener('scroll', () => {
+    if(!picked) return;
+    const r = picked.getBoundingClientRect();
+    if(r.bottom < -80 || r.top > innerHeight + 80) unpick();
+  }, {passive:true});
 }
 buildDossier();
 
