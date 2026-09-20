@@ -81,25 +81,20 @@ section#intro{background:var(--navy); color:var(--cream);}
 section#intro .section-num{color:var(--red-light);}
 section#intro .section-title{color:var(--cream);}
 section#intro .section-desc{color:#B9B9B7;}
-/* THE THEATRE — the intro film plays on a cinema screen: a white-line
-   proscenium, the screen's light falling on rows of seats drawn in front of
-   it, and a fire extinguisher on the right wall. The black runs on below the
-   screen to hold the house. */
+/* THE BAR — the intro film is the feature on the TV over the back bar: a
+   thin bezel and a wall mount, the bottle shelf under it, the counter and
+   the stools in front, all in white line on black. */
 section#intro{position:relative; overflow:hidden;}
-.theatre{position:relative;}
-.screen{position:relative; padding:14px; border:1px solid #F4F4F2; box-shadow:inset 0 0 0 5px #000, inset 0 0 0 6px rgba(244,244,242,.35), 0 0 80px rgba(244,244,242,.08);}
-.screen::before, .screen::after{content:""; position:absolute; top:-10px; bottom:-10px; width:14px; border-left:1px solid rgba(244,244,242,.5); border-right:1px solid rgba(244,244,242,.5);
-  background:repeating-linear-gradient(90deg, transparent 0 3px, rgba(244,244,242,.16) 3px 4px);}
-.screen::before{left:-24px;} .screen::after{right:-24px;}
-.screen .video-wrap{border:0; border-radius:0;}
-.extinguisher{
-  position:absolute; z-index:2; bottom:22px; right:max(14px, calc((100vw - 1200px) / 2 - 92px)); width:52px; height:130px;
-  padding:0; border:0; background:none; cursor:pointer; opacity:.85; transition:opacity .2s ease, transform .25s ease;
-}
-.extinguisher svg{width:100%; height:100%; display:block; filter:drop-shadow(0 0 10px rgba(244,244,242,.25));}
-.extinguisher:hover, .extinguisher:focus-visible{opacity:1; transform:scale(1.06); outline:none;}
-@media(max-width:1300px){ .extinguisher{bottom:18px; right:12px; width:34px; height:86px;} }
-/* the picture behind the extinguisher (and behind a word in the ledger) */
+.bar{position:relative;}
+.screen{position:relative; padding:8px; border:2px solid #F4F4F2; border-radius:5px; background:#000; box-shadow:0 0 0 4px #000, 0 0 0 5px rgba(244,244,242,.32), 0 0 70px rgba(244,244,242,.07);}
+/* the mount: an arm from the back of the set to the wall */
+.screen::after{content:""; position:absolute; left:50%; bottom:-26px; width:110px; height:26px; transform:translateX(-50%); border-left:1.5px solid rgba(244,244,242,.6); border-right:1.5px solid rgba(244,244,242,.6); border-bottom:1.5px solid rgba(244,244,242,.6);}
+.screen .video-wrap{border:0; border-radius:2px;}
+.barfront{display:block; width:100%; height:auto; margin-top:30px;}
+/* the light off the set, on the bottles and the counter */
+.bar::after{content:""; position:absolute; left:-6%; right:-6%; bottom:0; height:46%; pointer-events:none;
+  background:radial-gradient(ellipse 55% 60% at 50% 0%, rgba(244,244,242,.09), transparent 70%);}
+/* the picture behind a word in the ledger */
 .secret{position:fixed; inset:0; z-index:300; background:rgba(0,0,0,.94); display:flex; align-items:center; justify-content:center; padding:24px;}
 .secret[hidden]{display:none;}
 .secret img{max-width:min(100%, 1400px); max-height:100%; box-shadow:0 30px 90px rgba(0,0,0,.9); border:1px solid #2A2A28;}
@@ -692,25 +687,16 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
       <div class="exhibit-left"><span class="exhibit-tag">EXHIBIT A</span><span class="exhibit-desc">Introduction to TNF</span></div>
       <div class="exhibit-ref">TNF_intro</div>
     </div>
-    <div class="theatre">
+    <div class="bar">
       <div class="screen">
         <div class="video-wrap" style="padding:56.25% 0 0 0; position:relative; overflow:hidden; background:#141414;">
       <iframe src="https://player.vimeo.com/video/1216849175?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;loop=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="TNF_intro"></iframe>
         </div>
       </div>
       <div class="exhibit-foot"><span>SOURCE: VIMEO ARCHIVE</span></div>
+      <svg class="barfront" viewBox="0 0 1200 260" preserveAspectRatio="none" aria-hidden="true" id="barFront"></svg>
     </div>
   </div>
-  <button type="button" class="extinguisher" id="extinguisher" aria-label="The fire extinguisher">
-    <svg viewBox="0 0 60 150" fill="none" stroke="#F4F4F2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M6 30h48v-6H6z" opacity=".55"/><path d="M30 24v-6" opacity=".55"/>
-      <rect x="15" y="44" width="30" height="88" rx="9"/>
-      <path d="M22 44v-8a8 8 0 0 1 16 0v8"/><path d="M30 28v8"/><path d="M24 30h12"/><path d="M36 30l10-4"/>
-      <path d="M46 26c8 2 10 10 8 22s-8 22-6 40 4 22 0 30" opacity=".8"/><path d="M48 118l4 8" opacity=".8"/>
-      <rect x="22" y="70" width="16" height="30" rx="2" opacity=".7"/><path d="M26 78h8M26 84h8M26 90h5" opacity=".6"/>
-      <path d="M15 132h30" opacity=".6"/>
-    </svg>
-  </button>
 </section>
 
 <div id="secretOverlay" class="secret" role="dialog" aria-modal="true" aria-label="A picture" hidden>
@@ -1312,15 +1298,48 @@ function buildDossier(){
 buildDossier();
 
 
-// The picture behind the fire extinguisher — and behind one word typed into
+// THE BAR — under the set: the bottle shelf, the counter, and the stools in
+// front of it, white line on black
+(function drawBar(){
+  const svg = document.getElementById('barFront'); if(!svg) return;
+  const W = 1200, ink = 'rgba(244,244,242,';
+  let out = '';
+  // the shelf and its bottles
+  out += '<path d="M60 58H1140" stroke="' + ink + '.55)" stroke-width="1.6"/>';
+  const bottles = [
+    {x:120,w:22,h:44,neck:8}, {x:158,w:18,h:38,neck:6}, {x:198,w:26,h:50,neck:9}, {x:246,w:20,h:40,neck:7},
+    {x:300,w:24,h:46,neck:8}, {x:340,w:18,h:36,neck:6},
+    {x:860,w:20,h:42,neck:7}, {x:900,w:26,h:52,neck:9}, {x:948,w:18,h:38,neck:6}, {x:986,w:22,h:44,neck:8},
+    {x:1040,w:24,h:48,neck:8}, {x:1082,w:18,h:36,neck:6}
+  ];
+  bottles.forEach(b => {
+    const top = 58 - b.h, nx = b.x + (b.w - b.neck) / 2, shoulder = top + b.h * 0.42;
+    out += '<path d="M' + b.x + ' 58 V' + shoulder + ' Q' + b.x + ' ' + (shoulder - 6) + ' ' + nx + ' ' + (shoulder - 8) + ' V' + (top + 4) + ' h' + b.neck + ' V' + (shoulder - 8)
+      + ' Q' + (b.x + b.w) + ' ' + (shoulder - 6) + ' ' + (b.x + b.w) + ' ' + shoulder + ' V58 Z" fill="#050505" stroke="' + ink + '.7)" stroke-width="1.4" stroke-linejoin="round"/>';
+    out += '<path d="M' + (b.x + 4) + ' ' + (shoulder + 8) + ' h' + (b.w - 8) + ' M' + (b.x + 4) + ' ' + (shoulder + 22) + ' h' + (b.w - 8) + '" stroke="' + ink + '.28)" stroke-width="1"/>';
+  });
+  // the counter: top, front, foot rail
+  out += '<path d="M20 128H1180" stroke="' + ink + '.9)" stroke-width="3" stroke-linecap="round"/>';
+  out += '<rect x="30" y="130" width="1140" height="82" fill="#050505" stroke="' + ink + '.5)" stroke-width="1.2"/>';
+  out += '<path d="M40 156H1160 M40 186H1160" stroke="' + ink + '.14)" stroke-width="1"/>';
+  out += '<path d="M60 236H1140" stroke="' + ink + '.45)" stroke-width="2" stroke-linecap="round"/>';
+  // the stools, in front of the counter
+  [190, 420, 650, 880, 1110].forEach(cx => {
+    out += '<path d="M' + cx + ' 150 V246" stroke="' + ink + '.75)" stroke-width="2.2"/>';
+    out += '<path d="M' + (cx - 26) + ' 246 H' + (cx + 26) + '" stroke="' + ink + '.75)" stroke-width="2.2" stroke-linecap="round"/>';
+    out += '<path d="M' + (cx - 20) + ' 200 H' + (cx + 20) + '" stroke="' + ink + '.35)" stroke-width="1.4"/>';
+    out += '<ellipse cx="' + cx + '" cy="146" rx="34" ry="9" fill="#050505" stroke="' + ink + '.9)" stroke-width="2"/>';
+  });
+  svg.innerHTML = out;
+})();
+
+// The picture behind one word typed into
 // the ledger's search.
 (function(){
   const secret = document.getElementById('secretOverlay'); if(!secret) return;
   const x = secret.querySelector('.secret-x');
   function openSecret(){ secret.hidden = false; document.body.style.overflow = 'hidden'; x.focus(); }
   function closeSecret(){ if(secret.hidden) return; secret.hidden = true; document.body.style.overflow = ''; }
-  const ext = document.getElementById('extinguisher');
-  if(ext) ext.addEventListener('click', openSecret);
   x.addEventListener('click', closeSecret);
   secret.addEventListener('click', e => { if(e.target === secret) closeSecret(); });
   document.addEventListener('keydown', e => { if(e.key === 'Escape') closeSecret(); }, true);
