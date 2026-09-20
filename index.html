@@ -1610,16 +1610,25 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
       canvas.height = Math.round(H * dpr);
       canvas.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // The gutters: the empty margin outside the 1200px content column, less a
-      // clearance so the roots never touch the text. Where there is no margin
-      // (a laptop, a phone) they keep to a slim strip at the very edge, fainter.
+      // The band the roots grow in, capped so they read as a vine along the
+      // column's edge rather than smearing across a huge empty margin — and
+      // anchored flush against the COLUMN's own edge (less a clearance so
+      // they never touch the text), growing outward from there. On a wide
+      // screen that puts them right next to what you're reading, instead of
+      // stranded out at the true edge where they're easy to miss. Where
+      // there is no margin (a laptop, a phone) they keep to a slim strip at
+      // the screen edge, fainter.
       const margin = (W - 1200) / 2;
-      const gutter = margin > 60 ? Math.min(margin - 18, 220) : (W < 700 ? 14 : 20);
-      canvas.style.opacity = gutter < 40 ? '.34' : '.62';
+      const clearance = 18;
+      const band = margin > 60 ? Math.min(margin - clearance, 220) : (W < 700 ? 14 : 20);
+      canvas.style.opacity = band < 40 ? '.34' : '.62';
       const len = Math.min(H * 0.21, 270);
 
-      const left  = growTree(gutter * 0.45, -12, Math.PI/2, len, 2044, 11, 30, -24, gutter);
-      const right = growTree(W - gutter * 0.45, -12, Math.PI/2, len, 2071, 11, 30, W - gutter, W + 24);
+      const nearL = margin > 60 ? (margin - clearance) : band;
+      const nearR = margin > 60 ? (W - margin + clearance) : (W - band);
+
+      const left  = growTree(nearL - band * 0.45, -12, Math.PI/2, len, 2044, 11, 30, nearL - band - 20, nearL);
+      const right = growTree(nearR + band * 0.45, -12, Math.PI/2, len, 2071, 11, 30, nearR, nearR + band + 20);
 
       const branches = left.branches.concat(right.branches);
       branches.sort((a,b)=>a.birth-b.birth);
