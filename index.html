@@ -1330,6 +1330,33 @@ buildDossier();
     out += '<path d="M' + (cx - 20) + ' 200 H' + (cx + 20) + '" stroke="' + ink + '.35)" stroke-width="1.4"/>';
     out += '<ellipse cx="' + cx + '" cy="146" rx="34" ry="9" fill="#050505" stroke="' + ink + '.9)" stroke-width="2"/>';
   });
+  // the barkeep, behind the counter in the gap between the two bottle
+  // clusters, polishing a glass
+  out += '<circle cx="600" cy="48" r="13" fill="#050505" stroke="' + ink + '.9)" stroke-width="1.6"/>';
+  out += '<path d="M594 60h12v7h-12z" fill="#050505" stroke="' + ink + '.7)" stroke-width="1.2"/>';
+  out += '<path d="M582 68L580 124L620 124L618 68Z" fill="#050505" stroke="' + ink + '.75)" stroke-width="1.6" stroke-linejoin="round"/>';
+  out += '<path d="M591 68L600 82L609 68" stroke="' + ink + '.4)" stroke-width="1.2" fill="none"/>';
+  out += '<path d="M584 72Q566 88 582 96" stroke="' + ink + '.8)" stroke-width="2.1" fill="none" stroke-linecap="round"/>';
+  out += '<path d="M616 72Q634 88 610 92" stroke="' + ink + '.75)" stroke-width="2" fill="none" stroke-linecap="round"/>';
+  out += '<path d="M588 78L586 94L601 94L599 78Z" fill="none" stroke="' + ink + '.9)" stroke-width="1.3" stroke-linejoin="round"/>';
+  out += '<path d="M604 84q7-5 2-12q-8 3-9 11q3 7 7 3" fill="none" stroke="' + ink + '.55)" stroke-width="1.2" stroke-linecap="round"/>';
+  // the protagonist, on the middle stool, having a drink — fedora, trench
+  // coat, one hand on a glass at the rail
+  out += '<ellipse cx="650" cy="66" rx="24" ry="7" fill="#050505" stroke="' + ink + '.9)" stroke-width="1.6"/>';
+  out += '<path d="M632 66Q634 47 650 45Q666 47 668 66Z" fill="#050505" stroke="' + ink + '.9)" stroke-width="1.5" stroke-linejoin="round"/>';
+  out += '<path d="M650 47V61" stroke="' + ink + '.5)" stroke-width="1"/>';
+  out += '<circle cx="650" cy="79" r="11" fill="#050505" stroke="' + ink + '.85)" stroke-width="1.4"/>';
+  out += '<path d="M622 96L630 146L670 146L678 96Z" fill="#050505" stroke="' + ink + '.75)" stroke-width="1.6" stroke-linejoin="round"/>';
+  out += '<path d="M642 96L650 118L658 96" stroke="' + ink + '.4)" stroke-width="1.2" fill="none"/>';
+  out += '<path d="M632 130H668" stroke="' + ink + '.35)" stroke-width="1"/>';
+  out += '<path d="M626 100Q610 112 616 124Q622 130 632 128" stroke="' + ink + '.8)" stroke-width="2.2" fill="none" stroke-linecap="round"/>';
+  out += '<path d="M674 100Q688 112 682 128" stroke="' + ink + '.7)" stroke-width="2" fill="none" stroke-linecap="round"/>';
+  out += '<path d="M624 116L622 128L638 128L636 116Z" fill="#050505" stroke="' + ink + '.9)" stroke-width="1.3" stroke-linejoin="round"/>';
+  out += '<path d="M623 122H637" stroke="' + ink + '.5)" stroke-width="1"/>';
+  out += '<path d="M636 146Q629 174 636 200" stroke="' + ink + '.65)" stroke-width="2" fill="none" stroke-linecap="round"/>';
+  out += '<path d="M664 146Q671 174 664 200" stroke="' + ink + '.65)" stroke-width="2" fill="none" stroke-linecap="round"/>';
+  out += '<path d="M629 200H643" stroke="' + ink + '.6)" stroke-width="1.6" stroke-linecap="round"/>';
+  out += '<path d="M657 200H671" stroke="' + ink + '.6)" stroke-width="1.6" stroke-linecap="round"/>';
   svg.innerHTML = out;
 })();
 
