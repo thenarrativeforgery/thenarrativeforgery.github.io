@@ -74,7 +74,7 @@ a:hover{text-decoration:underline;}
 @media(max-width:640px){ .exhibit-ref, .exhibit-foot span:first-child{display:none;} }
 
 /* SECTIONS */
-section{padding:64px 0;}
+section{padding:64px 0; scroll-margin-top:calc(var(--nav-h, 72px) + 8px);}  /* anchor jumps land below the sticky nav, whatever height it wraps to */
 section.alt{background:var(--cream-dark);}
 section#intro{background:var(--navy); color:var(--cream);}
 section#intro .section-num{color:var(--red-light);}
@@ -1853,6 +1853,13 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
   }
   var ringBtn = document.getElementById('ringShare');
   if(ringBtn) ringBtn.addEventListener('click', function(e){ e.preventDefault(); shareArchive(); });
+
+  // the sticky nav's real height, so anchor jumps (#intro, #ledger...) land
+  // below it even when the bar wraps to two lines on a phone
+  var navEl = document.getElementById('nav');
+  function measureNav(){ if(navEl) document.documentElement.style.setProperty('--nav-h', navEl.offsetHeight + 'px'); }
+  measureNav();
+  window.addEventListener('resize', measureNav);
 
 })();
 
