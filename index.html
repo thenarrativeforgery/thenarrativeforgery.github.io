@@ -599,6 +599,18 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
    the room dims underneath it */
 .cab-art{position:relative; width:100%; height:100%; line-height:0;}
 .cab-art img{display:block; width:100%; height:100%; object-fit:fill;}
+/* the book's tree moves the way Volume Two's roots do: a second copy of the
+   room sits over the first, put through the same displacement field, masked
+   to the branches and the roots so the title page's lettering, the cabinets
+   and the rest of the room hold still */
+.cab-art--flow{
+  position:absolute; inset:0; z-index:1; pointer-events:none;
+  filter:url(#goopBook);
+  -webkit-mask-image:radial-gradient(ellipse 5% 6% at 59.8% 20.5%, #000 45%, transparent 100%), radial-gradient(ellipse 5% 6.5% at 58.2% 31%, #000 50%, transparent 100%);
+          mask-image:radial-gradient(ellipse 5% 6% at 59.8% 20.5%, #000 45%, transparent 100%), radial-gradient(ellipse 5% 6.5% at 58.2% 31%, #000 50%, transparent 100%);
+}
+/* only while the room is on screen — the field is repainted every frame */
+.cab-art:not(.is-live) .cab-art--flow{display:none;}
 .cab-art::after{content:""; position:absolute; inset:0; z-index:1; background:rgba(0,0,0,.62); opacity:0; transition:opacity .35s ease; pointer-events:none;}
 .cabinet.has-open .cab-art::after{opacity:1;}
 .drawer.drawer--hot{
@@ -1997,10 +2009,28 @@ function buildCabinet(host, opts){
       return '<button type="button" class="drawer drawer--hot drawer--fixture" data-fixture="' + f.id + '" aria-label="' + esc(f.title) + ': ' + esc(f.holds) + '"'
         + ' style="left:' + f.x + '%;top:' + f.y + '%;width:' + f.w + '%;height:' + f.h + '%;--bs:' + bs + ';--bp:' + bp + '"></button>';
     }).join('');
+    // The tree on the book's title page flows: a second copy of the room sits
+    // over the first, put through a displacement field that drifts slowly and
+    // snaps to a new state every few seconds, masked to the branches and the
+    // roots so everything else holds still. Displacement moves pixels; it
+    // never scales them. (Volume Two's cover does the same, at its own size.)
+    const goop = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="goopBook" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">'
+      + '<feTurbulence type="fractalNoise" baseFrequency="0.023" numOctaves="1" seed="1" result="n">'
+      +   '<animate attributeName="baseFrequency" values="0.023;0.033;0.019;0.029;0.023" dur="11s" repeatCount="indefinite"/>'
+      +   '<animate attributeName="seed" values="1;7;3;12;5;9;2;11" dur="26s" calcMode="discrete" repeatCount="indefinite"/>'
+      + '</feTurbulence>'
+      + '<feDisplacementMap in="SourceGraphic" in2="n" scale="3" xChannelSelector="R" yChannelSelector="G"/>'
+      + '</filter></svg>';
     host.innerHTML = '<div class="cabinet cabinet--art">'
-      + '<div class="cab-art"><img src="' + a.src + '" alt="' + esc(a.alt || '') + '">' + hots + fixtures + '</div>'
+      + '<div class="cab-art">' + goop + '<img src="' + a.src + '" alt="' + esc(a.alt || '') + '">'
+      + '<img class="cab-art--flow" src="' + a.src + '" alt="" aria-hidden="true">'
+      + hots + fixtures + '</div>'
       + cardHtml + '</div>';
-    host.querySelector('.cab-art').style.setProperty('--art', 'url("' + a.src + '")');
+    const artEl = host.querySelector('.cab-art');
+    artEl.style.setProperty('--art', 'url("' + a.src + '")');
+    // the tree flows only while the room is on screen
+    if(!('IntersectionObserver' in window)) artEl.classList.add('is-live');
+    else new IntersectionObserver(es => es.forEach(e => artEl.classList.toggle('is-live', e.isIntersecting)), {rootMargin:'10% 0px'}).observe(artEl);
   }
 
   const cabinet = host.querySelector('.cabinet');
