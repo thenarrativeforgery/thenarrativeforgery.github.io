@@ -599,6 +599,16 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
    the room dims underneath it */
 .cab-art{position:relative; width:100%; height:100%; line-height:0;}
 .cab-art img{display:block; width:100%; height:100%; object-fit:fill;}
+/* the book's roots flow, same trick as Volume Two's cover: a second copy of
+   the whole picture sits over the first, put through a displacement field,
+   masked down to the tree's trunk and roots under the title so the drawers
+   and everything else hold still */
+.cab-book-flow{position:absolute; inset:0; z-index:1; pointer-events:none; border:0;
+  filter:url(#goopBook);
+  -webkit-mask-image:radial-gradient(ellipse 9% 8% at 58% 33%, #000 50%, transparent 100%);
+          mask-image:radial-gradient(ellipse 9% 8% at 58% 33%, #000 50%, transparent 100%);
+}
+.cab-art:not(.is-live) .cab-book-flow{display:none;}
 .cab-art::after{content:""; position:absolute; inset:0; z-index:1; background:rgba(0,0,0,.62); opacity:0; transition:opacity .35s ease; pointer-events:none;}
 .cabinet.has-open .cab-art::after{opacity:1;}
 .drawer.drawer--hot{
@@ -1997,10 +2007,26 @@ function buildCabinet(host, opts){
       return '<button type="button" class="drawer drawer--hot drawer--fixture" data-fixture="' + f.id + '" aria-label="' + esc(f.title) + ': ' + esc(f.holds) + '"'
         + ' style="left:' + f.x + '%;top:' + f.y + '%;width:' + f.w + '%;height:' + f.h + '%;--bs:' + bs + ';--bp:' + bp + '"></button>';
     }).join('');
+    // the book's roots, flowing: same displacement trick as Volume Two's
+    // cover, its own filter id so the two run independently
+    const goopBook = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="goopBook" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">'
+      + '<feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="1" seed="4" result="n">'
+      +   '<animate attributeName="baseFrequency" values="0.011;0.016;0.009;0.014;0.011" dur="13s" repeatCount="indefinite"/>'
+      +   '<animate attributeName="seed" values="4;9;2;13;6;10;3;8" dur="29s" calcMode="discrete" repeatCount="indefinite"/>'
+      + '</feTurbulence>'
+      + '<feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/>'
+      + '</filter></svg>';
     host.innerHTML = '<div class="cabinet cabinet--art">'
-      + '<div class="cab-art"><img src="' + a.src + '" alt="' + esc(a.alt || '') + '">' + hots + fixtures + '</div>'
+      + '<div class="cab-art">' + goopBook + '<img src="' + a.src + '" alt="' + esc(a.alt || '') + '">'
+      + '<img class="cab-book-flow" src="' + a.src + '" alt="" aria-hidden="true">' + hots + fixtures + '</div>'
       + cardHtml + '</div>';
     host.querySelector('.cab-art').style.setProperty('--art', 'url("' + a.src + '")');
+    // the flow only runs while the art is on screen
+    (function(){
+      const el = host.querySelector('.cab-art'); if(!el) return;
+      if(!('IntersectionObserver' in window)){ el.classList.add('is-live'); return; }
+      new IntersectionObserver(es => es.forEach(e => el.classList.toggle('is-live', e.isIntersecting)), {rootMargin:'10% 0px'}).observe(el);
+    })();
   }
 
   const cabinet = host.querySelector('.cabinet');
