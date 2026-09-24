@@ -602,13 +602,18 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 /* the book's roots flow, same trick as Volume Two's cover: a second copy of
    the whole picture sits over the first, put through a displacement field,
    masked down to the tree's trunk and roots under the title so the drawers
-   and everything else hold still */
-.cab-book-flow{position:absolute; inset:0; z-index:1; pointer-events:none; border:0;
-  filter:url(#goopBook);
+   and everything else hold still. The mask and the filter are kept on two
+   different elements — Safari drops an SVG reference filter outright when
+   it shares an element with a mask-image, which is why this needs a wrapper
+   rather than the single-element version. */
+.cab-book-flow-wrap{position:absolute; inset:0; z-index:1; overflow:hidden; pointer-events:none;
   -webkit-mask-image:radial-gradient(ellipse 9% 8% at 58% 33%, #000 50%, transparent 100%);
           mask-image:radial-gradient(ellipse 9% 8% at 58% 33%, #000 50%, transparent 100%);
 }
-.cab-art:not(.is-live) .cab-book-flow{display:none;}
+.cab-book-flow{display:block; width:100%; height:100%; object-fit:fill; border:0;
+  filter:url(#goopBook); will-change:filter; -webkit-transform:translateZ(0); transform:translateZ(0);
+}
+.cab-art:not(.is-live) .cab-book-flow-wrap{display:none;}
 .cab-art::after{content:""; position:absolute; inset:0; z-index:1; background:rgba(0,0,0,.62); opacity:0; transition:opacity .35s ease; pointer-events:none;}
 .cabinet.has-open .cab-art::after{opacity:1;}
 .drawer.drawer--hot{
@@ -2018,7 +2023,7 @@ function buildCabinet(host, opts){
       + '</filter></svg>';
     host.innerHTML = '<div class="cabinet cabinet--art">'
       + '<div class="cab-art">' + goopBook + '<img src="' + a.src + '" alt="' + esc(a.alt || '') + '">'
-      + '<img class="cab-book-flow" src="' + a.src + '" alt="" aria-hidden="true">' + hots + fixtures + '</div>'
+      + '<div class="cab-book-flow-wrap"><img class="cab-book-flow" src="' + a.src + '" alt="" aria-hidden="true"></div>' + hots + fixtures + '</div>'
       + cardHtml + '</div>';
     host.querySelector('.cab-art').style.setProperty('--art', 'url("' + a.src + '")');
     // the flow only runs while the art is on screen
