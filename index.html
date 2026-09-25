@@ -86,6 +86,11 @@ section#intro .section-title{color:var(--cream);}
 section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .noirbar{position:relative; line-height:0;}
 .noirbar-photo{display:block; width:100%; height:auto;}
+.noirbar-smoke{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; filter:url(#smoke);
+  -webkit-mask-image:radial-gradient(ellipse 3.5% 10% at 59.5% 22%, #000 40%, transparent 100%), radial-gradient(ellipse 2.5% 9% at 57.5% 39%, #000 40%, transparent 100%);
+          mask-image:radial-gradient(ellipse 3.5% 10% at 59.5% 22%, #000 40%, transparent 100%), radial-gradient(ellipse 2.5% 9% at 57.5% 39%, #000 40%, transparent 100%);
+}
+.noirbar:not(.is-live) .noirbar-smoke{display:none;}
 .noirbar-screen{position:absolute; left:16.25%; top:5.2%; width:21.25%; height:34.6%; overflow:hidden; background:#000; box-shadow:0 0 0 6px #000;}
 .noirbar-screen iframe{border:0;}
 /* the picture behind a word in the ledger */
@@ -599,10 +604,16 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
    the room dims underneath it */
 .cab-art{position:relative; width:100%; height:100%; line-height:0;}
 .cab-art img{display:block; width:100%; height:100%; object-fit:fill;}
-.cab-art::after{content:""; position:absolute; inset:0; z-index:1; background:rgba(0,0,0,.62); opacity:0; transition:opacity .35s ease; pointer-events:none;}
+/* the tree on the book's page flows like the compendium brain's roots */
+.cab-art .cab-art-flow{position:absolute; inset:0; z-index:1; pointer-events:none; filter:url(#goop);
+  -webkit-mask-image:radial-gradient(ellipse 4.5% 7% at 60.5% 21%, #000 45%, transparent 100%), radial-gradient(ellipse 4% 7% at 60.5% 32%, #000 45%, transparent 100%);
+          mask-image:radial-gradient(ellipse 4.5% 7% at 60.5% 21%, #000 45%, transparent 100%), radial-gradient(ellipse 4% 7% at 60.5% 32%, #000 45%, transparent 100%);
+}
+.cab-art:not(.is-live) .cab-art-flow{display:none;}
+.cab-art::after{content:""; position:absolute; inset:0; z-index:3; background:rgba(0,0,0,.62); opacity:0; transition:opacity .35s ease; pointer-events:none;}
 .cabinet.has-open .cab-art::after{opacity:1;}
 .drawer.drawer--hot{
-  position:absolute; z-index:2; display:block; padding:0; margin:0;
+  position:absolute; z-index:4; display:block; padding:0; margin:0;
   background:transparent; border:0; border-radius:4px;
   transition:box-shadow .2s ease, background .2s ease, transform .2s ease;
 }
@@ -1998,9 +2009,13 @@ function buildCabinet(host, opts){
         + ' style="left:' + f.x + '%;top:' + f.y + '%;width:' + f.w + '%;height:' + f.h + '%;--bs:' + bs + ';--bp:' + bp + '"></button>';
     }).join('');
     host.innerHTML = '<div class="cabinet cabinet--art">'
-      + '<div class="cab-art"><img src="' + a.src + '" alt="' + esc(a.alt || '') + '">' + hots + fixtures + '</div>'
+      + '<div class="cab-art"><img src="' + a.src + '" alt="' + esc(a.alt || '') + '">'
+      + '<img class="cab-art-flow" src="' + a.src + '" alt="" aria-hidden="true">'
+      + hots + fixtures + '</div>'
       + cardHtml + '</div>';
-    host.querySelector('.cab-art').style.setProperty('--art', 'url("' + a.src + '")');
+    const artEl = host.querySelector('.cab-art');
+    artEl.style.setProperty('--art', 'url("' + a.src + '")');
+    liveWhileOnScreen(artEl);
   }
 
   const cabinet = host.querySelector('.cabinet');
@@ -2113,6 +2128,28 @@ function buildCabinet(host, opts){
   host.__closeDrawer = closeDrawer;
   host.__openDrawer  = n => { const d = body.querySelector('.drawer[data-n="' + n + '"]'); if(d && open !== d) openDrawer(d); };
 }
+
+// a flowing layer repaints every frame, so it only runs while on screen
+function liveWhileOnScreen(el){
+  if(!('IntersectionObserver' in window)){ el.classList.add('is-live'); return; }
+  new IntersectionObserver(es => es.forEach(e => el.classList.toggle('is-live', e.isIntersecting)), {rootMargin:'10% 0px'}).observe(el);
+}
+
+/* The bar's cigarette smoke drifts: a second copy of the photo, masked to
+   the smoke, put through its own slow displacement field — softer and
+   larger than the brain's, so it reads as air rather than ink. */
+(function buildBarSmoke(){
+  const bar = document.getElementById('noirBar'), photo = document.getElementById('noirBarPhoto');
+  if(!bar || !photo) return;
+  const svg = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="smoke" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">'
+    + '<feTurbulence type="fractalNoise" baseFrequency="0.018 0.008" numOctaves="2" seed="4" result="n">'
+    +   '<animate attributeName="baseFrequency" values="0.018 0.008;0.024 0.011;0.015 0.007;0.021 0.010;0.018 0.008" dur="9s" repeatCount="indefinite"/>'
+    + '</feTurbulence>'
+    + '<feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/>'
+    + '</filter></svg>';
+  photo.insertAdjacentHTML('afterend', svg + '<img class="noirbar-smoke" src="' + photo.src + '" alt="" aria-hidden="true">');
+  liveWhileOnScreen(bar);
+})();
 
 /* ── THE FILE ROOM ─────────────────────────────────────────────────────────
    The chapters section: the artwork with a drawer per chapter. Built here,
