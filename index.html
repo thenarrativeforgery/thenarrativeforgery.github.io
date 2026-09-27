@@ -78,7 +78,6 @@ section{padding:64px 0; scroll-margin-top:calc(var(--nav-h, 72px) + 8px);}  /* a
 section.alt{background:var(--cream-dark);}
 section#intro{background:var(--navy); color:var(--cream);}
 section#intro .section-num{color:var(--red-light);}
-section#intro .section-title{color:var(--cream);}
 /* THE NOIR BAR — the intro film plays on the television in a photograph:
    the video sits absolutely, cropped to the screen's own rectangle in the
    picture (measured off the picture's pixels), so it reads as the set's
@@ -86,11 +85,6 @@ section#intro .section-title{color:var(--cream);}
 section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .noirbar{position:relative; line-height:0;}
 .noirbar-photo{display:block; width:100%; height:auto;}
-.noirbar-smoke{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; filter:url(#smoke);
-  -webkit-mask-image:radial-gradient(ellipse 3.8% 11% at 59.1% 21%, #000 55%, transparent 100%), radial-gradient(ellipse 3.2% 7.5% at 57.5% 34%, #000 55%, transparent 100%), radial-gradient(ellipse 1.8% 5.5% at 56.9% 42%, #000 55%, transparent 100%);
-          mask-image:radial-gradient(ellipse 3.8% 11% at 59.1% 21%, #000 55%, transparent 100%), radial-gradient(ellipse 3.2% 7.5% at 57.5% 34%, #000 55%, transparent 100%), radial-gradient(ellipse 1.8% 5.5% at 56.9% 42%, #000 55%, transparent 100%);
-}
-.noirbar:not(.is-live) .noirbar-smoke{display:none;}
 .noirbar-screen{position:absolute; left:16.25%; top:5.2%; width:21.25%; height:34.6%; overflow:hidden; background:#000; box-shadow:0 0 0 6px #000;}
 .noirbar-screen iframe{border:0;}
 /* the picture behind a word in the ledger */
@@ -706,9 +700,8 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   <div class="wrap">
     <div class="section-head">
       <div class="section-num">01 — INTRO</div>
-      <h2 class="section-title">What is The Narrative Forgery?</h2>
     </div>
-    <button class="intro-btn intro-btn-lg" onclick="openIntroReader()">Read the introduction</button>
+    <button class="intro-btn intro-btn-lg" onclick="openIntroReader()">What Is the Narrative Forgery?</button>
     <div class="exhibit-bar">
       <div class="exhibit-left"><span class="exhibit-tag">EXHIBIT A</span><span class="exhibit-desc">Introduction to TNF</span></div>
       <div class="exhibit-ref">TNF_intro</div>
@@ -2141,22 +2134,6 @@ function liveWhileOnScreen(el){
   if(!('IntersectionObserver' in window)){ el.classList.add('is-live'); return; }
   new IntersectionObserver(es => es.forEach(e => el.classList.toggle('is-live', e.isIntersecting)), {rootMargin:'10% 0px'}).observe(el);
 }
-
-/* The bar's cigarette smoke drifts: a second copy of the photo, masked to
-   the smoke, put through its own slow displacement field — softer and
-   larger than the brain's, so it reads as air rather than ink. */
-(function buildBarSmoke(){
-  const bar = document.getElementById('noirBar'), photo = document.getElementById('noirBarPhoto');
-  if(!bar || !photo) return;
-  const svg = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="smoke" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">'
-    + '<feTurbulence type="fractalNoise" baseFrequency="0.018 0.008" numOctaves="2" seed="4" result="n">'
-    +   '<animate attributeName="baseFrequency" values="0.018 0.008;0.024 0.011;0.015 0.007;0.021 0.010;0.018 0.008" dur="9s" repeatCount="indefinite"/>'
-    + '</feTurbulence>'
-    + '<feDisplacementMap in="SourceGraphic" in2="n" scale="16" xChannelSelector="R" yChannelSelector="G"/>'
-    + '</filter></svg>';
-  photo.insertAdjacentHTML('afterend', svg + '<img class="noirbar-smoke" src="' + photo.src + '" alt="" aria-hidden="true">');
-  liveWhileOnScreen(bar);
-})();
 
 /* ── THE FILE ROOM ─────────────────────────────────────────────────────────
    The chapters section: the artwork with a drawer per chapter. Built here,
