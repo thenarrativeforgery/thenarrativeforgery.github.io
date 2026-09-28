@@ -78,7 +78,6 @@ section{padding:64px 0; scroll-margin-top:calc(var(--nav-h, 72px) + 8px);}  /* a
 section.alt{background:var(--cream-dark);}
 section#intro{background:var(--navy); color:var(--cream);}
 section#intro .section-num{color:var(--red-light);}
-section#intro .section-title{color:var(--cream);}
 /* THE NOIR BAR — the intro film plays on the television in a photograph:
    the video sits absolutely, cropped to the screen's own rectangle in the
    picture (measured off the picture's pixels), so it reads as the set's
@@ -210,14 +209,16 @@ h2.section-title{font-size:clamp(24px,3vw,34px); font-weight:700; color:var(--na
 .dossier-cover-wrap{position:relative; width:min(100%, 560px); flex:0 1 auto;}
 .dossier-cover{display:block; width:100%; height:auto; margin:0; filter:invert(1); border:1px solid #2A2A28;}
 /* the flowing copy: displaced, and masked to the roots and the brain's left edge */
-.dossier-cover--flow{
-  position:absolute; inset:0; pointer-events:none; border-color:transparent;
-  filter:invert(1) url(#goop);
+.dossier-cover-flow-mask{
+  position:absolute; inset:0; pointer-events:none;
   -webkit-mask-image:radial-gradient(ellipse 8% 44% at 52% 54%, #000 45%, transparent 100%), radial-gradient(ellipse 28% 19% at 27% 77%, #000 50%, transparent 100%);
           mask-image:radial-gradient(ellipse 8% 44% at 52% 54%, #000 45%, transparent 100%), radial-gradient(ellipse 28% 19% at 27% 77%, #000 50%, transparent 100%);
 }
+/* mask on the wrapper, filter on the img: Safari drops an SVG filter on an
+   element that also carries a mask */
+.dossier-cover--flow{border-color:transparent; filter:invert(1) url(#goop); transform:translateZ(0);}
 /* only while the cover is on screen — the field is repainted every frame */
-.dossier-cover-wrap:not(.is-live) .dossier-cover--flow{display:none;}
+.dossier-cover-wrap:not(.is-live) .dossier-cover-flow-mask{display:none;}
 /* the record beside the cover: plays the meta song, spins while it plays */
 .vinyl{display:flex; flex-direction:column; align-items:center; gap:14px; width:min(100%, 280px);}
 .vinyl-deck{position:relative; width:min(240px, 62vw); aspect-ratio:1;}
@@ -599,25 +600,19 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
    the room dims underneath it */
 .cab-art{position:relative; width:100%; height:100%; line-height:0;}
 .cab-art img{display:block; width:100%; height:100%; object-fit:fill;}
-/* the book's roots flow, same trick as Volume Two's cover: a second copy of
-   the whole picture sits over the first, put through a displacement field,
-   masked down to the tree's trunk and roots under the title so the drawers
-   and everything else hold still. The mask and the filter are kept on two
-   different elements — Safari drops an SVG reference filter outright when
-   it shares an element with a mask-image, which is why this needs a wrapper
-   rather than the single-element version. */
-.cab-book-flow-wrap{position:absolute; inset:0; z-index:1; overflow:hidden; pointer-events:none;
-  -webkit-mask-image:radial-gradient(ellipse 9% 8% at 58% 33%, #000 50%, transparent 100%);
-          mask-image:radial-gradient(ellipse 9% 8% at 58% 33%, #000 50%, transparent 100%);
+/* the tree on the book's page flows like the compendium brain's roots. The
+   mask sits on a wrapper and the filter on the img inside it: Safari drops an
+   SVG filter on an element that also carries a mask. */
+.cab-art .cab-art-flow-wrap{position:absolute; inset:0; z-index:1; pointer-events:none;
+  -webkit-mask-image:radial-gradient(ellipse 4.5% 7% at 60.5% 21%, #000 45%, transparent 100%), radial-gradient(ellipse 4% 7% at 60.5% 32%, #000 45%, transparent 100%);
+          mask-image:radial-gradient(ellipse 4.5% 7% at 60.5% 21%, #000 45%, transparent 100%), radial-gradient(ellipse 4% 7% at 60.5% 32%, #000 45%, transparent 100%);
 }
-.cab-book-flow{display:block; width:100%; height:100%; object-fit:fill; border:0;
-  filter:url(#goopBook); will-change:filter; -webkit-transform:translateZ(0); transform:translateZ(0);
-}
-.cab-art:not(.is-live) .cab-book-flow-wrap{display:none;}
-.cab-art::after{content:""; position:absolute; inset:0; z-index:1; background:rgba(0,0,0,.62); opacity:0; transition:opacity .35s ease; pointer-events:none;}
+.cab-art .cab-art-flow{filter:url(#goopSoft); transform:translateZ(0);}
+.cab-art:not(.is-live) .cab-art-flow-wrap{display:none;}
+.cab-art::after{content:""; position:absolute; inset:0; z-index:3; background:rgba(0,0,0,.62); opacity:0; transition:opacity .35s ease; pointer-events:none;}
 .cabinet.has-open .cab-art::after{opacity:1;}
 .drawer.drawer--hot{
-  position:absolute; z-index:2; display:block; padding:0; margin:0;
+  position:absolute; z-index:4; display:block; padding:0; margin:0;
   background:transparent; border:0; border-radius:4px;
   transition:box-shadow .2s ease, background .2s ease, transform .2s ease;
 }
@@ -710,9 +705,8 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   <div class="wrap">
     <div class="section-head">
       <div class="section-num">01 — INTRO</div>
-      <h2 class="section-title">What is The Narrative Forgery?</h2>
     </div>
-    <button class="intro-btn intro-btn-lg" onclick="openIntroReader()">Read the introduction</button>
+    <button class="intro-btn intro-btn-lg" onclick="openIntroReader()">What Is the Narrative Forgery?</button>
     <div class="exhibit-bar">
       <div class="exhibit-left"><span class="exhibit-tag">EXHIBIT A</span><span class="exhibit-desc">Introduction to TNF</span></div>
       <div class="exhibit-ref">TNF_intro</div>
@@ -1173,7 +1167,7 @@ function buildDossier(){
   const head = (cover
     ? '<div class="dossier-cover-wrap" id="dossierCoverWrap">' + goop
       + '<img class="dossier-cover" src="' + cover.src + '" alt="Volume Two — The Neural Architecture of Deception: a compendium of psychological mechanisms in The Narrative Forgery">'
-      + '<img class="dossier-cover dossier-cover--flow" src="' + cover.src + '" alt="" aria-hidden="true">'
+      + '<div class="dossier-cover-flow-mask"><img class="dossier-cover dossier-cover--flow" src="' + cover.src + '" alt="" aria-hidden="true"></div>'
       + '</div>'
     : '') + vinyl;
 
@@ -2012,26 +2006,21 @@ function buildCabinet(host, opts){
       return '<button type="button" class="drawer drawer--hot drawer--fixture" data-fixture="' + f.id + '" aria-label="' + esc(f.title) + ': ' + esc(f.holds) + '"'
         + ' style="left:' + f.x + '%;top:' + f.y + '%;width:' + f.w + '%;height:' + f.h + '%;--bs:' + bs + ';--bp:' + bp + '"></button>';
     }).join('');
-    // the book's roots, flowing: same displacement trick as Volume Two's
-    // cover, its own filter id so the two run independently
-    const goopBook = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="goopBook" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">'
-      + '<feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="1" seed="4" result="n">'
-      +   '<animate attributeName="baseFrequency" values="0.011;0.016;0.009;0.014;0.011" dur="13s" repeatCount="indefinite"/>'
-      +   '<animate attributeName="seed" values="4;9;2;13;6;10;3;8" dur="29s" calcMode="discrete" repeatCount="indefinite"/>'
-      + '</feTurbulence>'
-      + '<feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/>'
-      + '</filter></svg>';
     host.innerHTML = '<div class="cabinet cabinet--art">'
-      + '<div class="cab-art">' + goopBook + '<img src="' + a.src + '" alt="' + esc(a.alt || '') + '">'
-      + '<div class="cab-book-flow-wrap"><img class="cab-book-flow" src="' + a.src + '" alt="" aria-hidden="true"></div>' + hots + fixtures + '</div>'
+      + '<div class="cab-art"><img src="' + a.src + '" alt="' + esc(a.alt || '') + '">'
+      + '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="goopSoft" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">'
+      +   '<feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="1" seed="1" result="n">'
+      +     '<animate attributeName="baseFrequency" values="0.011;0.016;0.009;0.014;0.011" dur="11s" repeatCount="indefinite"/>'
+      +     '<animate attributeName="seed" values="1;7;3;12;5;9;2;11" dur="26s" calcMode="discrete" repeatCount="indefinite"/>'
+      +   '</feTurbulence>'
+      +   '<feDisplacementMap in="SourceGraphic" in2="n" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>'
+      + '</filter></svg>'
+      + '<div class="cab-art-flow-wrap"><img class="cab-art-flow" src="' + a.src + '" alt="" aria-hidden="true"></div>'
+      + hots + fixtures + '</div>'
       + cardHtml + '</div>';
-    host.querySelector('.cab-art').style.setProperty('--art', 'url("' + a.src + '")');
-    // the flow only runs while the art is on screen
-    (function(){
-      const el = host.querySelector('.cab-art'); if(!el) return;
-      if(!('IntersectionObserver' in window)){ el.classList.add('is-live'); return; }
-      new IntersectionObserver(es => es.forEach(e => el.classList.toggle('is-live', e.isIntersecting)), {rootMargin:'10% 0px'}).observe(el);
-    })();
+    const artEl = host.querySelector('.cab-art');
+    artEl.style.setProperty('--art', 'url("' + a.src + '")');
+    liveWhileOnScreen(artEl);
   }
 
   const cabinet = host.querySelector('.cabinet');
@@ -2143,6 +2132,12 @@ function buildCabinet(host, opts){
 
   host.__closeDrawer = closeDrawer;
   host.__openDrawer  = n => { const d = body.querySelector('.drawer[data-n="' + n + '"]'); if(d && open !== d) openDrawer(d); };
+}
+
+// a flowing layer repaints every frame, so it only runs while on screen
+function liveWhileOnScreen(el){
+  if(!('IntersectionObserver' in window)){ el.classList.add('is-live'); return; }
+  new IntersectionObserver(es => es.forEach(e => el.classList.toggle('is-live', e.isIntersecting)), {rootMargin:'10% 0px'}).observe(el);
 }
 
 /* ── THE FILE ROOM ─────────────────────────────────────────────────────────
