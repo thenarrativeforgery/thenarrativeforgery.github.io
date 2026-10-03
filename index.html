@@ -27,6 +27,7 @@
 }
 *{box-sizing:border-box; margin:0; padding:0;}
 html{scroll-behavior:smooth;}
+@media(prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} .tnf-ring__disc, .ticker-dot{animation:none;} }
 .grain-overlay{position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:.05; mix-blend-mode:multiply; background-image:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxODAnIGhlaWdodD0nMTgwJz4KICA8ZmlsdGVyIGlkPSduJz4KICAgIDxmZVR1cmJ1bGVuY2UgdHlwZT0nZnJhY3RhbE5vaXNlJyBiYXNlRnJlcXVlbmN5PScwLjg1JyBudW1PY3RhdmVzPScyJyBzdGl0Y2hUaWxlcz0nc3RpdGNoJyBzZWVkPSc3Jy8+CiAgICA8ZmVDb2xvck1hdHJpeCB0eXBlPSdtYXRyaXgnIHZhbHVlcz0nMCAwIDAgMCAwICAwIDAgMCAwIDAgIDAgMCAwIDAgMCAgMC45IDAuOSAwLjkgMCAwJy8+CiAgPC9maWx0ZXI+CiAgPHJlY3Qgd2lkdGg9JzEwMCUnIGhlaWdodD0nMTAwJScgZmlsdGVyPSd1cmwoI24pJy8+Cjwvc3ZnPgo="); background-repeat:repeat; background-size:180px 180px;}
 body{font-family:var(--serif); background:var(--cream); color:var(--ink); line-height:1.6; font-size:19px;}
 h1,h2,h3,h4{font-family:var(--sans);}
@@ -307,11 +308,9 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 @media(max-width:720px){ #nightstand{padding-bottom:36px;} }
 
 
-/* CHAPTER CABINET — the book lit from behind, standing on three cabinets of
-   six drawers, one drawer per chapter. Drawn in code (the same cabinet the
-   room uses), so it is one layout for desktop and phone, real text, and no
-   photograph to load. The book is the cover art already embedded further up
-   the page, so it costs nothing extra. */
+/* CHAPTER CABINET — Volume One's file-room artwork, with a hotspot over each
+   of the eighteen drawers, one per chapter. The picture is the one kept in
+   the art store, so it costs nothing extra. */
 .cab-wrap{margin:0 0 34px;}
 .cab-bar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:10px;}
 .cab-bar .cb-tag{background:var(--navy); color:var(--cream); padding:3px 9px; margin-right:8px; letter-spacing:.12em;}
@@ -376,7 +375,7 @@ html.view-phone .videolib-head{padding-right:56px;}
 .ledger-controls input{flex:1; min-width:220px;}
 #ledgerCount{font-family:var(--mono); font-size:14px; color:var(--ink-soft); margin-bottom:14px;}
 table{width:100%; border-collapse:separate; border-spacing:0; font-size:16px; table-layout:fixed;}
-.ledger-table-wrap table{table-layout:fixed; min-width:1080px;}
+.ledger-table-wrap table{min-width:1080px;}
 .ledger-table-wrap col:nth-child(1){width:12%;}
 .ledger-table-wrap col:nth-child(2){width:5%;}
 .ledger-table-wrap col:nth-child(3){width:35%;}
@@ -437,6 +436,7 @@ tr.row-flag:hover{background:rgba(145,13,13,.07);}
 
 /* Expandable row detail (source basis, mechanisms, video, notes) */
 .fac-id.expandable{cursor:pointer;}
+.fac-id.expandable:focus-visible, .ledger-card .lc-toggle:focus-visible{outline:2px solid var(--red); outline-offset:-2px;}
 .fac-id .exp-arrow{display:inline-block; width:9px; margin-right:4px; font-size:10px; line-height:1; color:var(--ink-soft); transition:transform .15s;}
 tr.row-expanded .fac-id .exp-arrow{transform:rotate(90deg);}
 tbody tr:not(.ledger-detail-row){cursor:pointer;}
@@ -530,7 +530,7 @@ body{overflow-x:clip; padding-left:env(safe-area-inset-left); padding-right:env(
 .ledger-card .lc-meta{font-family:var(--mono); font-size:12px; color:var(--ink-soft); margin:4px 0 8px;}
 .ledger-card .lc-event{font-size:15px; line-height:1.45; margin-bottom:8px;}
 .ledger-card .lc-link{font-family:var(--mono); font-size:13px;}
-.ledger-card .lc-toggle{font-family:var(--sans); font-size:12px; color:var(--blue); margin-top:6px;}
+.ledger-card .lc-toggle{display:block; font-family:var(--sans); font-size:12px; color:var(--blue); margin-top:6px; padding:6px 0; background:none; border:0; cursor:pointer;}
 .ledger-card .lc-detail{display:none; margin-top:10px; padding-top:10px; border-top:1px dashed var(--border);}
 .ledger-card.expanded .lc-detail{display:block;}
 .ledger-card.expanded .lc-toggle .exp-arrow{transform:rotate(90deg);}
@@ -636,12 +636,11 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   box-shadow:inset 0 0 0 2px var(--red), 0 18px 44px rgba(0,0,0,.85), 0 0 34px rgba(255,255,255,.22);
   transform:translateY(3px) scale(1.05);
 }
-.cabinet--art .drawer-card{width:min(70%, 340px);}
 .drawer-card.is-sheet{top:auto !important; bottom:0; width:auto;}
 
 /* the drawer's card — dark cousin of the file room's panel */
 .drawer-card{
-  position:absolute; z-index:6; width:min(48%, 340px); box-sizing:border-box;
+  position:absolute; z-index:6; width:min(70%, 340px); box-sizing:border-box;
   background:#050505; border:1px solid #8E8E8A; box-shadow:0 24px 60px rgba(0,0,0,.85);
   padding:1.6cqh 1.9cqw 1.8cqh; color:#ECECE8;
 }
@@ -700,7 +699,7 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
       <li><a href="#compendium"><span class="nav-num">03.</span> Compendium <span class="nav-count">(18)</span></a></li>
       <li><a href="#ledger"><span class="nav-num">04.</span> Receipts Ledger <span class="nav-count">(173)</span></a></li>
     </ul>
-    <input id="navSearch" type="text" placeholder="Search receipts…">
+    <input id="navSearch" type="search" placeholder="Search receipts…" aria-label="Search the receipts ledger" enterkeyhint="search">
   </div>
 </nav>
 
@@ -831,9 +830,9 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
       <span><span class="cb-tag">EXHIBIT D</span>The receipts ledger</span>
     </div>
     <div class="ledger-controls">
-      <input id="ledgerSearch" type="text" placeholder="Search event, chapter, FAC number, or notes…">
-      <select id="tierFilter"><option value="">All tiers</option></select>
-      <select id="chapterFilter"><option value="">All chapters</option></select>
+      <input id="ledgerSearch" type="search" placeholder="Search event, chapter, FAC number, or notes…" aria-label="Search the ledger">
+      <select id="tierFilter" aria-label="Filter by tier"><option value="">All tiers</option></select>
+      <select id="chapterFilter" aria-label="Filter by chapter"><option value="">All chapters</option></select>
     </div>
     <div class="ledger-exhibit" id="ledgerExhibit">
       <svg class="ledger-seal" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="100" height="100" pathLength="1" vector-effect="non-scaling-stroke"/></svg>
@@ -860,7 +859,7 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   </div>
 </section>
 
-<div id="readerOverlay">
+<div id="readerOverlay" role="dialog" aria-modal="true" aria-labelledby="readerTitle">
   <div class="reader-panel">
     <div class="reader-head">
       <div class="reader-head-inner">
@@ -956,49 +955,73 @@ function openReader(chNum){
   const mechs = MECHANISMS.filter(m=>m.chapters.includes(chNum));
   document.getElementById('readerMechs').innerHTML = mechs.length
     ? '<span class="rm-label">Mechanisms deployed</span>' + mechs.map(m=>
-        `<button class="rm-chip${isReflective(m.n,chNum)?' reflective':''}" onclick="jumpToMechanism(${m.n})">M${String(m.n).padStart(2,'0')} · ${m.title}</button>`
+        `<button class="rm-chip${isReflective(m.n,chNum)?' reflective':''}" onclick="openMechReader(${m.n})">M${String(m.n).padStart(2,'0')} · ${m.title}</button>`
       ).join('')
     : '';
 
+  showReader(proseHtml(text));
+  updateReaderNav(chNum);
+}
+
+// a chapter's plain text as the reader's paragraphs: a short all-caps first
+// line is the dateline, later ones are subheads, a paragraph that is wholly
+// a quotation is a pull-quote, and the first real paragraph gets the drop cap
+function proseHtml(text){
   const paras = text.split(/\n\n+/).map(p => p.replace(/\n/g,' ').trim()).filter(p=>p.length);
   let leadAssigned = false;
-  const html = paras.map((p, i) => {
+  return paras.map((p, i) => {
     const isLabelLike = p.length < 60 && p === p.toUpperCase() && /[A-Z]/.test(p);
     if (isLabelLike && i === 0) return `<div class="dateline">${p}</div>`;
     if (isLabelLike) return `<div class="subhead">${p}</div>`;
-    // pull-quote: paragraph that is entirely a quotation
     const isQuote = /^["“]/.test(p) && /["”][\s.]*$/.test(p) && p.length < 400;
     if (isQuote) return `<blockquote>${p}</blockquote>`;
     if (!leadAssigned) { leadAssigned = true; return `<p class="lead">${p}</p>`; }
     return `<p>${p}</p>`;
   }).join('');
+}
 
-  const body = document.getElementById('readerBody');
-  body.innerHTML = html;
+// open the reader on new content. Remembers what had focus, so closing the
+// reader puts you back where you were, and moves focus into the reader.
+let readerReturnFocus = null;
+function showReader(html){
+  const ov = document.getElementById('readerOverlay');
+  const opening = !ov.classList.contains('open');
+  if(opening) readerReturnFocus = document.activeElement;
+  document.getElementById('readerBody').innerHTML = html;
   applyReaderScale();   // keep the reader's chosen size across chapters/front matter
-  document.getElementById('readerOverlay').classList.add('open');
-  document.getElementById('readerOverlay').scrollTop = 0;
+  ov.classList.add('open');
+  ov.scrollTop = 0;
   document.body.style.overflow = 'hidden';
-  updateReaderNav(chNum);
+  if(opening || !ov.contains(document.activeElement)) ov.querySelector('.reader-close').focus({preventScroll:true});
 }
 
-// The dossier map is the compendium's only index now, so every mechanism
-// reference — chapter chips, ledger chips, the reader's own cross-links —
-// resolves straight into the mechanism reader.
-function jumpToMechanism(mechN){
-  if(MECHANISM_FULL[mechN]){ openMechReader(mechN); return; }
-  closeReader();
-  scrollToId('compendium');
-}
 function closeReader(){
-  document.getElementById('readerOverlay').classList.remove('open');
+  const ov = document.getElementById('readerOverlay');
+  if(!ov.classList.contains('open')) return;
+  ov.classList.remove('open');
   document.body.style.overflow = '';
+  if(readerReturnFocus && document.contains(readerReturnFocus)) readerReturnFocus.focus({preventScroll:true});
+  readerReturnFocus = null;
 }
 document.getElementById('readerOverlay').addEventListener('click', (e)=>{
   if(e.target.id === 'readerOverlay') closeReader();
 });
 document.addEventListener('keydown', (e)=>{
   if(e.key === 'Escape') closeReader();
+});
+// Tab and Shift+Tab cycle inside an open dialog instead of wandering into the
+// page underneath it
+document.addEventListener('keydown', (e)=>{
+  if(e.key !== 'Tab') return;
+  const ov = document.querySelector('#readerOverlay.open, #videoLibOverlay.open');
+  if(!ov) return;
+  const f = [...ov.querySelectorAll('a[href], button:not([disabled]), input, select, [tabindex]:not([tabindex="-1"])')]
+    .filter(el => el.offsetParent !== null);
+  if(!f.length) return;
+  const first = f[0], last = f[f.length - 1];
+  if(!ov.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
+  else if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
 });
 
 // VIDEO LIBRARY — the TV's own index. Built once, on first open, straight off
@@ -1034,16 +1057,23 @@ function buildVideoLibraryBody(){
   document.getElementById('videoLibBody').innerHTML =
     group('STAGES', stages) + group('MECHANISMS', mechs) + group('CHAPTERS', chapters);
 }
+let videoLibReturnFocus = null;
 function openVideoLibrary(){
   buildVideoLibraryBody();
   const ov = document.getElementById('videoLibOverlay');
+  videoLibReturnFocus = document.activeElement;
   ov.classList.add('open');
   ov.scrollTop = 0;
   document.body.style.overflow = 'hidden';
+  ov.querySelector('.reader-close').focus({preventScroll:true});
 }
 function closeVideoLibrary(){
-  document.getElementById('videoLibOverlay').classList.remove('open');
+  const ov = document.getElementById('videoLibOverlay');
+  if(!ov.classList.contains('open')) return;
+  ov.classList.remove('open');
   document.body.style.overflow = '';
+  if(videoLibReturnFocus && document.contains(videoLibReturnFocus)) videoLibReturnFocus.focus({preventScroll:true});
+  videoLibReturnFocus = null;
 }
 document.getElementById('videoLibOverlay').addEventListener('click', (e)=>{
   if(e.target.id === 'videoLibOverlay') closeVideoLibrary();
@@ -1104,13 +1134,10 @@ const TONEARM_SVG = '<svg class="vinyl-arm" viewBox="0 0 100 160" preserveAspect
   + '<path d="M44 134l-3 6" stroke="#F4F4F2" stroke-width="1.6" stroke-linecap="round"/>'
   + '</g></svg>';
 
-const DOSSIER_NOTE_DEFAULT = '';
-
 /* Volume Two's menu: the picture of the eighteen index cards in five packs,
    cropped under the brain (the inverted cover above carries the title) and
    to the packs' left edge so they fill the width. Each card is a hotspot
-   measured off the card borders; each band's stage tape sits to the right
-   of its tab. */
+   measured off the card borders. */
 const DOSSIER_ART = {
   ar: '1024 / 1936',
   get src(){ const i = document.getElementById('dossierArtImg'); return i ? i.src : ''; },
@@ -1183,15 +1210,13 @@ function buildDossier(){
       return '<button type="button" class="dcard dcard--hot" data-mech="' + h.n + '" aria-label="' + pad2(h.n) + ': ' + escHtml(m.title) + '"'
         + ' style="left:' + h.x + '%;top:' + h.y + '%;width:' + h.w + '%;height:' + h.h + '%;--bs:' + bs + ';--bp:' + bp + '"></button>';
     }).join('');
-    // each band's stage tape, moved into the dossier as a real strip below
-    // the head (see the relocation at the bottom of this function).
     body = '<div class="dossier-art" style="aspect-ratio:' + DOSSIER_ART.ar + '">'
       + '<img src="' + artSrc + '" alt="The eighteen mechanisms as index cards in five packs: Foundational 01–04, Architecture 05–07, Social 08–09, Persistence 10–12, Compounding 13–18">'
       + hots + '</div>';
   }
   host.innerHTML = '<div class="dossier-head">' + head + '</div>'
     + body
-    + '<div class="dossier-note">' + DOSSIER_NOTE_DEFAULT + '</div>';
+    + '<div class="dossier-note"></div>';
   if(artSrc) host.querySelector('.dossier-art').style.setProperty('--art', 'url("' + artSrc + '")');
   // move the real stage strip — the same one, links and handlers untouched
   // — to sit between the head and the card packs
@@ -1304,11 +1329,11 @@ function buildDossier(){
   };
   host.addEventListener('mouseover', e => { const c = e.target.closest('.dcard'); if(c) show(+c.dataset.mech); });
   host.addEventListener('focusin',   e => { const c = e.target.closest('.dcard'); if(c) show(+c.dataset.mech); });
-  host.addEventListener('mouseleave', () => { note.innerHTML = DOSSIER_NOTE_DEFAULT; });
+  host.addEventListener('mouseleave', () => { note.innerHTML = ''; });
 
   // Touch: the first tap lights the card and pins its title to the bottom of
   // the screen with an Open button; tapping the lit card again, or Open,
-  // opens the chapter. A mouse still opens on the first click.
+  // opens the mechanism. A mouse still opens on the first click.
   let pick = document.getElementById('dossierPick');
   if(!pick){
     pick = document.createElement('div');
@@ -1387,33 +1412,13 @@ buildDossier();
 
 function openIntroReader(){
   window.__tnfReaderCh = null;
-  var prev = document.getElementById('readerPrev');
-  var next = document.getElementById('readerNext');
-  if(prev) prev.disabled = true;
-  if(next) next.disabled = true;
+  updateReaderNavDisabled();
 
   document.getElementById('readerEyebrow').textContent = 'The Narrative Forgery  ·  Front Matter';
   document.getElementById('readerTitle').textContent = 'Introduction';
   document.getElementById('readerMechs').innerHTML = '';
 
-  const paras = INTRO_TEXT.split(/\n\n+/).map(p => p.replace(/\n/g,' ').trim()).filter(p=>p.length);
-  let leadAssigned = false;
-  const html = paras.map((p, i) => {
-    const isLabelLike = p.length < 60 && p === p.toUpperCase() && /[A-Z]/.test(p);
-    if (isLabelLike && i === 0) return `<div class="dateline">${p}</div>`;
-    if (isLabelLike) return `<div class="subhead">${p}</div>`;
-    const isQuote = /^["“]/.test(p) && /["”][\s.]*$/.test(p) && p.length < 400;
-    if (isQuote) return `<blockquote>${p}</blockquote>`;
-    if (!leadAssigned) { leadAssigned = true; return `<p class="lead">${p}</p>`; }
-    return `<p>${p}</p>`;
-  }).join('');
-
-  const body = document.getElementById('readerBody');
-  body.innerHTML = html;
-  applyReaderScale();   // keep the reader's chosen size across chapters/front matter
-  document.getElementById('readerOverlay').classList.add('open');
-  document.getElementById('readerOverlay').scrollTop = 0;
-  document.body.style.overflow = 'hidden';
+  showReader(proseHtml(INTRO_TEXT));
 }
 
 
@@ -1442,12 +1447,9 @@ function openMechReader(mechN){
     + `<div class="subhead">Primary Academic Sources</div>`
     + full.sources.map(s=>`<p class="src-cite">${s}</p>`).join('');
 
-  const body = document.getElementById('readerBody');
-  body.innerHTML = html;
-  applyReaderScale();   // keep the reader's chosen size across chapters/front matter
-  document.getElementById('readerOverlay').classList.add('open');
-  document.getElementById('readerOverlay').scrollTop = 0;
-  document.body.style.overflow = 'hidden';
+  showReader(html);
+  window.__tnfReaderCh = null;
+  updateReaderNavDisabled();
 }
 
 // LEDGER
@@ -1536,7 +1538,7 @@ function renderLedger(){
     const actionCls = ACTION_BADGE_CLASS[r.actionCat] || 'a-review';
     const actionTxt = ACTION_SHORT[r.actionCat] || r.actionCat;
     out[i] = '<tr class="' + (r.flagged ? 'row-flag' : '') + '" data-detail="' + rowId + '">'
-      + '<td class="fac-id expandable"><span class="exp-arrow">▸</span>' + (r.flagged ? '<span class="attn-dot" title="' + esc(r.actionStatus) + '">●</span> ' : '') + esc(r.fac) + '</td>'
+      + '<td class="fac-id expandable" role="button" tabindex="0" aria-expanded="false" aria-controls="' + rowId + '"><span class="exp-arrow" aria-hidden="true">▸</span>' + (r.flagged ? '<span class="attn-dot" title="' + esc(r.actionStatus) + '">●</span> ' : '') + esc(r.fac) + '</td>'
       + '<td>' + r.ch + '</td>'
       + '<td>' + esc(r.event) + (r.reAdded ? '<span class="row-note">re-added to the ledger after review</span>' : '') + '</td>'
       + '<td><span class="tier-badge ' + r.ts + '">' + esc(r.tier) + '</span></td>'
@@ -1554,7 +1556,7 @@ function renderLedger(){
 ledgerBody.addEventListener('click', (e)=>{
   const chip = e.target.closest('.chip[data-mech]');
   if(chip){
-    jumpToMechanism(parseInt(chip.dataset.mech, 10));
+    openMechReader(parseInt(chip.dataset.mech, 10));
     return;
   }
   if(e.target.closest('a')) return; // let source/video links navigate normally
@@ -1565,6 +1567,12 @@ ledgerBody.addEventListener('click', (e)=>{
   const opening = detail.hidden;
   detail.hidden = !opening;
   row.classList.toggle('row-expanded', opening);
+  row.querySelector('.fac-id').setAttribute('aria-expanded', opening ? 'true' : 'false');
+});
+ledgerBody.addEventListener('keydown', (e)=>{
+  if((e.key !== 'Enter' && e.key !== ' ') || !e.target.matches('.fac-id[role="button"]')) return;
+  e.preventDefault();
+  e.target.click();
 });
 
 let ledgerSearchTimer;
@@ -1935,6 +1943,11 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
 })();
 
 window.__tnfReaderCh = null;
+// prev/next only page through chapters; the intro and mechanisms have neither
+function updateReaderNavDisabled(){
+  document.getElementById('readerPrev').disabled = true;
+  document.getElementById('readerNext').disabled = true;
+}
 function readerStep(dir){
   var n = window.__tnfReaderCh;
   if(n == null) return;
@@ -1967,7 +1980,7 @@ function renderLedgerCards(rows){
       + '<div class="lc-meta">Ch '+esc(r.ch)+' · <span class="tier-badge '+esc(r.ts)+'">'+esc(r.tier)+'</span> · <span class="action-badge '+actionCls+'">'+esc(actionTxt)+'</span></div>'
       + '<div class="lc-event">'+esc(r.event)+'</div>'
       + '<div class="lc-link">'+linkHtml(r.sourceUrl, 'Source →', r.sourceLinkState)+'</div>'
-      + '<div class="lc-toggle"><span class="exp-arrow">▸</span>Details</div>'
+      + '<button type="button" class="lc-toggle" aria-expanded="false"><span class="exp-arrow" aria-hidden="true">▸</span>Details</button>'
       + '<div class="lc-detail">'+buildDetailHtml(r)+'</div>'
       + '</article>';
   }
@@ -1979,15 +1992,15 @@ function renderLedgerCards(rows){
 document.getElementById('ledgerCards').addEventListener('click', (e)=>{
   const chip = e.target.closest('.chip[data-mech]');
   if(chip){
-    jumpToMechanism(parseInt(chip.dataset.mech, 10));
+    openMechReader(parseInt(chip.dataset.mech, 10));
     return;
   }
   if(e.target.closest('a')) return;
   const article = e.target.closest('.ledger-card');
-  if(article) article.classList.toggle('expanded');
+  if(!article) return;
+  const open = article.classList.toggle('expanded');
+  article.querySelector('.lc-toggle').setAttribute('aria-expanded', open ? 'true' : 'false');
 });
-
-const CAB_NOTE_DEFAULT = '';
 
 /* The file room: the reel cabinet (every video), the book lit above three
    cabinets of six drawers (the chapters, numbered down each cabinet), and
@@ -2090,7 +2103,6 @@ function buildCabinet(host, opts){
   const note    = opts.noteEl || document.createElement('span');
   const card    = host.querySelector('.drawer-card');
   let open = null;
-  note.innerHTML = CAB_NOTE_DEFAULT;
 
   const describe = n => {
     const ch = chapterOf(n); if(!ch) return;
@@ -2103,7 +2115,7 @@ function buildCabinet(host, opts){
   };
   body.addEventListener('mouseover', e => { const d = e.target.closest('.drawer'); if(d) describeAny(d); });
   body.addEventListener('focusin',   e => { const d = e.target.closest('.drawer'); if(d) describeAny(d); });
-  body.addEventListener('mouseleave', () => { if(!open) note.innerHTML = CAB_NOTE_DEFAULT; });
+  body.addEventListener('mouseleave', () => { if(!open) note.innerHTML = ''; });
 
   function closeDrawer(refocus){
     if(!open) return;
@@ -2111,13 +2123,11 @@ function buildCabinet(host, opts){
     d.classList.remove('is-open'); d.setAttribute('aria-expanded', 'false');
     cabinet.classList.remove('has-open');
     card.hidden = true;
-    note.innerHTML = CAB_NOTE_DEFAULT;
+    note.innerHTML = '';
     if(refocus) d.focus();
   }
   // The card hangs beside its drawer — to the right of the left two cabinets,
-  // to the left of the third — and never leaves the station. Measured with
-  // layout offsets, not bounding rects: the station sits on a rotated 3D
-  // track, and rects come back already projected.
+  // to the left of the third — and never leaves the picture.
   const offsetWithin = (el, root) => {
     let x = 0, y = 0;
     for(let n = el; n && n !== root; n = n.offsetParent){ x += n.offsetLeft; y += n.offsetTop; }
@@ -2308,7 +2318,6 @@ function liveWhileOnScreen(el){
   const host = document.getElementById('cabHost');
   if(!host) return;
   const stage = document.getElementById('cabStage');
-  stage.classList.add('has-art');
   stage.style.setProperty('--art-ar', CAB_ART.ar);
   buildCabinet(host, {art: CAB_ART, noteEl: document.getElementById('cabCaption')});
   // a phone opens on the cabinets, with the reels and the bag a swipe away
