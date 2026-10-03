@@ -33,7 +33,16 @@ body{font-family:var(--serif); background:var(--cream); color:var(--ink); line-h
 h1,h2,h3,h4{font-family:var(--sans);}
 a{color:var(--navy); text-decoration:none;}
 a:hover{text-decoration:underline;}
-.wrap{max-width:1200px; margin:0 auto; padding:0 28px;}
+.wrap{max-width:var(--col); margin:0 auto; padding:0 28px;}
+/* the page's column. On a big screen it widens so the ledger and the text
+   use the room, and the margins (where the roots grow) shrink; the tall
+   pictures are held to the window's height so they don't outgrow it. */
+:root{--col:1200px;}
+@media(min-width:1700px){
+  :root{--col:1440px;}
+  .noirbar{max-width:calc((100vh - 120px) * 4 / 3); margin:0 auto;}
+  .cab-stage-host{max-width:calc(100vh - 110px);}
+}
 
 
 /* NAV */
@@ -1644,8 +1653,9 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
       const decay = 0.78;
       function grow(x, y, ang, len, depth, startPathLen){
         const jitter = (noise(x*0.01, y*0.01, depth*0.7) - 0.5) * 0.6;
-        const a = ang + jitter;
+        let a = ang + jitter;
         let x2 = x + Math.cos(a) * len;
+        if (x2 < minX || x2 > maxX){ a = Math.PI - a; ang = Math.PI - ang; x2 = x + Math.cos(a) * len; }
         let y2 = y + Math.sin(a) * len;
         x2 = Math.min(Math.max(x2, minX), maxX);
         y2 = Math.min(Math.max(y2, -40), H + 40);
@@ -1672,9 +1682,7 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
       let maxPathLen = 1;
       for (const b of branches) if (b.endPathLen > maxPathLen) maxPathLen = b.endPathLen;
       for (const b of branches) b.birth = Math.max(0, Math.min(0.97, b.startPathLen/maxPathLen*0.94 + (rng()-0.5)*0.05));
-
-      const leaves = branches.filter(b => b.children.length === 0).sort((a,b)=>b.endPathLen-a.endPathLen);
-      return { branches, clusters: leaves.slice(0, Math.min(2, leaves.length)) };
+      return { branches };
     }
 
     function buildMasters(){
@@ -1692,7 +1700,8 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
       // stranded out at the true edge where they're easy to miss. Where
       // there is no margin (a laptop, a phone) they keep to a slim strip at
       // the screen edge, fainter.
-      const margin = (W - 1200) / 2;
+      const col = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--col')) || 1200;
+      const margin = (W - col) / 2;
       const clearance = 18;
       const band = margin > 60 ? Math.min(margin - clearance, 220) : (W < 700 ? 14 : 20);
       canvas.style.opacity = band < 40 ? '.34' : '.62';
@@ -1706,24 +1715,9 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
 
       const branches = left.branches.concat(right.branches);
       branches.sort((a,b)=>a.birth-b.birth);
-      const clusters = left.clusters.concat(right.clusters);
-      master = { branches, clusters };
+      master = { branches };
     }
 
-    function drawTangle(ctx, x, y, t){
-      const trng = mulberry32(Math.round(x*13 + y*7 + 1));
-      const n = Math.round(6 + t*10);
-      ctx.strokeStyle = `rgba(${attr[0]},${attr[1]},${attr[2]},${(0.12 + t*0.32).toFixed(3)})`;
-      ctx.lineWidth = 0.6 + t*1.1;
-      for (let i=0; i<n; i++){
-        const a1 = trng()*Math.PI*2, r1 = trng()*15*t;
-        const a2 = trng()*Math.PI*2, r2 = trng()*15*t;
-        ctx.beginPath();
-        ctx.moveTo(x + Math.cos(a1)*r1, y + Math.sin(a1)*r1);
-        ctx.lineTo(x + Math.cos(a2)*r2, y + Math.sin(a2)*r2);
-        ctx.stroke();
-      }
-    }
 
     function render(growth){
       if (!master) return;
@@ -1734,10 +1728,11 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
         if (local <= 0) continue;
         const colorT = Math.max(0, Math.min(1, local*0.55 + growth*0.45 - 0.25));
         const rgb = lerpRgb(ink, attr, colorT);
-        // heavier the deeper you are: weight and presence both scale with growth
-        const heft = 0.55 + growth * 0.95;
-        ctx.strokeStyle = `rgba(${rgb[0]|0},${rgb[1]|0},${rgb[2]|0},${((0.04 + local*0.46) * (0.6 + growth*0.4)).toFixed(3)})`;
-        ctx.lineWidth = (0.5 + local*4.6) * heft;
+        // heavier the deeper you are, but held to a vine: about 2.5px at its
+        // thickest and never more than a third opaque
+        const heft = 0.7 + growth * 0.5;
+        ctx.strokeStyle = `rgba(${rgb[0]|0},${rgb[1]|0},${rgb[2]|0},${((0.05 + local*0.3) * (0.7 + growth*0.3)).toFixed(3)})`;
+        ctx.lineWidth = (0.5 + local*1.6) * heft;
         ctx.lineCap = 'round';
         const reach = Math.min(1, local*1.6);
         ctx.beginPath();
@@ -1745,15 +1740,11 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
         ctx.lineTo(br.x1 + (br.x2-br.x1)*reach, br.y1 + (br.y2-br.y1)*reach);
         ctx.stroke();
       }
-      if (growth > 0.7){
-        const t = Math.min(1, (growth-0.7)/0.3);
-        for (const c of master.clusters) drawTangle(ctx, c.x2, c.y2, t);
-      }
     }
 
     // Growth is how far down the page you are: a sprout at the top, and by the
-    // foot of the page the roots have reached the bottom of the viewport, thick
-    // and red. Scrolling back up is the same function run backwards, so the
+    // foot of the page the roots have reached the bottom of the viewport,
+    // darker and red. Scrolling back up is the same function run backwards, so the
     // roots thin and withdraw. A short ease keeps a flick of the wheel from
     // snapping.
     const SPROUT = 0.06;
