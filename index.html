@@ -1841,32 +1841,45 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
     showToast('Downloading the book.');
   }
   // The hotspot is a lock. Press on the exact centre of the ring (a 1cm square),
-  // draw a straight line to 3 o'clock, then tap the white circles 3, 2, 1.
+  // draw a straight line to 3 o'clock, then tap the white circle before its 3, 2, 1 runs out.
   var ringBtn = document.getElementById('ringShare');
   var ringEl = ringBtn && ringBtn.closest('.tnf-ring');
   if(ringBtn && ringEl){
     var CM = 38, rg = null, stage = 0, circle = null, puck = null, tm = null;
     function ringReset(){
-      stage = 0; rg = null; clearTimeout(tm);
+      stage = 0; rg = null; clearInterval(tm);
       if(circle){ circle.remove(); circle = null; }
       if(puck){ puck.remove(); puck = null; }
     }
+    // the white circle counts 3, 2, 1: that is the time allowed to tap it. When the
+    // count runs out a black disc slides across it from the right and the ring is
+    // plain black again.
     function showCircle(n){
-      if(!circle){
-        circle = document.createElement('button');
-        circle.type = 'button';
-        circle.setAttribute('aria-hidden', 'true'); circle.tabIndex = -1;
-        circle.style.cssText = 'position:absolute; z-index:3; top:50%; left:95%; width:15%; height:15%; min-width:36px; min-height:36px; transform:translate(-50%,-50%); border-radius:50%; border:0; padding:0; background:#fff; color:#000; font:700 clamp(16px,2.4vw,24px)/1 var(--mono, monospace); cursor:pointer; box-shadow:0 0 18px rgba(255,255,255,.5);';
-        circle.addEventListener('click', function(e){
-          e.preventDefault(); e.stopPropagation();
-          var next = +circle.textContent - 1;
-          if(next < 1){ ringReset(); downloadBook(); return; }
-          showCircle(next);
-        });
-        ringEl.appendChild(circle);
-      }
+      circle = document.createElement('button');
+      circle.type = 'button';
+      circle.setAttribute('aria-hidden', 'true'); circle.tabIndex = -1;
+      circle.style.cssText = 'position:absolute; z-index:3; top:50%; left:95%; width:15%; height:15%; min-width:36px; min-height:36px; transform:translate(-50%,-50%); border-radius:50%; border:0; padding:0; overflow:hidden; background:#fff; color:#000; font:700 clamp(16px,2.4vw,24px)/1 var(--mono, monospace); cursor:pointer; box-shadow:0 0 18px rgba(255,255,255,.5);';
       circle.textContent = n;
-      clearTimeout(tm); tm = setTimeout(ringReset, 6000);
+      var shade = document.createElement('span');
+      shade.style.cssText = 'position:absolute; inset:0; border-radius:50%; background:#0C0C0C; transform:translateX(101%); pointer-events:none;';
+      circle.appendChild(shade);
+      circle.addEventListener('click', function(e){
+        e.preventDefault(); e.stopPropagation();
+        ringReset(); downloadBook();
+      });
+      ringEl.appendChild(circle);
+      var left = n;
+      tm = setInterval(function(){
+        left -= 1;
+        if(left > 0){ circle.firstChild.nodeValue = left; return; }
+        clearInterval(tm);
+        var c = circle, ready = false; circle = null; stage = 0;
+        c.disabled = true;
+        shade.style.transition = 'transform .45s cubic-bezier(.6,0,.3,1)';
+        shade.getBoundingClientRect();
+        shade.style.transform = 'translateX(0)';
+        setTimeout(function(){ c.remove(); }, 500);
+      }, 1000);
     }
     ringBtn.style.touchAction = 'none';
     ringBtn.addEventListener('pointerdown', function(e){
