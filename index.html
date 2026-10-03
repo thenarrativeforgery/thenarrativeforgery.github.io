@@ -257,7 +257,7 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .dcard--hot::before{content:""; position:absolute; inset:-3px;}
 .dcard--hot:focus-visible, .dcard--hot.is-on{
   z-index:3; background-color:#fff; background-image:var(--art); background-repeat:no-repeat; background-size:var(--bs); background-position:var(--bp);
-  box-shadow:0 0 0 2px #fff, 0 18px 44px rgba(0,0,0,.8), 0 0 34px rgba(255,255,255,.25); transform:translateY(-3px) scale(1.04); outline:none;
+  box-shadow:0 0 0 2px var(--red), 0 18px 44px rgba(0,0,0,.8), 0 0 34px rgba(255,255,255,.25); transform:translateY(-3px) scale(1.04); outline:none;
 }
 /* a mouse gets the lit crop on hover; a finger gets it on the first tap,
    and the second tap opens the chapter (see the touch flow in buildDossier) */
@@ -265,7 +265,7 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
   .dossier-art:has(.dcard--hot:hover)::after{opacity:1;}
   .dcard--hot:hover{
     z-index:3; background-color:#fff; background-image:var(--art); background-repeat:no-repeat; background-size:var(--bs); background-position:var(--bp);
-    box-shadow:0 0 0 2px #fff, 0 18px 44px rgba(0,0,0,.8), 0 0 34px rgba(255,255,255,.25); transform:translateY(-3px) scale(1.04); outline:none;
+    box-shadow:0 0 0 2px var(--red), 0 18px 44px rgba(0,0,0,.8), 0 0 34px rgba(255,255,255,.25); transform:translateY(-3px) scale(1.04); outline:none;
   }
 }
 @media(pointer:coarse){
@@ -294,7 +294,7 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .nightstand{position:relative; width:min(100%, 1100px); margin:0 auto; line-height:0; aspect-ratio:2 / 3;}
 .nightstand img{display:block; width:100%; height:100%; object-fit:cover;}
 .nightstand-book{position:absolute; display:block; border-radius:6px; transition:box-shadow .25s ease; -webkit-tap-highlight-color:transparent;}
-.nightstand-book:hover, .nightstand-book:focus-visible{box-shadow:0 0 0 2px rgba(244,244,242,.85), 0 0 40px rgba(255,255,255,.18); outline:none;}
+.nightstand-book:hover, .nightstand-book:focus-visible{box-shadow:0 0 0 2px var(--red), 0 0 40px rgba(255,255,255,.18); outline:none;}
 @media(max-width:720px){ #nightstand{padding-bottom:36px;} }
 
 
@@ -619,12 +619,12 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 }
 .drawer.drawer--hot:hover, .drawer.drawer--hot:focus-visible{
   background:rgba(255,255,255,.07);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.78), 0 0 26px rgba(255,255,255,.28); outline:none;
+  box-shadow:inset 0 0 0 2px var(--red), 0 0 26px rgba(255,255,255,.28); outline:none;
 }
 .drawer.drawer--hot.is-open{
   z-index:3; background-color:#000; background-image:var(--art); background-repeat:no-repeat;
   background-size:var(--bs); background-position:var(--bp);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.92), 0 18px 44px rgba(0,0,0,.85), 0 0 34px rgba(255,255,255,.22);
+  box-shadow:inset 0 0 0 2px var(--red), 0 18px 44px rgba(0,0,0,.85), 0 0 34px rgba(255,255,255,.22);
   transform:translateY(3px) scale(1.05);
 }
 .cabinet--art .drawer-card{width:min(70%, 340px);}
