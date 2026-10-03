@@ -80,11 +80,11 @@ a:hover{text-decoration:underline;}
 .exhibit-foot{display:flex; justify-content:space-between; align-items:center; padding-top:10px; margin-top:14px; border-top:1px solid #3A3A3A; font-family:var(--mono); font-size:13px; color:#9C9C9C; flex-wrap:wrap; gap:8px;}
 .intro-btn{display:block; width:100%; margin-top:14px; background:none; border:1px solid var(--red); color:var(--red-light); font-family:var(--sans); font-size:14px; font-weight:700; letter-spacing:.04em; padding:12px; cursor:pointer; border-radius:2px; text-align:center; text-transform:uppercase;}
 .intro-btn:hover{background:var(--red); color:var(--cream);}
-.intro-btn-lg{font-size:19px; padding:18px; letter-spacing:.03em; margin-top:0; margin-bottom:24px;}
+.intro-btn-lg{font-size:19px; padding:18px; letter-spacing:.03em; margin-top:0; margin-bottom:14px;}
 @media(max-width:640px){ .exhibit-ref, .exhibit-foot span:first-child{display:none;} }
 
 /* SECTIONS */
-section{padding:64px 0; scroll-margin-top:calc(var(--nav-h, 72px) + 8px);}  /* anchor jumps land below the sticky nav, whatever height it wraps to */
+section{padding:24px 0; scroll-margin-top:calc(var(--nav-h, 72px) + 8px);}  /* anchor jumps land below the sticky nav, whatever height it wraps to */
 section.alt{background:var(--cream-dark);}
 section#intro{background:var(--navy); color:var(--cream);}
 /* THE NOIR BAR — the intro film plays on the television in a photograph:
@@ -125,14 +125,14 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .secret-x:hover, .secret-x:focus-visible{border-color:#fff; outline:none;}
 .lattice-field{position:fixed; inset:0; width:100vw; height:100vh; z-index:1; pointer-events:none; opacity:.62;}
 
-.section-head{margin-bottom:36px;}
+.section-head{margin-bottom:14px;}
 /* the divider at the top of every section: a black bar, a white keyline
    inset inside it, white capital serif */
-.section-bar{display:block; margin:0 0 36px; padding:18px 28px; background:#000; color:#fff; outline:2px solid #fff; outline-offset:-7px;
+.section-bar{display:block; margin:0 0 14px; padding:18px 28px; background:#000; color:#fff; outline:2px solid #fff; outline-offset:-7px;
   font-family:var(--serif); font-weight:600; font-size:clamp(20px, 2.6vw, 30px); line-height:1.2; letter-spacing:.16em; text-transform:uppercase; text-align:center;}
 
 /* OVERVIEW */
-.standard-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); margin-top:24px;}
+.standard-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); margin:14px 0;}
 .tier-card{background:var(--cream); padding:22px;}
 .tier-card .tier-name{font-family:var(--sans); font-weight:700; font-size:16px; letter-spacing:.05em;}
 .tier-card p{font-size:17px; color:var(--ink-soft); margin-top:6px;}
@@ -140,7 +140,7 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 /* STAGE TAPES — the five stage links, drawn as VHS cassettes.
    Built in CSS rather than from a photo so all five stay identical, stay sharp
    at any size, and cost nothing to load. */
-.stage-strip{display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:16px; background:none; border:0; margin-bottom:36px;}
+.stage-strip{display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:16px; background:none; border:0; margin-bottom:14px;}
 .stage-box{
   position:relative; display:block; text-decoration:none; overflow:hidden;
   aspect-ratio:16/10; border-radius:7px; padding:0;
@@ -229,11 +229,11 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
    per band. Drawn in CSS rather than photographed: every card is real text,
    so it is hoverable, clickable, and sharp at any width. White cards on
    black, the band on a tab hanging off the pack. */
-.mech-map-wrap{margin:0 0 34px;}
+.mech-map-wrap{margin:0;}
 .mech-map-bar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:10px;}
 .mech-map-bar .mm-tag{background:var(--navy); color:var(--cream); padding:3px 9px; margin-right:8px; letter-spacing:.12em;}
-.dossier{background:#000; border:1px solid #000; box-shadow:0 14px 40px rgba(0,0,0,.28); padding:38px 22px 30px; color:#F4F4F2;}
-.dossier-head{display:flex; align-items:center; justify-content:center; gap:36px 56px; flex-wrap:wrap; margin:0 auto 30px;}
+.dossier{background:#000; border:1px solid #000; box-shadow:0 14px 40px rgba(0,0,0,.28); padding:22px 22px 16px; color:#F4F4F2;}
+.dossier-head{display:flex; align-items:center; justify-content:center; gap:24px 56px; flex-wrap:wrap; margin:0 auto 18px;}
 .dossier-cover-wrap{position:relative; width:min(100%, 560px); flex:0 1 auto;}
 .dossier-cover{display:block; width:100%; height:auto; margin:0; filter:invert(1); border:1px solid #2A2A28;}
 /* the flowing copy: displaced, and masked to the roots and the brain's left edge */
@@ -273,7 +273,7 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 /* the five stage tapes move into the dossier itself — below the cover and
    the record, above the card packs — the same strip used elsewhere, just
    relocated, so its links and styling stay exactly as they were */
-.dossier .stage-strip{margin:0 0 26px;}
+.dossier .stage-strip{margin:0 0 16px;}
 .dossier-art::after{content:""; position:absolute; inset:0; z-index:1; background:rgba(0,0,0,.6); opacity:0; transition:opacity .3s ease; pointer-events:none;}
 .dossier-art:has(.dcard--hot:focus-visible)::after, .dossier-art:has(.dcard--hot.is-on)::after{opacity:1;}
 .dcard--hot{position:absolute; z-index:2; display:block; padding:0; margin:0; background:transparent; border:0; border-radius:6px; cursor:pointer; transition:box-shadow .2s ease, transform .2s ease; touch-action:manipulation; -webkit-tap-highlight-color:transparent;}
@@ -309,23 +309,23 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .dossier-note b{font-weight:400; color:#F4F4F2;}
 /* narrow */
 @media(max-width:720px){
-  .dossier{padding:28px 14px 22px;}
+  .dossier{padding:16px 14px 12px;}
 }
 
 /* THE NIGHTSTAND — the last thing on the page: both volumes set down for the
    night. Each book is a quiet link back to its own section. */
-#nightstand{padding:0 0 64px; background:#0B0B0B;}
+#nightstand{padding:0 0 24px; background:#0B0B0B;}
 .nightstand{position:relative; width:min(100%, 1100px); margin:0 auto; line-height:0; aspect-ratio:2 / 3;}
 .nightstand img{display:block; width:100%; height:100%; object-fit:cover;}
 .nightstand-book{position:absolute; display:block; border-radius:6px; transition:box-shadow .25s ease; -webkit-tap-highlight-color:transparent;}
 .nightstand-book:hover, .nightstand-book:focus-visible{box-shadow:0 0 0 2px var(--red), 0 0 40px rgba(255,255,255,.18); outline:none;}
-@media(max-width:720px){ #nightstand{padding-bottom:36px;} }
+@media(max-width:720px){ #nightstand{padding-bottom:16px;} }
 
 
 /* CHAPTER CABINET — Volume One's file-room artwork, with a hotspot over each
    of the eighteen drawers, one per chapter. The picture is the one kept in
    the art store, so it costs nothing extra. */
-.cab-wrap{margin:0 0 34px;}
+.cab-wrap{margin:0;}
 .cab-bar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:10px;}
 .cab-bar .cb-tag{background:var(--navy); color:var(--cream); padding:3px 9px; margin-right:8px; letter-spacing:.12em;}
 /* The stage holds the picture at the section's full width. On a phone the
@@ -341,7 +341,7 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
   .cab-stage::-webkit-scrollbar{display:none;}
   .cab-stage-host{width:170%; flex:0 0 auto;}
 }
-.cab-caption{font-family:var(--mono); font-size:12px; letter-spacing:.06em; line-height:1.45; color:var(--ink-soft); margin-top:10px; min-height:34px;}
+.cab-caption{font-family:var(--mono); font-size:12px; letter-spacing:.06em; line-height:1.45; color:var(--ink-soft); margin-top:8px; min-height:1.45em;}
 .cab-caption b{font-weight:400; color:var(--navy);}
 
 
@@ -384,7 +384,7 @@ html.view-phone .videolib-head{padding-right:56px;}
 .media-btn.pending:hover{background:transparent; color:#7C93A3;}
 
 /* LEDGER */
-.ledger-controls{display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;}
+.ledger-controls{display:flex; gap:12px; margin-bottom:10px; flex-wrap:wrap;}
 .ledger-controls input, .ledger-controls select{font-family:var(--serif); font-size:17px; padding:9px 12px; border:1px solid var(--border); background:var(--cream); border-radius:2px;}
 .ledger-controls input{flex:1; min-width:220px;}
 #ledgerCount{font-family:var(--mono); font-size:14px; color:var(--ink-soft); margin-bottom:14px;}
@@ -420,7 +420,7 @@ tbody tr:hover{background:var(--cream-dark);}
 .row-note::before{content:"↳ ";}
 /* EXHIBIT D — the ledger framed like the other exhibits: a black stage, and a
    red seal that draws itself around the frame as the ledger comes into view */
-.ledger-bar{margin-bottom:14px;}
+.ledger-bar{margin-bottom:10px;}
 .ledger-exhibit{position:relative; background:#0C0C0C; border:1px solid #000; box-shadow:0 14px 40px rgba(0,0,0,.28); padding:14px;}
 .ledger-exhibit #ledgerCount{color:#C9C9C6;}
 .ledger-exhibit .ledger-table-wrap{background:var(--cream);}
