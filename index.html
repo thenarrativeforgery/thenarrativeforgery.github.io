@@ -129,12 +129,24 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
   font-family:var(--serif); font-style:italic; font-size:clamp(12px, 1.6vw, 34px); font-size:clamp(12px, 2.3cqw, 34px); letter-spacing:.02em; color:var(--cream);
   text-shadow:0 0 14px rgba(255,255,255,.35), 0 0 2px rgba(0,0,0,.9); opacity:0; transition:opacity .7s ease;}
 .noirbar-stool:hover ~ .noirbar-unsee, .noirbar-stool:focus-visible ~ .noirbar-unsee, .noirbar-stool[aria-expanded="true"] ~ .noirbar-unsee{opacity:1;}
+/* his head, on hover: the hat cut away to show the compendium's brain.
+   It is Volume Two's cover (kept once in the art store), inverted to white
+   on black and cut to its brain, 352-682 x 36-669 of the 700x700 cover;
+   the picture is sized and offset so exactly that crop fills the box, which
+   sits in the right half of the hat, 1080-1140 x 169-285 of the photo.
+   It replaces the head's red ring. */
+.noirbar-brain{position:absolute; z-index:1; left:62.5%; top:14.67%; width:3.501%; height:10.069%; overflow:hidden; pointer-events:none; mix-blend-mode:screen; opacity:0; transition:opacity .35s ease;}
+.noirbar-brain img{position:absolute; left:-106.667%; top:-5.687%; width:212.121%; height:auto; max-width:none; filter:invert(1) contrast(1.15);}
+.noirbar-hot--head:hover{box-shadow:none;}
+.noirbar-hot--head:hover ~ .noirbar-brain, .noirbar-hot--head:focus-visible ~ .noirbar-brain{opacity:1;}
 .noirbar.is-hinting .noirbar-hot{animation:noirbar-hint 1.6s ease-in-out both;}
-.noirbar.is-hinting .noirbar-hot--head{animation-delay:.5s;}
+.noirbar.is-hinting .noirbar-hot--head{animation:none;}
+.noirbar.is-hinting .noirbar-brain{animation:noirbar-brain-hint 1.6s .5s ease-in-out both;}
+@keyframes noirbar-brain-hint{0%,100%{opacity:0;} 40%,60%{opacity:1;}}
 .noirbar.is-hinting .noirbar-hot--clock{animation-delay:1s;}
 .noirbar.is-hinting .noirbar-hot--record{animation-delay:1.5s;}
 @keyframes noirbar-hint{0%,100%{box-shadow:0 0 0 0 rgba(184,36,26,0), 0 0 0 rgba(255,255,255,0);} 40%,60%{box-shadow:0 0 0 2px var(--red), 0 0 40px rgba(255,255,255,.22);}}
-@media(prefers-reduced-motion:reduce){ .noirbar.is-hinting .noirbar-hot{animation:none; box-shadow:0 0 0 2px var(--red);} }
+@media(prefers-reduced-motion:reduce){ .noirbar.is-hinting .noirbar-hot{animation:none; box-shadow:0 0 0 2px var(--red);} .noirbar.is-hinting .noirbar-hot--head{box-shadow:none;} .noirbar.is-hinting .noirbar-brain{animation:none; opacity:1;} }
 .noirbar-hot--record.is-playing{box-shadow:0 0 0 2px var(--red), 0 0 40px rgba(255,255,255,.18);}
 /* the picture behind a word in the ledger */
 .secret{position:fixed; inset:0; z-index:300; background:rgba(0,0,0,.94); display:flex; align-items:center; justify-content:center; padding:24px;}
@@ -2379,6 +2391,20 @@ function liveWhileOnScreen(el){
     audio.addEventListener('play', () => { if(!meta.paused) meta.pause(); });
     meta.addEventListener('play', () => { if(!audio.paused) audio.pause(); });
   }
+})();
+
+// his head shows the compendium's brain on hover: the art store's copy of
+// Volume Two's cover, set into his hat (the CSS does the cutting)
+(function(){
+  const head = document.querySelector('.noirbar-hot--head'), art = document.getElementById('volumeTwoArt');
+  if(!head || !art) return;
+  const box = document.createElement('div');
+  box.className = 'noirbar-brain';
+  box.setAttribute('aria-hidden', 'true');
+  const img = document.createElement('img');
+  img.alt = ''; img.src = art.src;
+  box.appendChild(img);
+  head.insertAdjacentElement('afterend', box);
 })();
 
 // the stool's line shows on hover; a tap (no hover on a phone) holds it up
