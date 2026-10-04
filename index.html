@@ -40,7 +40,6 @@ a:hover{text-decoration:underline;}
 :root{--col:1200px;}
 @media(min-width:1700px){
   :root{--col:1440px;}
-  .noirbar{max-width:calc((100vh - 120px) * 3 / 2); margin:0 auto;}
   .cab-stage-host{max-width:calc(100vh - 110px);}
 }
 
@@ -78,9 +77,6 @@ a:hover{text-decoration:underline;}
 .exhibit-desc{color:#9C9C9C; text-transform:uppercase;}
 .exhibit-ref{color:var(--red-light); font-weight:700;}
 .exhibit-foot{display:flex; justify-content:space-between; align-items:center; padding-top:10px; margin-top:14px; border-top:1px solid #3A3A3A; font-family:var(--mono); font-size:13px; color:#9C9C9C; flex-wrap:wrap; gap:8px;}
-.intro-btn{display:block; width:100%; margin-top:14px; background:none; border:1px solid var(--red); color:var(--red-light); font-family:var(--sans); font-size:14px; font-weight:700; letter-spacing:.04em; padding:12px; cursor:pointer; border-radius:2px; text-align:center; text-transform:uppercase;}
-.intro-btn:hover{background:var(--red); color:var(--cream);}
-.intro-btn-lg{font-size:19px; padding:18px; letter-spacing:.03em; margin-top:0; margin-bottom:14px;}
 @media(max-width:640px){ .exhibit-ref, .exhibit-foot span:first-child{display:none;} }
 
 /* SECTIONS */
@@ -93,6 +89,11 @@ section#intro{background:var(--navy); color:var(--cream);}
    actual broadcast rather than an inset. */
 section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .noirbar{position:relative; line-height:0;}
+/* the bar is the first thing you see, so on arrival it fits the window,
+   stool and all: its height is held to what is left below everything above
+   it (--bar-top, measured by the script), but it never shrinks under 640px
+   wide, so a phone on its side still gets a picture */
+.noirbar{max-width:max(640px, calc((100vh - var(--bar-top, 270px) - 14px) * 3 / 2)); margin:0 auto;}
 /* the photo and everything placed on it, without the caption strip below,
    so the percentages below are fractions of the photo itself */
 .noirbar-stage{position:relative; container-type:inline-size;}
@@ -121,14 +122,25 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .noirbar-hot--clock{left:3.588%; top:2.344%; width:17.65%; height:26.82%; border-radius:50%;}
 .noirbar-hot--head{left:55.382%; top:13.368%; width:13.889%; height:16.58%; border-radius:50%;}
 .noirbar-hot--record{left:1.042%; top:53.819%; width:30.382%; height:22.569%;}
-/* the empty stool keeps a line to itself: hover it (or tap it) and the
-   words come up to its left. It is left out of the hint on purpose. */
-.noirbar-stool{position:absolute; z-index:2; left:65.451%; top:90.191%; width:25.231%; height:9.809%; padding:0; margin:0; background:transparent; border:0; border-radius:50% 50% 0 0 / 70% 70% 0 0; cursor:default; -webkit-tap-highlight-color:transparent;}
-.noirbar-stool:focus-visible{outline:1px solid rgba(250,250,247,.5); outline-offset:2px;}
-.noirbar-unsee{position:absolute; z-index:2; right:36.053%; top:95.05%; transform:translateY(-50%); white-space:nowrap; line-height:1; pointer-events:none;
-  font-family:var(--serif); font-style:italic; font-size:clamp(12px, 1.6vw, 34px); font-size:clamp(12px, 2.3cqw, 34px); letter-spacing:.02em; color:var(--cream);
-  text-shadow:0 0 14px rgba(255,255,255,.35), 0 0 2px rgba(0,0,0,.9); opacity:0; transition:opacity .7s ease;}
-.noirbar-stool:hover ~ .noirbar-unsee, .noirbar-stool:focus-visible ~ .noirbar-unsee, .noirbar-stool[aria-expanded="true"] ~ .noirbar-unsee{opacity:1;}
+/* the empty stool is the way in: it opens "What is the Narrative
+   Forgery?". It glows, slowly and always, and the question waits to its
+   left with an invitation under it; hover it and the question gives way to
+   "It's hard to unsee." The words sit inside the button (placed off to its
+   left), so clicking them opens the reader too. Not part of the hint: it
+   never stops asking. */
+.noirbar-stool{position:absolute; z-index:2; left:65.451%; top:90.191%; width:25.231%; height:9.809%; padding:0; margin:0; background:transparent; border:0; border-radius:50% 50% 0 0 / 70% 70% 0 0; cursor:pointer; -webkit-tap-highlight-color:transparent;
+  animation:noirbar-stool-glow 2.8s ease-in-out infinite; transition:box-shadow .25s ease;}
+.noirbar-stool:hover, .noirbar-stool:focus-visible{animation:none; box-shadow:0 0 0 2px var(--red), 0 0 40px rgba(255,255,255,.18); outline:none;}
+@keyframes noirbar-stool-glow{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,0);} 50%{box-shadow:0 0 34px 4px rgba(255,255,255,.28);}}
+@media(prefers-reduced-motion:reduce){ .noirbar-stool{animation:none; box-shadow:0 0 30px 2px rgba(255,255,255,.2);} }
+.noirbar-say{position:absolute; right:105.963%; top:48%; transform:translateY(-50%); text-align:right; white-space:nowrap; line-height:1; pointer-events:auto; transition:opacity .5s ease;
+  font-family:var(--serif); font-style:italic; font-weight:400; font-size:clamp(12px, 1.6vw, 34px); font-size:clamp(12px, 2.3cqw, 34px); letter-spacing:.02em; color:var(--cream);
+  text-shadow:0 0 14px rgba(255,255,255,.35), 0 0 2px rgba(0,0,0,.9);}
+.noirbar-say small{display:block; margin-top:.75em; font-family:var(--mono); font-style:normal; font-weight:700; font-size:clamp(10px, 1.3cqw, 17px); letter-spacing:.22em; text-transform:uppercase; color:var(--red-light); text-shadow:0 0 2px #000;}
+.noirbar-ask{top:auto; bottom:12%; transform:none;}  /* grows upward, so on a phone it stays inside the photo */
+.noirbar-unsee{opacity:0; pointer-events:none;}
+.noirbar-stool:hover .noirbar-ask, .noirbar-stool:focus-visible .noirbar-ask{opacity:0;}
+.noirbar-stool:hover .noirbar-unsee, .noirbar-stool:focus-visible .noirbar-unsee{opacity:1;}
 /* his head, on hover: the hat cut away to show the compendium's brain.
    It is Volume Two's cover (kept once in the art store), inverted to white
    on black and cut to its brain, 352-682 x 36-669 of the 700x700 cover;
@@ -766,7 +778,6 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 <section id="intro">
   <div class="wrap">
     <h2 class="section-bar">Intro</h2>
-    <button class="intro-btn intro-btn-lg" onclick="openIntroReader()">What Is the Narrative Forgery?</button>
     <div class="exhibit-bar">
       <div class="exhibit-left"><span class="exhibit-tag">EXHIBIT A</span><span class="exhibit-desc">Introduction to TNF</span></div>
       <div class="exhibit-ref">TNF_intro</div>
@@ -782,8 +793,10 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
       <a class="noirbar-hot noirbar-hot--clock" href="#ledger" aria-label="The clock on the wall: go to the ledger"></a>
       <button type="button" class="noirbar-hot noirbar-hot--record" id="barRecord" aria-pressed="false" aria-label="The record player: play The Narrative Forgery (instrumental)"></button>
       <audio id="barAudio" preload="none" src="audio/narrative-forgery-instrumental.mp3"></audio>
-      <button type="button" class="noirbar-stool" id="barStool" aria-expanded="false" aria-controls="barUnsee" aria-label="The empty stool"></button>
-      <span class="noirbar-unsee" id="barUnsee">It&rsquo;s hard to unsee.</span>
+      <button type="button" class="noirbar-stool" id="barStool" aria-label="What is the Narrative Forgery? Take a seat: open the introduction">
+        <span class="noirbar-say noirbar-ask" aria-hidden="true">What is the Narrative Forgery?<small>Take a seat &rarr;</small></span>
+        <span class="noirbar-say noirbar-unsee" aria-hidden="true">It&rsquo;s hard to unsee.</span>
+      </button>
       </div>
       <div class="exhibit-foot"><span>SOURCE: VIMEO ARCHIVE</span></div>
     </div>
@@ -2407,14 +2420,22 @@ function liveWhileOnScreen(el){
   head.insertAdjacentElement('afterend', box);
 })();
 
-// the stool's line shows on hover; a tap (no hover on a phone) holds it up
-// until the next tap, and moving the mouse off it puts it away
+// the stool opens the introduction, "What is the Narrative Forgery?"
 (function(){
   const stool = document.getElementById('barStool');
-  if(!stool) return;
-  const show = on => stool.setAttribute('aria-expanded', on ? 'true' : 'false');
-  stool.addEventListener('click', () => show(stool.getAttribute('aria-expanded') !== 'true'));
-  stool.addEventListener('mouseleave', () => show(false));
+  if(stool) stool.addEventListener('click', () => openIntroReader());
+})();
+
+// the bar fits the window on arrival: tell the CSS how far down the page it
+// starts, which moves when the nav wraps or the fonts arrive
+(function(){
+  const bar = document.getElementById('noirBar');
+  if(!bar) return;
+  const fit = () => bar.style.setProperty('--bar-top', Math.round(bar.getBoundingClientRect().top + window.scrollY) + 'px');
+  fit();
+  window.addEventListener('resize', fit);
+  window.addEventListener('load', fit);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 })();
 
 /* ── THE FILE ROOM ─────────────────────────────────────────────────────────
