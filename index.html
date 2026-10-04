@@ -198,93 +198,6 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .tier-card .tier-name{font-family:var(--sans); font-weight:700; font-size:16px; letter-spacing:.05em;}
 .tier-card p{font-size:17px; color:var(--ink-soft); margin-top:6px;}
 .t-established{color:var(--ink);} .t-strong{color:var(--blue);} .t-supported{color:var(--ink-soft);}
-/* STAGE TAPES — the five stage links, drawn as VHS cassettes.
-   Built in CSS rather than from a photo so all five stay identical, stay sharp
-   at any size, and cost nothing to load. */
-.stage-strip{display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:16px; background:none; border:0; margin-bottom:14px;}
-.stage-box{
-  position:relative; display:block; text-decoration:none; overflow:hidden;
-  aspect-ratio:16/10; border-radius:7px; padding:0;
-  background:
-    linear-gradient(180deg, #333 0, #1c1c1c 6%, #151515 50%, #101010 92%, #2b2b2b 100%);
-  box-shadow:0 9px 24px rgba(0,0,0,.34), 0 1px 0 rgba(255,255,255,.07) inset, 0 -14px 22px -14px rgba(0,0,0,.9) inset;
-  transition:transform .34s cubic-bezier(.34,1.4,.5,1), box-shadow .34s ease;
-}
-/* the ribbed shell above and below the label window */
-.stage-box::before{
-  content:""; position:absolute; top:0; right:0; bottom:0; left:0; pointer-events:none;
-  background:
-    repeating-linear-gradient(180deg, rgba(255,255,255,.05) 0 1px, rgba(0,0,0,.16) 1px 4px);
-  -webkit-mask-image:linear-gradient(180deg, #000 0 17%, transparent 17% 79%, #000 79% 100%);
-          mask-image:linear-gradient(180deg, #000 0 17%, transparent 17% 79%, #000 79% 100%);
-}
-/* light raking across the shell, like the reference photo */
-.stage-box::after{
-  content:""; position:absolute; top:0; right:0; bottom:0; left:0; pointer-events:none;
-  background:linear-gradient(107deg, rgba(255,255,255,.10) 0, rgba(255,255,255,.02) 26%, transparent 47%);
-}
-/* the two reel windows the label sits between */
-.tape-reel{
-  position:absolute; top:26%; height:48%; width:13%;
-  border-radius:5px; background:#0a0a0a;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.13), inset 0 3px 7px rgba(0,0,0,.9);
-}
-.tape-reel::after{
-  content:""; position:absolute; left:50%; top:50%; width:64%; aspect-ratio:1; transform:translate(-50%,-50%); border-radius:50%;
-  background:radial-gradient(circle at 38% 32%, #4a4a4a 0, #232323 55%, #131313 100%);
-  box-shadow:0 0 0 1px rgba(255,255,255,.07);
-}
-.tape-reel-l{left:6.5%;} .tape-reel-r{right:6.5%;}
-/* the stuck-on paper label */
-.tape-label{
-  position:absolute; left:22%; right:22%; top:20%; bottom:20%;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
-  padding:6px 8px; text-align:center;
-  background:linear-gradient(178deg, #FAF7EE 0, #EFEADC 100%);
-  border-radius:2px; transform:rotate(-.5deg);
-  box-shadow:0 2px 5px rgba(0,0,0,.55), inset 0 0 0 1px rgba(0,0,0,.18);
-  transition:box-shadow .34s ease, transform .34s cubic-bezier(.34,1.4,.5,1);
-}
-.stage-box .stage-num{
-  font-family:'Permanent Marker', var(--mono), monospace;
-  font-size:clamp(15px, 1.5vw, 19px); line-height:1; color:#1A1A1A;
-  letter-spacing:.02em; text-transform:uppercase; transform:rotate(-1.2deg);
-  white-space:nowrap; max-width:100%;
-}
-.stage-box .stage-title{
-  font-family:var(--mono); font-size:10px; font-weight:700; line-height:1.25;
-  letter-spacing:.07em; text-transform:uppercase; color:#4A4A46; margin-top:0;
-}
-/* WATCH tab, like a rental-shop sticker, revealed on approach */
-.tape-play{
-  position:absolute; right:0; bottom:11%; z-index:2;
-  font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:.16em;
-  background:var(--red); color:#fff; padding:3px 9px 3px 8px; border-radius:2px 0 0 2px;
-  opacity:0; transform:translateX(100%);
-  transition:opacity .28s ease, transform .34s cubic-bezier(.34,1.4,.5,1);
-}
-.stage-box:hover, .stage-box:focus-visible{
-  outline:none;
-  transform:translateY(-5px);
-  box-shadow:0 18px 34px rgba(0,0,0,.42), 0 1px 0 rgba(255,255,255,.1) inset, 0 -14px 22px -14px rgba(0,0,0,.9) inset;
-}
-.stage-box:hover .tape-label, .stage-box:focus-visible .tape-label{
-  transform:rotate(-.5deg) scale(1.03);
-  box-shadow:0 4px 12px rgba(0,0,0,.6), inset 0 0 0 1px rgba(0,0,0,.2);
-}
-.stage-box:hover .tape-play, .stage-box:focus-visible .tape-play{opacity:1; transform:translateX(0);}
-/* one-up on a phone: keep the label readable, but flatten the shell so five tapes
-   do not turn into a page of scrolling */
-@media(max-width:560px){
-  .stage-box{aspect-ratio:16/8;}
-  .stage-box .stage-num{font-size:clamp(14px, 5.2vw, 19px);}
-  .stage-box .stage-title{font-size:11px;}
-  .tape-play{opacity:1; transform:none;}
-}
-@media(prefers-reduced-motion:reduce){
-  .stage-box, .tape-label, .tape-play{transition:opacity .15s ease;}
-  .stage-box:hover, .stage-box:focus-visible{transform:none;}
-}
 
 /* THE DOSSIER — the eighteen mechanisms as index cards, in five packs, one
    per band. Drawn in CSS rather than photographed: every card is real text,
@@ -324,17 +237,30 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .vinyl.is-dragging .vinyl-arm-g{transition:none; cursor:grabbing;}
 .vinyl-arm-g:hover .vinyl-arm-grip{stroke:rgba(255,255,255,.06);}
 @keyframes vinyl-spin{to{transform:rotate(360deg);}}
-.vinyl-caption{font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#8C8C88; text-align:center; line-height:1.7;}
-.vinyl-caption b{font-weight:400; color:#F4F4F2;}
+.vinyl-caption, .reel-caption{font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#8C8C88; text-align:center; line-height:1.7;}
+.vinyl-caption b, .reel-caption b{font-weight:400; color:#F4F4F2;}
 .vinyl.is-playing .vinyl-state{color:#E0574A;}
+/* beside the cover, the record over the reel: the meta song, and every video */
+.dossier-side{display:flex; flex-direction:column; align-items:center; gap:34px;}
+/* the reel: one way into all the videos (the video library), drawn like the
+   record. The spool turns slowly while the pointer is on it. */
+.reel{display:flex; flex-direction:column; align-items:center; gap:10px; padding:0; margin:0; border:0; background:none; color:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent;}
+.reel:focus-visible{outline:none;}
+.reel-art{display:block; width:190px; width:min(190px, 50vw); height:auto; overflow:visible; transition:transform .25s ease, filter .25s ease;}
+.reel-spool{transform-box:fill-box; transform-origin:50% 50%; animation:vinyl-spin 7s linear infinite; animation-play-state:paused;}
+/* hover and keyboard focus as separate rules, so a TV's browser that doesn't
+   know :focus-visible still keeps the hover */
+.reel:hover .reel-art{transform:scale(1.03); filter:drop-shadow(0 0 18px rgba(255,255,255,.22));}
+.reel:hover .reel-spool{animation-play-state:running;}
+.reel:hover .reel-state{color:#E0574A;}
+.reel:focus-visible .reel-art{transform:scale(1.03); filter:drop-shadow(0 0 18px rgba(255,255,255,.22));}
+.reel:focus-visible .reel-spool{animation-play-state:running;}
+.reel:focus-visible .reel-state{color:#E0574A;}
+@media(prefers-reduced-motion:reduce){ .reel-spool{animation:none;} }
 /* the menu as the picture: a button over each card; a hovered card shows its
    own crop of the picture, lit and lifted, while the rest of the packs dim */
 .dossier-art{position:relative; width:min(100%, 1100px); margin:0 auto; line-height:0; container-type:inline-size;}
 .dossier-art img{display:block; width:100%; height:100%;}
-/* the five stage tapes move into the dossier itself — below the cover and
-   the record, above the card packs — the same strip used elsewhere, just
-   relocated, so its links and styling stay exactly as they were */
-.dossier .stage-strip{margin:0 0 16px;}
 .dossier-art::after{content:""; position:absolute; top:0; right:0; bottom:0; left:0; z-index:1; background:rgba(0,0,0,.6); opacity:0; transition:opacity .3s ease; pointer-events:none;}
 .dossier-art:has(.dcard--hot:focus-visible)::after, .dossier-art:has(.dcard--hot.is-on)::after{opacity:1;}
 .dcard--hot{position:absolute; z-index:2; display:block; padding:0; margin:0; background:transparent; border:0; border-radius:6px; cursor:pointer; transition:box-shadow .2s ease, transform .2s ease; touch-action:manipulation; -webkit-tap-highlight-color:transparent;}
@@ -853,54 +779,6 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 <section id="compendium">
   <div class="wrap">
     <h2 class="section-bar">The Compendium</h2>
-    <div class="stage-strip">
-      <a class="stage-box" href="https://notebook.google.com/notebook/08245f98-8a99-4b42-9969-cc511ecf382f/artifact/71368495-3de2-4371-a6c3-614dd3551d3d?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">
-        <span class="tape-reel tape-reel-l" aria-hidden="true"></span>
-        <span class="tape-reel tape-reel-r" aria-hidden="true"></span>
-        <span class="tape-label">
-          <span class="stage-num">STAGE 1</span>
-          <span class="stage-title">Foundation Construction</span>
-        </span>
-        <span class="tape-play" aria-hidden="true">WATCH</span>
-      </a>
-      <a class="stage-box" href="https://notebook.google.com/notebook/08245f98-8a99-4b42-9969-cc511ecf382f/artifact/67e2f292-3ad1-4230-9d5d-c504f0e0a1c8?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">
-        <span class="tape-reel tape-reel-l" aria-hidden="true"></span>
-        <span class="tape-reel tape-reel-r" aria-hidden="true"></span>
-        <span class="tape-label">
-          <span class="stage-num">STAGE 2</span>
-          <span class="stage-title">Ecosystem Capture</span>
-        </span>
-        <span class="tape-play" aria-hidden="true">WATCH</span>
-      </a>
-      <a class="stage-box" href="https://notebook.google.com/notebook/08245f98-8a99-4b42-9969-cc511ecf382f/artifact/53e783ab-c057-4adc-a2cb-fb76bd2674dc?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">
-        <span class="tape-reel tape-reel-l" aria-hidden="true"></span>
-        <span class="tape-reel tape-reel-r" aria-hidden="true"></span>
-        <span class="tape-label">
-          <span class="stage-num">STAGE 3</span>
-          <span class="stage-title">Existential Threat Activation</span>
-        </span>
-        <span class="tape-play" aria-hidden="true">WATCH</span>
-      </a>
-      <a class="stage-box" href="https://notebook.google.com/notebook/08245f98-8a99-4b42-9969-cc511ecf382f/artifact/56db612b-6eb0-4828-9665-0e6583e8d282?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">
-        <span class="tape-reel tape-reel-l" aria-hidden="true"></span>
-        <span class="tape-reel tape-reel-r" aria-hidden="true"></span>
-        <span class="tape-label">
-          <span class="stage-num">STAGE 4</span>
-          <span class="stage-title">Legal and Economic Infrastructure</span>
-        </span>
-        <span class="tape-play" aria-hidden="true">WATCH</span>
-      </a>
-      <a class="stage-box" href="https://notebook.google.com/notebook/08245f98-8a99-4b42-9969-cc511ecf382f/artifact/2a0d6975-5540-48e3-9c26-ed9fa35e9838?utm_source=nlm_web_share&amp;utm_medium=google_oo&amp;utm_campaign=art_share_1&amp;utm_content=&amp;utm_smc=nlm_web_share_google_oo_art_share_1_" target="_blank" rel="noopener">
-        <span class="tape-reel tape-reel-l" aria-hidden="true"></span>
-        <span class="tape-reel tape-reel-r" aria-hidden="true"></span>
-        <span class="tape-label">
-          <span class="stage-num">STAGE 5</span>
-          <span class="stage-title">Terminal Expression</span>
-        </span>
-        <span class="tape-play" aria-hidden="true">WATCH</span>
-      </a>
-    </div>
-
     <div class="mech-map-wrap" id="mechMapWrap">
       <div class="mech-map-bar">
         <span><span class="mm-tag">EXHIBIT C</span>The dossier</span>
@@ -991,7 +869,7 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   <div class="videolib-panel">
     <div class="videolib-head">
       <div>
-        <div class="videolib-eyebrow">THE TV IN THE CORNER</div>
+        <div class="videolib-eyebrow">THE ARCHIVE</div>
         <h2>Every Video, In Order</h2>
       </div>
       <button type="button" class="reader-close" onclick="closeVideoLibrary()" aria-label="Close">✕</button>
@@ -1123,18 +1001,25 @@ document.addEventListener('keydown', (e)=>{
   else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
 });
 
-// VIDEO LIBRARY — the TV's own index. Built once, on first open, straight off
-// the same data (and the same live stage-strip anchors) the rest of the page
-// already uses, so it can never drift out of sync with them.
+// the five stage explainers. They used to be VHS tapes on the page; now
+// they live only in the video library, under STAGES.
+const STAGES = [
+  {n:1, title:'Foundation Construction', url:'https://notebook.google.com/notebook/08245f98-8a99-4b42-9969-cc511ecf382f/artifact/71368495-3de2-4371-a6c3-614dd3551d3d?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_'},
+  {n:2, title:'Ecosystem Capture', url:'https://notebook.google.com/notebook/08245f98-8a99-4b42-9969-cc511ecf382f/artifact/67e2f292-3ad1-4230-9d5d-c504f0e0a1c8?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_'},
+  {n:3, title:'Existential Threat Activation', url:'https://notebook.google.com/notebook/08245f98-8a99-4b42-9969-cc511ecf382f/artifact/53e783ab-c057-4adc-a2cb-fb76bd2674dc?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_'},
+  {n:4, title:'Legal and Economic Infrastructure', url:'https://notebook.google.com/notebook/08245f98-8a99-4b42-9969-cc511ecf382f/artifact/56db612b-6eb0-4828-9665-0e6583e8d282?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_'},
+  {n:5, title:'Terminal Expression', url:'https://notebook.google.com/notebook/08245f98-8a99-4b42-9969-cc511ecf382f/artifact/2a0d6975-5540-48e3-9c26-ed9fa35e9838?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_'}
+];
+
+// VIDEO LIBRARY — every video, in order: the stages, then the mechanisms,
+// then the chapters. Built once, on first open, straight off the same data
+// the rest of the page uses, so it can never drift out of sync with it.
+// Opened by the reel in the compendium and the archive in the file room.
 let videoLibraryBuilt = false;
 function buildVideoLibraryBody(){
   if(videoLibraryBuilt) return;
   videoLibraryBuilt = true;
-  const stages = [...document.querySelectorAll('.stage-strip .stage-box')].map(a => ({
-    n: a.querySelector('.stage-num').textContent.replace('STAGE', 'S').replace(/\s+/g, ''),
-    title: a.querySelector('.stage-title').textContent,
-    url: a.getAttribute('href')
-  }));
+  const stages = STAGES.map(s => ({n: 'S' + s.n, title: s.title, url: s.url}));
   const mechs = MECHANISMS.filter(m => m.video).map(m => ({
     n: 'M' + String(m.n).padStart(2, '0'), title: m.title, url: m.video
   }));
@@ -1233,6 +1118,30 @@ const TONEARM_SVG = '<svg class="vinyl-arm" viewBox="0 0 100 160" preserveAspect
   + '<path d="M44 134l-3 6" stroke="#F4F4F2" stroke-width="1.6" stroke-linecap="round"/>'
   + '</g></svg>';
 
+// the reel under the record: a spool of film drawn the same way, six ports
+// round the hub, with the end of the film running off it to the right. The
+// spool turns on hover; the film stays put.
+const REEL_SVG = (function(){
+  let film = '';
+  for(let x = 150; x <= 238; x += 9) film += '<rect x="' + x + '" y="175.5" width="4" height="3" rx=".6" fill="rgba(244,244,242,.7)"/>'
+    + '<rect x="' + x + '" y="189.5" width="4" height="3" rx=".6" fill="rgba(244,244,242,.7)"/>';
+  for(let x = 152; x <= 212; x += 30) film += '<rect x="' + x + '" y="180.5" width="25" height="7" stroke="rgba(244,244,242,.35)" stroke-width=".8"/>';
+  let ports = '';
+  for(let i = 0; i < 6; i++){
+    const a = i * Math.PI / 3 - Math.PI / 2;
+    ports += '<circle cx="' + (100 + 50 * Math.cos(a)).toFixed(1) + '" cy="' + (100 + 50 * Math.sin(a)).toFixed(1) + '" r="19" fill="#000" stroke="#F4F4F2" stroke-width="1.4"/>';
+  }
+  return '<svg class="reel-art" viewBox="0 0 250 200" fill="none" aria-hidden="true">'
+    + '<path d="M100 172H246V196H100z" fill="#050505" stroke="#F4F4F2" stroke-width="1.2"/>' + film
+    + '<g class="reel-spool">'
+    +   '<circle cx="100" cy="100" r="96" fill="#050505" stroke="#F4F4F2" stroke-width="1.6"/>'
+    +   '<circle cx="100" cy="100" r="88" stroke="rgba(244,244,242,.22)" stroke-width=".8"/>'
+    +   ports
+    +   '<circle cx="100" cy="100" r="13" fill="#0B0B0B" stroke="#F4F4F2" stroke-width="1.4"/>'
+    +   '<circle cx="100" cy="100" r="3.2" fill="#F4F4F2"/>'
+    + '</g></svg>';
+})();
+
 /* Volume Two's menu: the picture of the eighteen index cards in five packs,
    cropped under the brain (the inverted cover above carries the title) and
    to the packs' left edge so they fill the width. Each card is a hotspot
@@ -1294,7 +1203,10 @@ function buildDossier(){
       + '<img class="dossier-cover" src="' + cover.src + '" alt="Volume Two — The Neural Architecture of Deception: a compendium of psychological mechanisms in The Narrative Forgery">'
       + '<div class="dossier-cover-flow-mask"><img class="dossier-cover dossier-cover--flow" src="' + cover.src + '" alt="" aria-hidden="true"></div>'
       + '</div>'
-    : '') + vinyl;
+    : '') + '<div class="dossier-side">' + vinyl
+      + '<button type="button" class="reel" id="dossierReel" aria-label="The archive: every video, in order">' + REEL_SVG
+      + '<span class="reel-caption"><b>The archive</b> &middot; every video<br><span class="reel-state">Watch</span></span></button>'
+    + '</div>';
 
   // The menu is the picture of the packs, with an invisible button over each
   // card; a hovered card shows its own crop of the picture, lit, while the
@@ -1317,10 +1229,8 @@ function buildDossier(){
     + body
     + '<div class="dossier-note"></div>';
   if(artSrc) host.querySelector('.dossier-art').style.setProperty('--art', 'url("' + artSrc + '")');
-  // move the real stage strip — the same one, links and handlers untouched
-  // — to sit between the head and the card packs
-  const strip = document.querySelector('.stage-strip');
-  if(strip) host.insertBefore(strip, host.querySelector('.dossier-art') || host.querySelector('.dossier-note'));
+  // the reel opens every video, in order
+  host.querySelector('#dossierReel').addEventListener('click', () => openVideoLibrary());
   // the roots flow only while the cover is on screen
   (function(){
     const w = host.querySelector('#dossierCoverWrap'); if(!w) return;
