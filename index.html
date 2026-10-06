@@ -479,9 +479,12 @@ footer .build{margin-top:14px; font-family:var(--mono); font-size:11px; letter-s
   .standard-grid{grid-template-columns:1fr;}
   thead th:nth-child(3){display:none;} tbody td:nth-child(3){display:none;}
 }
-#readerOverlay{display:none; position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(20,20,20,.65); z-index:200; padding:32px 20px; overflow-y:auto;}
+/* No top padding on the overlay: a sticky header stops below its scroller's
+   padding, and the page text showed through that strip. The panel's own top
+   margin gives the gap instead, which scrolls away under the stuck header. */
+#readerOverlay{display:none; position:fixed; top:0; right:0; bottom:0; left:0; background:rgba(20,20,20,.65); z-index:200; padding:0 20px 32px; overflow-y:auto;}
 #readerOverlay.open{display:block;}
-.reader-panel{max-width:920px; margin:0 auto; background:var(--cream); border-radius:2px; box-shadow:0 24px 70px rgba(0,0,0,.5); border:1px solid var(--border);}
+.reader-panel{max-width:920px; margin:32px auto 0; background:var(--cream); border-radius:2px; box-shadow:0 24px 70px rgba(0,0,0,.5); border:1px solid var(--border);}
 .reader-head{position:sticky; top:0; z-index:5; background:var(--navy); color:var(--cream); padding:0; border-radius:2px 2px 0 0; box-shadow:0 2px 10px rgba(0,0,0,.2);}
 .reader-head-inner{padding:30px 52px 26px; position:relative;}
 .reader-head .ch-eyebrow{font-family:var(--mono); font-size:14px; letter-spacing:.15em; color:var(--red-light); text-transform:uppercase; margin-bottom:8px;}
@@ -579,8 +582,9 @@ html.view-phone .reader-head-inner{padding:20px 18px 16px; padding-right:56px;}
 html.view-phone .reader-mechs{padding:12px 18px 4px;}
 html.view-phone .reader-foot{padding:12px 18px; flex-wrap:wrap; gap:8px;}
 html.view-phone .type-scale{display:none;}
-html.view-phone #readerOverlay{padding:0; padding-top:env(safe-area-inset-top);}
-html.view-phone .reader-panel{min-height:100%; border-radius:0; max-width:none;}
+html.view-phone #readerOverlay{padding:0;}
+html.view-phone .reader-panel{margin:0; min-height:100%; border-radius:0; max-width:none;}
+html.view-phone .reader-head{padding-top:env(safe-area-inset-top);}
 html.view-phone .tnf-ring{--tnf-ring-size:clamp(180px, 56vw, 260px);}
 
 /* Desktop forced view on wide screens still respects toggle */
@@ -605,7 +609,7 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   #ledgerCards{display:block !important;}
   .wrap{padding-left:16px; padding-right:16px;}
   #readerOverlay{padding:0;}
-  .reader-panel{border-radius:0; max-width:none; min-height:100%;}
+  .reader-panel{margin:0; border-radius:0; max-width:none; min-height:100%;}
 }
 
 @media(max-width:720px) and (pointer:coarse){ .view-toggle{display:none;} }
