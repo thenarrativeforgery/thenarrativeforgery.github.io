@@ -342,6 +342,9 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
    line on a wide window, two or three as it narrows */
 @media(max-width:800px){ .cab-caption{min-height:2.9em;} }
 @media(max-width:440px){ .cab-caption{min-height:4.35em;} }
+/* a finger never hovers, and a tapped drawer's card already says all the
+   line would, so on a touch screen the line and the room kept for it go */
+@media(hover:none){ .cab-caption{display:none;} }
 
 
 /* VIDEO LIBRARY — the TV's own index: every stage, mechanism, and chapter
