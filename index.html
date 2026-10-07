@@ -544,7 +544,7 @@ body{overflow-x:clip; padding-left:env(safe-area-inset-left); padding-right:env(
 .nav-scrim.open{display:block;}
 #ledgerCards{display:none;}
 .ledger-card{cursor:pointer; background:var(--cream); border:1px solid var(--border); border-radius:4px; padding:14px 16px; margin-bottom:10px;}
-.ledger-card.flagged{background:rgba(145,13,13,.035); border-color:#D9B8B8;}
+.ledger-card.flagged{background:#F6F2EF; border-color:#D9B8B8;}  /* the cream with a breath of red, solid: the cards sit on the exhibit's black */
 .ledger-card .lc-fac{font-family:var(--mono); font-size:13px; color:var(--red); font-weight:700; letter-spacing:.04em;}
 .ledger-card .lc-meta{font-family:var(--mono); font-size:12px; color:var(--ink-soft); margin:4px 0 8px;}
 .ledger-card .lc-event{font-size:15px; line-height:1.45; margin-bottom:8px;}
@@ -554,6 +554,36 @@ body{overflow-x:clip; padding-left:env(safe-area-inset-left); padding-right:env(
 .ledger-card.expanded .lc-detail{display:block;}
 .ledger-card.expanded .lc-toggle .exp-arrow{transform:rotate(90deg);}
 .ledger-card .exp-arrow{display:inline-block; margin-right:3px; font-size:10px; transition:transform .15s;}
+/* On a phone the ledger waits to be asked: a grid of chapters to pick from
+   (any number of them) under the search, and nothing below until a chapter
+   is picked or a word typed. Then it deals the cards twenty at a time. The
+   grid stands in for the chapter dropdown wherever the cards stand in for
+   the table. */
+.ledger-picker{display:none; flex:1 1 100%; order:1;}
+.ledger-controls{scroll-margin-top:calc(var(--nav-h, 72px) + 8px);}
+html.view-phone .ledger-picker{display:block;}
+html.view-phone #chapterFilter{display:none;}
+html.view-phone #tierFilter{flex:1 1 100%; order:2;}
+html.view-desktop .ledger-picker{display:none;}
+html.view-desktop #chapterFilter{display:block;}
+html.view-desktop #tierFilter{flex:0 1 auto; order:0;}
+.lp-head{display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:32px; font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px;}
+.lp-clear{font:inherit; letter-spacing:inherit; text-transform:inherit; color:var(--red); background:none; border:0; padding:6px 0 6px 12px; cursor:pointer;}
+.lp-grid{display:grid; grid-template-columns:repeat(6, 1fr); gap:6px;}
+.lp-chip{min-height:46px; padding:0; background:var(--cream); border:1px solid var(--border); border-radius:2px; color:var(--ink); font-family:var(--sans); font-size:18px; font-weight:600; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; transition:background .15s, color .15s, border-color .15s;}
+.lp-chip[aria-pressed="true"]{background:var(--navy); border-color:var(--navy); color:var(--cream);}
+.lp-chip:disabled{color:#B4B4B0; border-style:dashed; cursor:default;}
+.lp-chip:focus-visible, .lp-clear:focus-visible, .lc-btn:focus-visible{outline:2px solid var(--red); outline-offset:2px;}
+.lp-picked{font-family:var(--mono); font-size:12px; line-height:1.5; color:var(--ink-soft); margin-top:8px;}
+.lp-picked:empty{display:none;}
+.lp-picked span{display:block;}
+.lp-picked b{font-weight:400; color:var(--ink);}
+.lc-idle{padding:18px 4px 10px; text-align:center;}
+.lc-idle p, .lc-none{font-family:var(--mono); font-size:13px; line-height:1.6; color:#C9C9C6; margin:0 auto 14px; max-width:30em;}
+.lc-more{display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:10px 12px; padding:6px 0 4px; font-family:var(--mono); font-size:12px; color:#C9C9C6;}
+.lc-more-count{flex:1 1 100%; text-align:center; letter-spacing:.06em;}
+.lc-btn{font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; min-height:44px; padding:0 16px; border:1px solid #F4F4F2; background:#F4F4F2; color:#0B0B0B; cursor:pointer; touch-action:manipulation;}
+.lc-btn--ghost{background:transparent; color:#F4F4F2;}
 .ring-share-hotspot{grid-area:1/1; z-index:2; width:40%; height:40%; max-width:88px; max-height:88px; min-width:72px; min-height:72px; border-radius:50%; background:transparent; border:0; cursor:default; place-self:center; -webkit-tap-highlight-color:transparent;}
 .tnf-toast{position:fixed; bottom:calc(24px + env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%) translateY(20px); background:#1A1A1A; color:#E8E8E6; font-family:var(--mono); font-size:13px; padding:10px 18px; border-radius:4px; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:300; white-space:nowrap;}
 .tnf-toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
@@ -610,6 +640,9 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   #nav ul li{border-bottom:1px solid #333; padding:14px 0;}
   .ledger-table-wrap{display:none !important;}
   #ledgerCards{display:block !important;}
+  .ledger-picker{display:block;}
+  #chapterFilter{display:none;}
+  #tierFilter{flex:1 1 100%; order:2;}
   .wrap{padding-left:16px; padding-right:16px;}
   #readerOverlay{padding:0;}
   .reader-panel{margin:0; border-radius:0; max-width:none; min-height:100%;}
@@ -819,9 +852,14 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
       <span><span class="cb-tag">EXHIBIT D</span>The receipts ledger</span>
     </div>
     <div class="ledger-controls">
-      <input id="ledgerSearch" type="search" placeholder="Search event, chapter, FAC number, or notes…" aria-label="Search the ledger">
+      <input id="ledgerSearch" type="search" placeholder="Search event, chapter, FAC number, or notes…" aria-label="Search the ledger" enterkeyhint="search">
       <select id="tierFilter" aria-label="Filter by tier"><option value="">All tiers</option></select>
       <select id="chapterFilter" aria-label="Filter by chapter"><option value="">All chapters</option></select>
+      <div class="ledger-picker" role="group" aria-labelledby="ledgerPickLabel">
+        <div class="lp-head"><span id="ledgerPickLabel">Chapters</span><button type="button" class="lp-clear" id="ledgerClear" hidden>Clear</button></div>
+        <div class="lp-grid" id="ledgerChips"></div>
+        <div class="lp-picked" id="ledgerPicked"></div>
+      </div>
     </div>
     <div class="ledger-exhibit" id="ledgerExhibit">
       <svg class="ledger-seal" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><rect x="0" y="0" width="100" height="100" pathLength="1" vector-effect="non-scaling-stroke"/></svg>
@@ -1477,6 +1515,19 @@ const tierFilterEl  = document.getElementById('tierFilter');
 const ledgerSearch  = document.getElementById('ledgerSearch');
 const ledgerBody    = document.getElementById('ledgerBody');
 const ledgerCount   = document.getElementById('ledgerCount');
+const ledgerChips   = document.getElementById('ledgerChips');
+const ledgerPicked  = document.getElementById('ledgerPicked');
+const ledgerClear   = document.getElementById('ledgerClear');
+
+// The chapters picked: the phone's grid picks any number, the desktop's
+// dropdown picks one, and both read and write this set.
+const ledgerChs = new Set();
+// The phone ledger shows nothing until something is picked or searched,
+// unless the reader asks for everything; then it deals the cards a page at
+// a time (ledgerCardRows / ledgerCardsShown, see renderLedgerCards).
+let ledgerShowAll = false;
+const LEDGER_PAGE = 20;
+let ledgerCardRows = [], ledgerCardsShown = 0;
 
 // Chapter options: numeric sort, and multi-chapter rows (e.g. "3, 4")
 // contribute to each of their chapters rather than becoming their own option.
@@ -1485,6 +1536,10 @@ const ledgerCount   = document.getElementById('ledgerCount');
   opt.value = c; opt.textContent = 'Chapter ' + c;
   chapterFilter.appendChild(opt);
 });
+// stands for two or more chapters picked on the grid; never pickable itself
+const chapterMultiOpt = document.createElement('option');
+chapterMultiOpt.value = 'multi'; chapterMultiOpt.disabled = chapterMultiOpt.hidden = true;
+chapterFilter.appendChild(chapterMultiOpt);
 
 // Tier options are derived from the data, so every tier in the ledger is
 // actually filterable (previously only 3 of 7 were listed).
@@ -1500,6 +1555,33 @@ TIER_ORDER.filter(t=>tiersPresent.has(t)).forEach(t=>{
 
 const esc = str => String(str).replace(/[&<>"']/g, c =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// The phone's chapter grid: a button per chapter, dashed and dead where a
+// chapter has no receipts; the titles of the picked ones read out below it.
+const ledgerChCounts = {};
+LEDGER.forEach(r => r.chs.forEach(c => { ledgerChCounts[c] = (ledgerChCounts[c] || 0) + 1; }));
+const receiptsWord = n => n + ' receipt' + (n === 1 ? '' : 's');
+ledgerChips.innerHTML = CHAPTERS.map(c => {
+  const n = ledgerChCounts[c.n] || 0;
+  return '<button type="button" class="lp-chip" data-ch="' + c.n + '" aria-pressed="false"' + (n ? '' : ' disabled')
+    + ' aria-label="Chapter ' + c.n + ': ' + esc(c.title) + ', ' + (n ? receiptsWord(n) : 'no receipts') + '">' + c.n + '</button>';
+}).join('');
+function syncChapterPick(){
+  const picked = [...ledgerChs].sort((a,b)=>a-b);
+  ledgerChips.querySelectorAll('.lp-chip').forEach(b =>
+    b.setAttribute('aria-pressed', ledgerChs.has(+b.dataset.ch) ? 'true' : 'false'));
+  ledgerPicked.innerHTML = picked.map(n => {
+    const c = CHAPTERS.find(x => x.n === n);
+    return '<span><b>' + n + '</b> · ' + esc(c ? c.title : 'Chapter ' + n) + ' · ' + receiptsWord(ledgerChCounts[n] || 0) + '</span>';
+  }).join('');
+  if(picked.length > 1){ chapterMultiOpt.textContent = 'Chapters ' + picked.join(', '); chapterFilter.value = 'multi'; }
+  else chapterFilter.value = picked.length ? String(picked[0]) : '';
+}
+function clearLedger(){
+  ledgerSearch.value = ''; tierFilterEl.value = '';
+  ledgerChs.clear(); ledgerShowAll = false;
+  syncChapterPick(); renderLedger();
+}
 
 const ACTION_BADGE_CLASS = {OK:'a-ok', 'HUMAN DECISION':'a-human', 'MANUSCRIPT FIX':'a-fix', REVIEW:'a-review', RESEARCH:'a-research', OTHER:'a-review'};
 const ACTION_SHORT = {OK:'OK', 'HUMAN DECISION':'HUMAN DECISION', 'MANUSCRIPT FIX':'FIX NEEDED', REVIEW:'REVIEW', RESEARCH:'RESEARCH', OTHER:'FLAGGED'};
@@ -1532,21 +1614,22 @@ function buildDetailHtml(r){
 function renderLedger(){
   const q    = ledgerSearch.value.trim().toLowerCase();
   const tier = tierFilterEl.value;
-  const ch   = chapterFilter.value ? parseInt(chapterFilter.value, 10) : null;
+  const idle = !q && !tier && !ledgerChs.size;
 
   const rows = [];
   let needsAttention = 0;
   let deadLinks = 0;
   for(const r of LEDGER){
     if(tier && r.tier !== tier) continue;
-    if(ch !== null && !r.chs.includes(ch)) continue;
+    if(ledgerChs.size && !r.chs.some(c => ledgerChs.has(c))) continue;
     if(q && !r.q.includes(q)) continue;   // r.q is precomputed, not rebuilt per keystroke
     if(r.flagged) needsAttention++;
     if(r.sourceLinkState === 'dead' || r.videoLinkState === 'dead') deadLinks++;
     rows.push(r);
   }
 
-  ledgerCount.textContent = rows.length + ' of ' + LEDGER.length + ' receipts shown'
+  ledgerClear.hidden = idle && !ledgerShowAll;
+  ledgerCount.textContent = (idle ? LEDGER.length + ' receipts on file' : rows.length + ' of ' + LEDGER.length + ' receipts shown')
     + (needsAttention ? `  ·  ${needsAttention} flagged for review` : '')
     + (deadLinks ? `  ·  ${deadLinks} dead link${deadLinks===1?'':'s'} flagged for retrieval` : '');
 
@@ -1567,7 +1650,7 @@ function renderLedger(){
       + '<tr class="ledger-detail-row" id="' + rowId + '" hidden><td colspan="6"><div class="ledger-detail">' + buildDetailHtml(r) + '</div></td></tr>';
   }
   ledgerBody.innerHTML = out.join('');
-  renderLedgerCards(rows);
+  renderLedgerCards(rows, idle && !ledgerShowAll);
 }
 
 // Event delegation for row expand/collapse + mechanism-chip jumps — attached
@@ -1599,16 +1682,40 @@ ledgerSearch.addEventListener('input', ()=>{
   clearTimeout(ledgerSearchTimer);
   ledgerSearchTimer = setTimeout(renderLedger, 120);
 });
+// Enter searches at once and, on a phone, puts the keyboard away so the
+// cards it found are in view
+ledgerSearch.addEventListener('keydown', (e)=>{
+  if(e.key !== 'Enter') return;
+  clearTimeout(ledgerSearchTimer);
+  renderLedger();
+  ledgerSearch.blur();
+});
 tierFilterEl.addEventListener('change', renderLedger);
-chapterFilter.addEventListener('change', renderLedger);
+chapterFilter.addEventListener('change', ()=>{
+  ledgerChs.clear();
+  if(chapterFilter.value) ledgerChs.add(parseInt(chapterFilter.value, 10));
+  syncChapterPick(); renderLedger();
+});
+ledgerChips.addEventListener('click', (e)=>{
+  const b = e.target.closest('.lp-chip');
+  if(!b || b.disabled) return;
+  const n = +b.dataset.ch;
+  if(ledgerChs.has(n)) ledgerChs.delete(n); else ledgerChs.add(n);
+  syncChapterPick(); renderLedger();
+});
+ledgerClear.addEventListener('click', clearLedger);
 renderLedger();
 
-// global nav search jumps to ledger + filters
+// global nav search jumps to ledger + filters, landing on the search box
+// with what it found right under it. It searches every receipt, so any
+// chapters or tier picked before are let go.
 document.getElementById('navSearch').addEventListener('keydown', (e)=>{
   if(e.key==='Enter'){
+    ledgerChs.clear(); tierFilterEl.value = ''; syncChapterPick();
     document.getElementById('ledgerSearch').value = e.target.value;
     renderLedger();
-    scrollToId('ledger');
+    e.target.blur();
+    document.querySelector('#ledger .ledger-controls').scrollIntoView({behavior:'smooth', block:'start'});
   }
 });
 
@@ -1984,33 +2091,72 @@ function readerStep(dir){
   if(stops.has(to)) stops.open(to);
 }
 
-function renderLedgerCards(rows){
+// The phone's ledger. Waiting (nothing picked or searched): a line saying
+// how to ask, and a button for everything. Otherwise the matching cards, a
+// page at a time, with the next page and the way back up to the filters
+// under the last one.
+function renderLedgerCards(rows, waiting){
   var host = document.getElementById('ledgerCards');
   if(!host) return;
-  if(!rows.length){
-    host.innerHTML = '<p style="color:var(--ink-soft);font-size:15px;">No receipts match.</p>';
+  ledgerCardRows = rows; ledgerCardsShown = 0;
+  if(waiting){
+    host.innerHTML = '<div class="lc-idle"><p>Pick one or more chapters, or search for a name, an event or a FAC number, and the receipts will appear here.</p>'
+      + '<button type="button" class="lc-btn lc-btn--ghost" data-act="all">Show all ' + rows.length + '</button></div>';
     return;
   }
-  var html = new Array(rows.length);
-  for(var i=0;i<rows.length;i++){
-    var r = rows[i];
-    var actionCls = ACTION_BADGE_CLASS[r.actionCat] || 'a-review';
-    var actionTxt = ACTION_SHORT[r.actionCat] || r.actionCat;
-    html[i] = '<article class="ledger-card'+(r.flagged?' flagged':'')+'">'
-      + '<div class="lc-fac">'+(r.flagged?'● ':'')+esc(r.fac)+'</div>'
-      + '<div class="lc-meta">Ch '+esc(r.ch)+' · <span class="tier-badge '+esc(r.ts)+'">'+esc(r.tier)+'</span> · <span class="action-badge '+actionCls+'">'+esc(actionTxt)+'</span></div>'
-      + '<div class="lc-event">'+esc(r.event)+'</div>'
-      + '<div class="lc-link">'+linkHtml(r.sourceUrl, 'Source →', r.sourceLinkState)+'</div>'
-      + '<button type="button" class="lc-toggle" aria-expanded="false"><span class="exp-arrow" aria-hidden="true">▸</span>Details</button>'
-      + '<div class="lc-detail">'+buildDetailHtml(r)+'</div>'
-      + '</article>';
+  if(!rows.length){
+    host.innerHTML = '<div class="lc-idle"><p class="lc-none">No receipts match.</p>'
+      + '<button type="button" class="lc-btn lc-btn--ghost" data-act="clear">Clear the filters</button></div>';
+    return;
   }
-  host.innerHTML = html.join('');
+  host.innerHTML = '';
+  moreLedgerCards();
+}
+function ledgerCardHtml(r){
+  var actionCls = ACTION_BADGE_CLASS[r.actionCat] || 'a-review';
+  var actionTxt = ACTION_SHORT[r.actionCat] || r.actionCat;
+  return '<article class="ledger-card'+(r.flagged?' flagged':'')+'">'
+    + '<div class="lc-fac">'+(r.flagged?'● ':'')+esc(r.fac)+'</div>'
+    + '<div class="lc-meta">Ch '+esc(r.ch)+' · <span class="tier-badge '+esc(r.ts)+'">'+esc(r.tier)+'</span> · <span class="action-badge '+actionCls+'">'+esc(actionTxt)+'</span></div>'
+    + '<div class="lc-event">'+esc(r.event)+'</div>'
+    + '<div class="lc-link">'+linkHtml(r.sourceUrl, 'Source →', r.sourceLinkState)+'</div>'
+    + '<button type="button" class="lc-toggle" aria-expanded="false"><span class="exp-arrow" aria-hidden="true">▸</span>Details</button>'
+    + '<div class="lc-detail">'+buildDetailHtml(r)+'</div>'
+    + '</article>';
+}
+// deal the next page, and move the pager under it
+function moreLedgerCards(){
+  var host = document.getElementById('ledgerCards');
+  var pager = host.querySelector('.lc-more');
+  if(pager) pager.remove();
+  var total = ledgerCardRows.length, end = Math.min(total, ledgerCardsShown + LEDGER_PAGE);
+  var html = '';
+  for(var i = ledgerCardsShown; i < end; i++) html += ledgerCardHtml(ledgerCardRows[i]);
+  ledgerCardsShown = end;
+  var left = total - end;
+  if(total > 3) html += '<div class="lc-more"><span class="lc-more-count">' + end + ' of ' + total + ' shown</span>'
+    + (left ? '<button type="button" class="lc-btn" data-act="more">Show ' + Math.min(left, LEDGER_PAGE) + ' more</button>' : '')
+    + '<button type="button" class="lc-btn lc-btn--ghost" data-act="top">Back to the filters ↑</button></div>';
+  host.insertAdjacentHTML('beforeend', html);
 }
 
 // Delegated once: expand/collapse a card, or jump to a mechanism, without
 // re-attaching listeners on every render (cards are rebuilt on each filter).
 document.getElementById('ledgerCards').addEventListener('click', (e)=>{
+  const act = e.target.closest('[data-act]');
+  if(act){
+    if(act.dataset.act === 'all'){ ledgerShowAll = true; renderLedger(); }
+    else if(act.dataset.act === 'clear') clearLedger();
+    else if(act.dataset.act === 'more'){
+      // keep the keyboard's place: the button goes, so focus the first new card
+      const first = ledgerCardsShown;
+      moreLedgerCards();
+      const card = document.querySelectorAll('#ledgerCards .ledger-card')[first];
+      if(card) card.querySelector('.lc-toggle').focus({preventScroll:true});
+    }
+    else if(act.dataset.act === 'top') document.querySelector('#ledger .ledger-controls').scrollIntoView({behavior:'smooth', block:'start'});
+    return;
+  }
   const chip = e.target.closest('.chip[data-mech]');
   if(chip){
     openMechReader(parseInt(chip.dataset.mech, 10));
