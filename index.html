@@ -244,26 +244,16 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .vinyl.is-dragging .vinyl-arm-g{transition:none; cursor:grabbing;}
 .vinyl-arm-g:hover .vinyl-arm-grip{stroke:rgba(255,255,255,.06);}
 @keyframes vinyl-spin{to{transform:rotate(360deg);}}
-.vinyl-caption, .reel-caption{font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#8C8C88; text-align:center; line-height:1.7;}
-.vinyl-caption b, .reel-caption b{font-weight:400; color:#F4F4F2;}
+.vinyl-caption{font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#8C8C88; text-align:center; line-height:1.7;}
+.vinyl-caption b{font-weight:400; color:#F4F4F2;}
 .vinyl.is-playing .vinyl-state{color:#E0574A;}
-/* beside the cover, the record over the reel: the meta song, and every video */
+/* beside the cover, the record over the pitch: the meta song, and the
+   pitch video. The film is held at 4:3 by padding, which a TV's old
+   browser understands where it would not know aspect-ratio. */
 .dossier-side{display:flex; flex-direction:column; align-items:center; gap:34px;}
-/* the reel: one way into all the videos (the video library), drawn like the
-   record. The spool turns slowly while the pointer is on it. */
-.reel{display:flex; flex-direction:column; align-items:center; gap:10px; padding:0; margin:0; border:0; background:none; color:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent;}
-.reel:focus-visible{outline:none;}
-.reel-art{display:block; width:190px; width:min(190px, 50vw); height:auto; overflow:visible; transition:transform .25s ease, filter .25s ease;}
-.reel-spool{transform-box:fill-box; transform-origin:50% 50%; animation:vinyl-spin 7s linear infinite; animation-play-state:paused;}
-/* hover and keyboard focus as separate rules, so a TV's browser that doesn't
-   know :focus-visible still keeps the hover */
-.reel:hover .reel-art{transform:scale(1.03); filter:drop-shadow(0 0 18px rgba(255,255,255,.22));}
-.reel:hover .reel-spool{animation-play-state:running;}
-.reel:hover .reel-state{color:#E0574A;}
-.reel:focus-visible .reel-art{transform:scale(1.03); filter:drop-shadow(0 0 18px rgba(255,255,255,.22));}
-.reel:focus-visible .reel-spool{animation-play-state:running;}
-.reel:focus-visible .reel-state{color:#E0574A;}
-@media(prefers-reduced-motion:reduce){ .reel-spool{animation:none;} }
+.dossier-pitch{width:320px; max-width:100%;}
+.dossier-pitch-frame{position:relative; padding:75% 0 0 0; background:#000;}
+.dossier-pitch-frame iframe{position:absolute; top:0; left:0; width:100%; height:100%; border:0;}
 /* the menu as the picture: a button over each card; a hovered card shows its
    own crop of the picture, lit and lifted, while the rest of the packs dim */
 .dossier-art{position:relative; width:min(100%, 1100px); margin:0 auto; line-height:0; container-type:inline-size;}
@@ -1037,7 +1027,7 @@ const STAGES = [
 // VIDEO LIBRARY — every video, in order: the stages, then the mechanisms,
 // then the chapters. Built once, on first open, straight off the same data
 // the rest of the page uses, so it can never drift out of sync with it.
-// Opened by the reel in the compendium and the archive in the file room.
+// Opened by the archive in the file room.
 let videoLibraryBuilt = false;
 function buildVideoLibraryBody(){
   if(videoLibraryBuilt) return;
@@ -1141,30 +1131,6 @@ const TONEARM_SVG = '<svg class="vinyl-arm" viewBox="0 0 100 160" preserveAspect
   + '<path d="M44 134l-3 6" stroke="#F4F4F2" stroke-width="1.6" stroke-linecap="round"/>'
   + '</g></svg>';
 
-// the reel under the record: a spool of film drawn the same way, six ports
-// round the hub, with the end of the film running off it to the right. The
-// spool turns on hover; the film stays put.
-const REEL_SVG = (function(){
-  let film = '';
-  for(let x = 150; x <= 238; x += 9) film += '<rect x="' + x + '" y="175.5" width="4" height="3" rx=".6" fill="rgba(244,244,242,.7)"/>'
-    + '<rect x="' + x + '" y="189.5" width="4" height="3" rx=".6" fill="rgba(244,244,242,.7)"/>';
-  for(let x = 152; x <= 212; x += 30) film += '<rect x="' + x + '" y="180.5" width="25" height="7" stroke="rgba(244,244,242,.35)" stroke-width=".8"/>';
-  let ports = '';
-  for(let i = 0; i < 6; i++){
-    const a = i * Math.PI / 3 - Math.PI / 2;
-    ports += '<circle cx="' + (100 + 50 * Math.cos(a)).toFixed(1) + '" cy="' + (100 + 50 * Math.sin(a)).toFixed(1) + '" r="19" fill="#000" stroke="#F4F4F2" stroke-width="1.4"/>';
-  }
-  return '<svg class="reel-art" viewBox="0 0 250 200" fill="none" aria-hidden="true">'
-    + '<path d="M100 172H246V196H100z" fill="#050505" stroke="#F4F4F2" stroke-width="1.2"/>' + film
-    + '<g class="reel-spool">'
-    +   '<circle cx="100" cy="100" r="96" fill="#050505" stroke="#F4F4F2" stroke-width="1.6"/>'
-    +   '<circle cx="100" cy="100" r="88" stroke="rgba(244,244,242,.22)" stroke-width=".8"/>'
-    +   ports
-    +   '<circle cx="100" cy="100" r="13" fill="#0B0B0B" stroke="#F4F4F2" stroke-width="1.4"/>'
-    +   '<circle cx="100" cy="100" r="3.2" fill="#F4F4F2"/>'
-    + '</g></svg>';
-})();
-
 /* Volume Two's menu: the picture of the eighteen index cards in five packs,
    cropped under the brain (the inverted cover above carries the title) and
    tight to the packs on both sides so they fill the width — on a phone that
@@ -1228,8 +1194,10 @@ function buildDossier(){
       + '<div class="dossier-cover-flow-mask"><img class="dossier-cover dossier-cover--flow" src="' + cover.src + '" alt="" aria-hidden="true"></div>'
       + '</div>'
     : '') + '<div class="dossier-side">' + vinyl
-      + '<button type="button" class="reel" id="dossierReel" aria-label="The archive: every video, in order">' + REEL_SVG
-      + '<span class="reel-caption"><b>The archive</b> &middot; every video<br><span class="reel-state">Watch</span></span></button>'
+      + '<div class="dossier-pitch"><div class="dossier-pitch-frame">'
+      + '<iframe src="https://player.vimeo.com/video/1215017171?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;loop=1" frameborder="0" loading="lazy"'
+      + ' allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" title="TNF_Pitch"></iframe>'
+      + '</div></div>'
     + '</div>';
 
   // The menu is the picture of the packs, with an invisible button over each
@@ -1253,8 +1221,6 @@ function buildDossier(){
     + body
     + '<div class="dossier-note"></div>';
   if(artSrc) host.querySelector('.dossier-art').style.setProperty('--art', 'url("' + artSrc + '")');
-  // the reel opens every video, in order
-  host.querySelector('#dossierReel').addEventListener('click', () => openVideoLibrary());
   // the roots flow only while the cover is on screen
   (function(){
     const w = host.querySelector('#dossierCoverWrap'); if(!w) return;
