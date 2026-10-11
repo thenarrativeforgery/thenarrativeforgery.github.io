@@ -1216,6 +1216,35 @@ function buildDossier(){
     + body
     + '<div class="dossier-note"></div>';
   if(artSrc) host.querySelector('.dossier-art').style.setProperty('--art', 'url("' + artSrc + '")');
+  // The pitch is mixed hotter than everything else on the page: -13.3 LUFS,
+  // against -15.3 for the intro film and -15.7 for the songs. So the player
+  // is turned down 2.3 dB (to 77%) as soon as it says it is ready, over
+  // Vimeo's postMessage API, then read back; if the player hasn't taken it
+  // yet, it is sent again, a few times at most. iPhones and iPads hold
+  // every video at the device's own volume, so there it plays as uploaded.
+  (function(){
+    const frame = host.querySelector('.dossier-pitch iframe');
+    if(!frame) return;
+    const PITCH_VOLUME = 0.77;
+    let done = false, tries = 0, retry = 0;
+    const post = msg => { try{ frame.contentWindow.postMessage(JSON.stringify(msg), 'https://player.vimeo.com'); }catch(e){} };
+    const send = () => {
+      if(done || tries >= 5) return;
+      tries++;
+      post({method:'setVolume', value:PITCH_VOLUME});
+      post({method:'getVolume'});
+      clearTimeout(retry); retry = setTimeout(send, 1000);
+    };
+    window.addEventListener('message', e => {
+      if(e.origin !== 'https://player.vimeo.com' || e.source !== frame.contentWindow) return;
+      let d = e.data;
+      if(typeof d === 'string'){ try{ d = JSON.parse(d); }catch(err){ return; } }
+      if(!d) return;
+      if(d.event === 'ready') send();
+      if(d.method === 'getVolume' && Math.abs(d.value - PITCH_VOLUME) < .005){ done = true; clearTimeout(retry); }
+    });
+    frame.addEventListener('load', send);
+  })();
   // the roots flow only while the cover is on screen
   (function(){
     const w = host.querySelector('#dossierCoverWrap'); if(!w) return;
