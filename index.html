@@ -2190,7 +2190,8 @@ document.getElementById('ledgerCards').addEventListener('click', (e)=>{
 /* The file room: the reel cabinet (every video), the book lit above three
    cabinets of six drawers (the chapters, numbered down each cabinet), and
    the burn bag (the ledger), with a blank whiteboard on the wall. Wide (1872x1056). Hotspots are percentages of the image,
-   each drawer measured off the seams of its own cabinet: the rows don't
+   each drawer fitted to the outline of its own front, so the red frame
+   traces the drawer and not the cabinet around it. The rows don't
    quite line up across the three, and the top drawers stand taller. */
 const CAB_ART = {
   // the picture itself lives in the art store below the nav — one copy in the file
@@ -2198,24 +2199,24 @@ const CAB_ART = {
   ar: '1872 / 1056',
   alt: 'The file room: a cabinet of film reels, the book-and-brain sticker above three filing cabinets of eighteen numbered drawers, a burn bag and a blank whiteboard',
   hot: [
-    {n:1, col:0, x:37.98, y:34.94, w:8.97, h:9.85},
-    {n:2, col:0, x:37.98, y:44.79, w:8.97, h:9.75},
-    {n:3, col:0, x:37.98, y:54.55, w:8.97, h:9.66},
-    {n:4, col:0, x:37.98, y:64.20, w:8.97, h:9.85},
-    {n:5, col:0, x:37.98, y:74.05, w:8.97, h:10.13},
-    {n:6, col:0, x:37.98, y:84.19, w:8.97, h:10.98},
-    {n:7, col:1, x:47.70, y:35.04, w:8.65, h:9.85},
-    {n:8, col:1, x:47.70, y:44.89, w:8.65, h:9.66},
-    {n:9, col:1, x:47.70, y:54.55, w:8.65, h:9.56},
-    {n:10, col:1, x:47.70, y:64.11, w:8.65, h:9.75},
-    {n:11, col:1, x:47.70, y:73.86, w:8.65, h:10.04},
-    {n:12, col:1, x:47.70, y:83.90, w:8.65, h:10.80},
-    {n:13, col:2, x:57.10, y:35.23, w:8.33, h:9.75},
-    {n:14, col:2, x:57.10, y:44.98, w:8.33, h:9.56},
-    {n:15, col:2, x:57.10, y:54.55, w:8.33, h:9.47},
-    {n:16, col:2, x:57.10, y:64.02, w:8.33, h:9.75},
-    {n:17, col:2, x:57.10, y:73.77, w:8.33, h:9.94},
-    {n:18, col:2, x:57.10, y:83.71, w:8.33, h:10.51}
+    {n:1, col:0, x:39.10, y:34.99, w:7.91, h:9.71},
+    {n:2, col:0, x:39.10, y:45.03, w:7.91, h:9.42},
+    {n:3, col:0, x:39.10, y:54.78, w:7.91, h:9.33},
+    {n:4, col:0, x:39.10, y:64.39, w:7.91, h:9.66},
+    {n:5, col:0, x:39.10, y:74.34, w:7.91, h:9.85},
+    {n:6, col:0, x:39.10, y:84.42, w:7.91, h:10.94},
+    {n:7, col:1, x:48.61, y:35.13, w:7.85, h:9.66},
+    {n:8, col:1, x:48.61, y:45.17, w:7.85, h:9.28},
+    {n:9, col:1, x:48.61, y:54.78, w:7.85, h:9.23},
+    {n:10, col:1, x:48.61, y:64.35, w:7.85, h:9.47},
+    {n:11, col:1, x:48.61, y:74.15, w:7.85, h:9.71},
+    {n:12, col:1, x:48.61, y:84.19, w:7.85, h:10.61},
+    {n:13, col:2, x:58.01, y:35.27, w:7.53, h:9.61},
+    {n:14, col:2, x:58.01, y:45.22, w:7.53, h:9.23},
+    {n:15, col:2, x:58.01, y:54.78, w:7.53, h:9.19},
+    {n:16, col:2, x:58.01, y:64.25, w:7.53, h:9.38},
+    {n:17, col:2, x:58.01, y:73.96, w:7.53, h:9.66},
+    {n:18, col:2, x:58.01, y:84.00, w:7.53, h:10.37}
   ],
   fixtures: [
     {id:'archive', x:11.11, y:5.02, w:22.86, h:93.18, title:'The archive', holds:'Every video, in order', act:'library'},
