@@ -433,7 +433,9 @@ tbody tr:hover{background:var(--cream-dark);}
 .ledger-seal rect{fill:none; stroke:var(--red-light); stroke-width:2; stroke-dasharray:1; stroke-dashoffset:1; transition:stroke-dashoffset 1.8s cubic-bezier(.4,0,.2,1);}
 .ledger-exhibit.is-seen .ledger-seal rect{stroke-dashoffset:0;}
 @media(prefers-reduced-motion:reduce){ .ledger-seal rect{transition:none; stroke-dashoffset:0;} }
-.ledger-table-wrap{max-height:720px; overflow:auto; border:1px solid var(--border); contain:content; overscroll-behavior:contain;}
+/* five receipts at a time: the header (41px) and five one-line rows (45px
+   each), with the frame's border */
+.ledger-table-wrap{max-height:268px; overflow:auto; border:1px solid var(--border); contain:content; overscroll-behavior:contain;}
 .ledger-table-wrap tr:not(.ledger-detail-row){content-visibility:auto; contain-intrinsic-size:auto 44px;}
 .no-link{color:#9C9C9C; font-style:italic; font-size:15px;}
 .attn-dot{display:inline-block; width:9px; margin-right:2px; color:var(--red); font-size:9px; line-height:1; cursor:help;}
