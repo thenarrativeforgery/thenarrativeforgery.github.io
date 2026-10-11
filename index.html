@@ -71,14 +71,14 @@ a:hover{text-decoration:underline;}
 .nav-num{color:var(--red); font-weight:700;}
 .nav-count{color:#7C93A3;}
 #nav{position:sticky; top:0; z-index:100; background:var(--navy); color:var(--cream); box-shadow:0 2px 12px rgba(0,0,0,.15);}
-#nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 28px; gap:20px; flex-wrap:wrap; max-width:1400px;}
+#nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 28px; gap:20px; flex-wrap:wrap; max-width:1640px;}
 #nav .brand{display:flex; align-items:center; gap:13px; white-space:nowrap;}
 /* the wordmark is a crop of the cover's own lettering, knocked out to white */
 #nav .brand .brand-title{height:44px; width:auto; display:block;}
 /* the book-and-brain sticker stands as tall as the title beside it */
 #nav .brand .brand-icon{height:44px; width:auto; display:block;}
 #nav .brand .sub{font-family:var(--mono); font-size:10px; font-weight:400; font-style:normal; letter-spacing:.13em; line-height:1.5; white-space:normal; text-transform:uppercase; color:#8FA3B3;}
-@media(max-width:1390px){ #nav .brand .sub{display:none;} }
+@media(max-width:1449px){ #nav .brand .sub{display:none;} }   /* only where the whole nav still fits on one line */
 @media(max-width:600px){ #nav .brand .brand-title, #nav .brand .brand-icon{height:34px;} #nav .brand{gap:10px;} }
 #nav ul{display:flex; gap:22px; list-style:none; flex-wrap:wrap;}
 #nav a{color:#E8E8E6; font-family:var(--sans); font-size:15px; font-weight:500; letter-spacing:.04em; text-transform:uppercase;}
@@ -644,6 +644,22 @@ html.view-phone .tnf-ring{--tnf-ring-size:clamp(180px, 56vw, 260px);}
 html.view-desktop .nav-burger{display:none;}
 html.view-desktop #nav ul{display:flex !important; position:static; width:auto; padding:0; box-shadow:none; flex-direction:row; gap:22px; overflow:visible;}
 html.view-desktop #nav ul li{border:0; padding:0;}
+/* the nav stays on one line: as the window narrows it tightens in steps,
+   the links and the switch smaller, then without their counts, then the
+   wordmark left to the icon alone. (A phone's view keeps its menu as is.) */
+@media(max-width:1250px){
+  html.view-desktop #nav .wrap{gap:16px;}
+  html.view-desktop #nav ul{gap:16px;}
+  html.view-desktop #nav a{font-size:14px;}
+  html.view-desktop #navSearch{width:150px;}
+  html.view-desktop .view-toggle button{padding:3px 6px; font-size:10px;}
+}
+@media(max-width:1135px){ html.view-desktop .nav-count{display:none;} }
+@media(max-width:1035px){
+  html.view-desktop #nav .wrap{padding-left:16px; padding-right:16px;}
+  html.view-desktop #nav .brand .brand-title{display:none;}
+  html.view-desktop #navSearch{width:130px;}
+}
 html.view-desktop #ledgerCards{display:none !important;}
 html.view-desktop .ledger-table-wrap{display:block !important;}
 
