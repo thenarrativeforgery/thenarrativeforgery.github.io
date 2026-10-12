@@ -781,6 +781,24 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 .cab-mover{position:absolute; top:0; left:0; width:100%; height:100%;}
 .cab-art .cab-mover img{position:absolute; display:block; max-width:none;}
 .cab-art .cab-board{position:absolute; display:block; max-width:none; pointer-events:none;}
+/* the locker's film reels. The picture draws each reel turned a little from
+   us, its face an upright oval, so each turns in its own plane: stretched to
+   a circle, turned, and squeezed back (each reel's own ratio, so the oval
+   holds while the spokes sweep round). Each is an oval of the whole picture
+   (the drawers' --art) laid exactly over its reel, turning while the locker
+   is hovered or focused and stopping where it is when you leave. Hovering
+   is asked for, so they turn with reduced motion too. */
+.cab-reel{position:absolute; border-radius:50%; pointer-events:none;
+  background-image:var(--art); background-repeat:no-repeat; background-size:var(--bs); background-position:var(--bp);
+  animation-duration:2.6s; animation-timing-function:linear; animation-iteration-count:infinite; animation-play-state:paused;}
+.cab-reel--fast{animation-duration:2s;}
+.cab-art.is-spinning .cab-reel{animation-play-state:running;}
+@keyframes cab-reel-0{from{transform:scaleX(0.8875) rotate(0deg) scaleX(1.1268);} to{transform:scaleX(0.8875) rotate(360deg) scaleX(1.1268);}}
+@keyframes cab-reel-1{from{transform:scaleX(0.8875) rotate(0deg) scaleX(1.1268);} to{transform:scaleX(0.8875) rotate(360deg) scaleX(1.1268);}}
+@keyframes cab-reel-2{from{transform:scaleX(0.8697) rotate(0deg) scaleX(1.1499);} to{transform:scaleX(0.8697) rotate(360deg) scaleX(1.1499);}}
+@keyframes cab-reel-3{from{transform:scaleX(0.8963) rotate(0deg) scaleX(1.1157);} to{transform:scaleX(0.8963) rotate(360deg) scaleX(1.1157);}}
+@keyframes cab-reel-4{from{transform:scaleX(0.8883) rotate(0deg) scaleX(1.1257);} to{transform:scaleX(0.8883) rotate(360deg) scaleX(1.1257);}}
+@keyframes cab-reel-5{from{transform:scaleX(0.8661) rotate(0deg) scaleX(1.1547);} to{transform:scaleX(0.8661) rotate(360deg) scaleX(1.1547);}}
 /* the whiteboard writes itself as the room lands: "grossly negligent", a
    quick stroke through it, then "extremely careless" under it. Each is its
    own layer of the handwriting, uncovered from the left by an edge leaning
@@ -2434,6 +2452,18 @@ const CAB_ART = {
   // surface (1297-1822 x 62-423 of the picture): its layers, in the order
   // they are written as the room lands (see .cab-board)
   board: {layers:['roomBoard1', 'roomBoardX', 'roomBoard2'], x:72.369, y:15.647, w:21.875, h:14.634},
+  // the locker's six film reels (see .cab-reel): each reel's face, which the
+  // picture draws as an upright oval (the reels are turned a little from
+  // us), in % of the picture; they ride on the locker's piece. The
+  // right-hand reel of each pair turns a little faster, as a take-up reel does.
+  reels: {on:'locker', list:[
+    {x:13.973, y:14.805, w:8.712, h:17.402},
+    {x:22.839, y:14.857, w:8.711, h:17.400, fast:1},
+    {x:14.134, y:41.220, w:8.533, h:17.394},
+    {x:22.799, y:41.426, w:8.777, h:17.361, fast:1},
+    {x:14.189, y:65.919, w:8.509, h:16.981},
+    {x:22.938, y:66.008, w:8.239, h:16.865, fast:1}
+  ]},
   room: 'roomEmpty',
   pieces: [
     {id:'locker', img:'roomLocker', x:7.051, y:4.451, w:29.327, h:94.413},
@@ -2494,13 +2524,16 @@ function buildCabinet(host, opts){
     const srcOf = id => { const i = document.getElementById(id); return i ? i.src : ''; };
     const inPieces = !!(a.room && srcOf(a.room) && a.pieces);
     const lands = inPieces && 'IntersectionObserver' in window && !!window.Promise;
+    const reels = a.reels ? a.reels.list.map((r, i) => '<span class="cab-reel' + (r.fast ? ' cab-reel--fast' : '') + '" aria-hidden="true" style="left:' + r.x + '%;top:' + r.y + '%;width:' + r.w + '%;height:' + r.h
+        + '%;animation-name:cab-reel-' + i + ';--bs:' + (100 / r.w * 100).toFixed(3) + '% ' + (100 / r.h * 100).toFixed(3) + '%;--bp:' + (r.x / (100 - r.w) * 100).toFixed(3) + '% ' + (r.y / (100 - r.h) * 100).toFixed(3) + '%"></span>').join('') : '';
     const pieces = inPieces ? a.pieces.map(p => '<div class="cab-piece cab-piece--' + p.id + '" aria-hidden="true"><div class="cab-mover">'
-        + '<img alt="" src="' + srcOf(p.img) + '" style="left:' + p.x + '%;top:' + p.y + '%;width:' + p.w + '%;height:' + p.h + '%"></div></div>').join('') : '';
+        + '<img alt="" src="' + srcOf(p.img) + '" style="left:' + p.x + '%;top:' + p.y + '%;width:' + p.w + '%;height:' + p.h + '%">'
+        + (a.reels && a.reels.on === p.id ? reels : '') + '</div></div>').join('') : '';
     const b = a.board, board = b ? b.layers.filter(srcOf).map((id, i) => '<img class="cab-board cab-board--' + i + '" alt="" src="' + srcOf(id)
         + '" style="left:' + b.x + '%;top:' + b.y + '%;width:' + b.w + '%;height:' + b.h + '%">').join('') : '';
     host.innerHTML = '<div class="cabinet cabinet--art">'
       + '<div class="cab-art' + (lands ? ' is-away' : '') + '"><img src="' + (inPieces ? srcOf(a.room) : a.src) + '" alt="' + esc(a.alt || '') + '">'
-      + board + pieces + hots + fixtures + '</div>'
+      + board + (inPieces ? pieces : reels) + hots + fixtures + '</div>'
       + cardHtml + '</div>';
     const artEl = host.querySelector('.cab-art');
     artEl.style.setProperty('--art', 'url("' + a.src + '")');
@@ -2511,6 +2544,15 @@ function buildCabinet(host, opts){
   const note    = opts.noteEl || document.createElement('span');
   const card    = host.querySelector('.drawer-card');
   let open = null;
+
+  // hovering (or focusing) the locker turns its reels; leaving stops them
+  // where they are
+  { const locker = body.querySelector('.drawer--fixture[data-fixture="archive"]');
+    if(locker && body.querySelector('.cab-reel')){
+      const spin = on => () => body.classList.toggle('is-spinning', on);
+      locker.addEventListener('mouseenter', spin(true)); locker.addEventListener('mouseleave', spin(false));
+      locker.addEventListener('focus', spin(true));      locker.addEventListener('blur', spin(false));
+    } }
 
   const describe = n => {
     const ch = chapterOf(n); if(!ch) return;
