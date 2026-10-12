@@ -1606,15 +1606,31 @@ function buildDossier(){
     panel.style.height = open ? panel.scrollHeight + 'px' : '0px';
     panel.__slide = setTimeout(() => { panel.style.height = ''; if(!open) panel.hidden = true; }, 400);
   };
-  // a bar opens its band or shuts it again; a card opens its mechanism
+  const setBand = (band, open, animate) => {
+    const panel = band.querySelector('.mband-panel');
+    band.classList.toggle('is-open', open);
+    band.querySelector('.mband-head').setAttribute('aria-expanded', open ? 'true' : 'false');
+    if(animate) slide(panel, open);
+    else { clearTimeout(panel.__slide); panel.style.height = ''; panel.hidden = !open; }
+    if(!open){ const n = band.querySelector('.dossier-note'); if(n) n.innerHTML = ''; }
+  };
+  // a bar opens its band or shuts it again; only one band is open at a time,
+  // so opening one shuts the other at once, and the bar you clicked stays
+  // where it was under your pointer. A card opens its mechanism.
   bands.addEventListener('click', e => {
     const head = e.target.closest('.mband-head');
     if(head){
       const band = head.closest('.mband'), open = !band.classList.contains('is-open');
-      band.classList.toggle('is-open', open);
-      head.setAttribute('aria-expanded', open ? 'true' : 'false');
-      slide(band.querySelector('.mband-panel'), open);
-      if(!open){ const n = band.querySelector('.dossier-note'); if(n) n.innerHTML = ''; }
+      if(open){
+        const was = head.getBoundingClientRect().top;
+        Array.prototype.forEach.call(bands.querySelectorAll('.mband.is-open'), b => { if(b !== band) setBand(b, false, false); });
+        const moved = head.getBoundingClientRect().top - was;
+        if(moved){
+          const root = document.documentElement;
+          root.style.scrollBehavior = 'auto'; window.scrollBy(0, moved); root.style.scrollBehavior = '';
+        }
+      }
+      setBand(band, open, true);
       return;
     }
     const c = e.target.closest('.dcard');
