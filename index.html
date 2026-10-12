@@ -275,6 +275,8 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .mech-map-wrap{margin:0; background:#000; border:1px solid #000; box-shadow:0 14px 40px rgba(0,0,0,.28);}
 .dossier{background:#000; padding:22px; color:#F4F4F2;}
 .dossier-head{display:flex; align-items:center; justify-content:center; gap:24px 56px; flex-wrap:wrap; margin:0 auto;}
+/* the cover's own size, until the script makes it a square as tall as the
+   record and the pitch beside it (see fitCover) */
 .dossier-cover-wrap{position:relative; width:392px; max-width:100%; flex:0 1 auto;}
 .dossier-cover{display:block; width:100%; height:auto; margin:0; filter:invert(1); border:1px solid #2A2A28;}
 /* the flowing copy: displaced, and masked to the roots and the brain's left edge */
@@ -1387,6 +1389,24 @@ function buildDossier(){
     + '</div>';
 
   host.innerHTML = '<div class="dossier-head">' + head + '</div>';
+
+  // the cover fills the square that the record and the pitch make beside it:
+  // as wide as that column is tall, or as wide as the room beside it allows.
+  // Where the two stack (a narrow screen) it keeps its own size.
+  (function fitCover(){
+    const headEl = host.querySelector('.dossier-head'), wrap = host.querySelector('.dossier-cover-wrap'), side = host.querySelector('.dossier-side');
+    if(!headEl || !wrap || !side) return;
+    const fit = () => {
+      const gap = parseFloat(getComputedStyle(headEl).columnGap) || 56;
+      const room = headEl.clientWidth - side.offsetWidth - gap;
+      wrap.style.width = room >= 300 ? Math.floor(Math.min(side.offsetHeight, room)) + 'px' : '';
+    };
+    fit();
+    window.addEventListener('resize', fit);
+    window.addEventListener('load', fit);
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+    if(window.ResizeObserver) new ResizeObserver(fit).observe(side);
+  })();
 
   // The menu, at the foot of the box: a band per group of mechanisms, each
   // shut until it is opened. A card carries the mechanism's number and name,
