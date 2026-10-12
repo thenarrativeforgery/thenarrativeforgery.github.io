@@ -273,7 +273,24 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
    so it is hoverable, clickable, and sharp at any width. White cards on
    black, the band on a tab hanging off the pack. */
 .mech-map-wrap{margin:0; background:#000; border:1px solid #000; box-shadow:0 14px 40px rgba(0,0,0,.28);}
-.dossier{background:#000; padding:22px; color:#F4F4F2;}
+.dossier{background:#000; padding:22px; color:#F4F4F2; overflow:hidden;}
+/* the box's landing (see landOnReturn): each time it comes back into view
+   the record and then the pitch slide in from the right, and the cover
+   fades up slowly. The box clips them as they come. */
+@keyframes dossier-from-right{from{transform:translateX(220%);} to{transform:translateX(0);}}
+@keyframes dossier-fade{from{opacity:0;} to{opacity:1;}}
+.dossier.is-away .vinyl, .dossier.is-away .dossier-pitch{transform:translateX(220%);}
+.dossier.is-away .dossier-cover-wrap{opacity:0;}
+.dossier.is-landing .vinyl{animation:dossier-from-right .9s cubic-bezier(.2,1.1,.4,1) both;}
+.dossier.is-landing .dossier-pitch{animation:dossier-from-right .9s .14s cubic-bezier(.2,1.1,.4,1) both;}
+.dossier.is-landing .dossier-cover-wrap{animation:dossier-fade 2.2s .1s ease-in-out both;}
+/* with reduced motion asked for, the record and the pitch fade up where they
+   stand; the cover fades as it always does */
+@media(prefers-reduced-motion:reduce){
+  .dossier.is-away .vinyl, .dossier.is-away .dossier-pitch{transform:none; opacity:0;}
+  .dossier.is-landing .vinyl{animation:noirbar-fade .5s ease-out both;}
+  .dossier.is-landing .dossier-pitch{animation:noirbar-fade .5s .1s ease-out both;}
+}
 .dossier-head{display:flex; align-items:center; justify-content:center; gap:24px 56px; flex-wrap:wrap; margin:0 auto;}
 /* the cover's own size, until the script makes it a square as tall as the
    record and the pitch beside it (see fitCover) */
@@ -1407,6 +1424,14 @@ function buildDossier(){
     if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
     if(window.ResizeObserver) new ResizeObserver(fit).observe(side);
   })();
+
+  // the box lands each time it comes back into view (see .dossier.is-away),
+  // but not while the pitch is playing full screen
+  if('IntersectionObserver' in window && window.Promise){
+    host.classList.add('is-away');
+    landOnReturn(host, host, Array.prototype.slice.call(host.querySelectorAll('.dossier-cover')), 2500, .5,
+                 () => !(document.fullscreenElement || document.webkitFullscreenElement));
+  }
 
   // The menu, at the foot of the box: a band per group of mechanisms, each
   // shut until it is opened. A card carries the mechanism's number and name,
