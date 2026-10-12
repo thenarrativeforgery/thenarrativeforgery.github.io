@@ -760,11 +760,11 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 .cab-art .cab-mover img{position:absolute; display:block; max-width:none;}
 .cab-art .cab-board{position:absolute; display:block; max-width:none; pointer-events:none;}
 @keyframes cab-from-left{from{transform:translateX(-38%);} to{transform:translateX(0);}}
-@keyframes cab-from-top{from{transform:translateY(-29%);} to{transform:translateY(0);}}
+@keyframes cab-from-top{from{transform:translateY(-33%);} to{transform:translateY(0);}}
 @keyframes cab-from-floor{from{transform:translateY(68%);} to{transform:translateY(0);}}
 @keyframes cab-from-right{from{transform:translateX(34%);} to{transform:translateX(0);}}
 .cab-art.is-away .cab-piece--locker .cab-mover{transform:translateX(-38%);}
-.cab-art.is-away .cab-piece--logo .cab-mover{transform:translateY(-29%);}
+.cab-art.is-away .cab-piece--logo .cab-mover{transform:translateY(-33%);}
 .cab-art.is-away .cab-piece--cab1 .cab-mover{transform:translateY(68%);}
 .cab-art.is-away .cab-piece--cab2 .cab-mover{transform:translateY(68%);}
 .cab-art.is-away .cab-piece--cab3 .cab-mover{transform:translateY(68%);}
@@ -2344,7 +2344,7 @@ const CAB_ART = {
   room: 'roomEmpty',
   pieces: [
     {id:'locker', img:'roomLocker', x:7.051, y:4.451, w:29.327, h:94.413},
-    {id:'logo', img:'roomLogo', x:45.299, y:0.379, w:14.957, h:27.652},
+    {id:'logo', img:'roomLogo', x:45.299, y:3.977, w:14.957, h:27.652},   // 38px lower than in the picture, just above the cabinets
     {id:'cab1', img:'roomCab1', x:36.271, y:33.049, w:11.912, h:65.152},
     {id:'cab2', img:'roomCab2', x:48.077, y:33.239, w:9.509, h:64.394},
     {id:'cab3', img:'roomCab3', x:57.479, y:33.333, w:9.776, h:63.731},
