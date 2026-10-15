@@ -201,9 +201,10 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .noirbar.is-landing .noirbar-piece--clock .noirbar-mover{animation:noirbar-from-left .8s .12s cubic-bezier(.2,1.12,.4,1) both;}
 .noirbar.is-landing .noirbar-piece--poster .noirbar-mover{animation:noirbar-from-left .8s .12s cubic-bezier(.2,1.12,.4,1) both;}
 .noirbar.is-landing .noirbar-piece--tt .noirbar-mover{animation:noirbar-from-right 1s .2s cubic-bezier(.2,1.06,.35,1) both;}
-/* with reduced motion asked for, the pieces fade up where they stand */
+/* with reduced motion asked for, and on a touch screen, the pieces fade up
+   where they stand */
 @keyframes noirbar-fade{from{opacity:0;} to{opacity:1;}}
-@media(prefers-reduced-motion:reduce){
+@media(prefers-reduced-motion:reduce), (hover:none){
   .noirbar.is-away .noirbar-piece--man .noirbar-mover, .noirbar.is-away .noirbar-piece--clock .noirbar-mover,
   .noirbar.is-away .noirbar-piece--poster .noirbar-mover, .noirbar.is-away .noirbar-piece--tt .noirbar-mover{transform:none; opacity:0;}
   .noirbar.is-landing .noirbar-piece--man .noirbar-mover{animation:noirbar-fade .5s ease-out both;}
@@ -231,6 +232,17 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .noirbar-unsee{opacity:0; pointer-events:none;}
 .noirbar-stool:hover .noirbar-ask, .noirbar-stool:focus-visible .noirbar-ask{opacity:0;}
 .noirbar-stool:hover .noirbar-unsee, .noirbar-stool:focus-visible .noirbar-unsee{opacity:1;}
+/* on a phone the question would sit small over the papers on the counter,
+   so it comes off the picture onto a black band under the counter, the bar's
+   width, and the whole band is the way in */
+.noirbar-seat{display:none;}
+@media(max-width:720px){
+  .noirbar-stool .noirbar-say{display:none;}
+  .noirbar-seat{display:flex; flex-direction:column; align-items:center; gap:8px; width:100%; margin:0; padding:14px 16px 16px; background:#000; border:0; border-radius:0; color:var(--cream); line-height:1.2; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent;}
+  .noirbar-seat-q{font-family:var(--serif); font-style:italic; font-size:20px; letter-spacing:.02em; text-shadow:0 0 14px rgba(255,255,255,.35);}
+  .noirbar-seat-go{font-family:var(--mono); font-weight:700; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--red);}
+  .noirbar-seat:focus-visible{outline:2px solid var(--red); outline-offset:-2px;}
+}
 /* his head, on hover: the hat cut away to show the compendium's brain.
    It is Volume Two's cover (kept once in the art store), inverted to white
    on black and cut to its brain, 352-682 x 36-669 of the 700x700 cover;
@@ -302,9 +314,9 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .dossier.is-landing .vinyl{animation:dossier-from-right .9s cubic-bezier(.2,1.1,.4,1) both;}
 .dossier.is-landing .dossier-pitch{animation:dossier-from-right .9s .14s cubic-bezier(.2,1.1,.4,1) both;}
 .dossier.is-landing .dossier-cover-wrap{animation:dossier-fade 2.2s .1s ease-in-out both;}
-/* with reduced motion asked for, the record and the pitch fade up where they
-   stand; the cover fades as it always does */
-@media(prefers-reduced-motion:reduce){
+/* with reduced motion asked for, and on a touch screen, the record and the
+   pitch fade up where they stand; the cover fades as it always does */
+@media(prefers-reduced-motion:reduce), (hover:none){
   .dossier.is-away .vinyl, .dossier.is-away .dossier-pitch{transform:none; opacity:0;}
   .dossier.is-landing .vinyl{animation:noirbar-fade .5s ease-out both;}
   .dossier.is-landing .dossier-pitch{animation:noirbar-fade .5s .1s ease-out both;}
@@ -385,6 +397,9 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .dcard:focus-visible{transform:translateY(-2px); border-color:var(--red); box-shadow:0 0 0 1px var(--red), 0 10px 22px rgba(0,0,0,.14); outline:none;}
 .dcard:active{transform:scale(.98);}
 @media(prefers-reduced-motion:reduce){ .mband.is-open .mband-cards{animation:none;} .mband-chev, .dcard, .mband-panel{transition:none;} }
+/* on a touch screen a band opens at once (see slide) and its cards fade up
+   where they stand */
+@media(hover:none){ .mband.is-open .mband-cards{animation-name:noirbar-fade;} .mband-chev, .dcard{transition:none;} }
 @media(max-width:1000px){
   .mband-cards.cols-4{grid-template-columns:repeat(2, 1fr);}
   .mband-cards.cols-6{grid-template-columns:repeat(3, 1fr);}
@@ -847,6 +862,13 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 .cab-art.is-landing .cab-board--0{animation:board-write 1.15s .55s linear both;}
 .cab-art.is-landing .cab-board--1{animation:board-write .35s 1.95s ease-in both;}
 .cab-art.is-landing .cab-board--2{animation:board-write 1.25s 2.6s linear both;}
+/* on a touch screen each layer fades up instead, in the same order and at
+   the same moments: the words, the stroke through them, the new words */
+@media(hover:none){
+  .cab-art.is-landing .cab-board--0{animation:noirbar-fade .5s .55s ease-out both;}
+  .cab-art.is-landing .cab-board--1{animation:noirbar-fade .3s 1.95s ease-out both;}
+  .cab-art.is-landing .cab-board--2{animation:noirbar-fade .5s 2.6s ease-out both;}
+}
 @keyframes cab-from-left{from{transform:translateX(-38%);} to{transform:translateX(0);}}
 @keyframes cab-from-top{from{transform:translateY(-33%);} to{transform:translateY(0);}}
 @keyframes cab-from-floor{from{transform:translateY(68%);} to{transform:translateY(0);}}
@@ -864,8 +886,9 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 .cab-art.is-landing .cab-piece--cab2 .cab-mover{animation:cab-from-floor .75s .18s cubic-bezier(.2,1.1,.4,1) both;}
 .cab-art.is-landing .cab-piece--cab3 .cab-mover{animation:cab-from-floor .75s .28s cubic-bezier(.2,1.1,.4,1) both;}
 .cab-art.is-landing .cab-piece--bag .cab-mover{animation:cab-from-right .85s .2s cubic-bezier(.2,1.12,.4,1) both;}
-/* with reduced motion asked for, the pieces fade up where they stand */
-@media(prefers-reduced-motion:reduce){
+/* with reduced motion asked for, and on a touch screen, the pieces fade up
+   where they stand */
+@media(prefers-reduced-motion:reduce), (hover:none){
   .cab-art.is-away .cab-piece--locker .cab-mover, .cab-art.is-away .cab-piece--logo .cab-mover,
   .cab-art.is-away .cab-piece--cab1 .cab-mover, .cab-art.is-away .cab-piece--cab2 .cab-mover,
   .cab-art.is-away .cab-piece--cab3 .cab-mover, .cab-art.is-away .cab-piece--bag .cab-mover{transform:none; opacity:0;}
@@ -1028,6 +1051,7 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
         <span class="noirbar-say noirbar-unsee" aria-hidden="true">It&rsquo;s hard to unsee.</span>
       </button>
       </div>
+      <button type="button" class="noirbar-seat" id="barSeat" aria-label="What is the Narrative Forgery? Take a seat: open the introduction"><span class="noirbar-seat-q">What is the Narrative Forgery?</span><span class="noirbar-seat-go">Take a seat &rarr;</span></button>
     </div>
   </div>
 </section>
@@ -1646,7 +1670,8 @@ function buildDossier(){
   bands.addEventListener('mouseleave', clearNotes);
   // a band's drawer slides open from its bar, or shut into it: its height
   // runs from where it is to its cards' (or to nothing), then lets go
-  const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // (not with reduced motion, nor on a touch screen, where it opens at once)
+  const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce), (hover: none)').matches;
   const slide = (panel, open) => {
     clearTimeout(panel.__slide);
     if(still){ panel.hidden = !open; panel.style.height = ''; return; }
@@ -2788,6 +2813,10 @@ function buildCabinet(host, opts){
    in sight. It waits for its pictures, so it never lands half-drawn.
    mayStrike, if given, can hold it as it is. */
 function landOnReturn(watch, el, imgs, ms, need, mayStrike){
+  // on a touch screen the pieces fade rather than move (see the CSS), and
+  // they start as soon as any of the set shows: waiting for its share to be
+  // in view left a phone looking at an empty room on its way up the screen
+  if(window.matchMedia && matchMedia('(hover: none)').matches) need = 0;
   // (a hidden page may hold its decoding back, so don't wait past 2s)
   const ready = Promise.race([new Promise(r => setTimeout(r, 2000)),
     Promise.all(imgs.map(im => im.decode ? im.decode().catch(() => {})
@@ -2892,10 +2921,13 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike){
   head.insertAdjacentElement('afterend', box);
 })();
 
-// the stool opens the introduction, "What is the Narrative Forgery?"
+// the stool opens the introduction, "What is the Narrative Forgery?", and so
+// does the band under the bar that asks it on a phone
 (function(){
-  const stool = document.getElementById('barStool');
-  if(stool) stool.addEventListener('click', () => openIntroReader());
+  ['barStool', 'barSeat'].forEach(id => {
+    const b = document.getElementById(id);
+    if(b) b.addEventListener('click', () => openIntroReader());
+  });
 })();
 
 // the bar fits the window on arrival: tell the CSS how far down the page it
