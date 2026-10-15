@@ -2720,12 +2720,13 @@ function buildCabinet(host, opts){
    slowly shifting flow field, so neighbours take the same path and the thread
    curls as one wisp: tight and quick at the tray, slower, wider and fainter
    as it climbs. Each frame the canvas fades a little rather than clearing,
-   which draws the wisps as trails. Nothing runs off screen or under reduced
-   motion — the photo keeps its own still smoke either way. */
+   which draws the wisps as trails. Nothing runs off screen, under reduced
+   motion or on a touch screen — the photo keeps its own still smoke either
+   way. */
 (function buildBarSmoke(){
   const bar = document.getElementById('noirBar');
   if(!bar || !window.requestAnimationFrame) return;
-  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce), (hover: none)').matches) return;
   const cv = document.createElement('canvas');
   cv.className = 'noirbar-smoke';
   cv.setAttribute('aria-hidden', 'true');
