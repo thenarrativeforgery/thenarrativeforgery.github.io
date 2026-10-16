@@ -255,8 +255,9 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .noirbar-hot--head:hover ~ .noirbar-brain, .noirbar-hot--head:focus-visible ~ .noirbar-brain{opacity:1;}
 /* the crimson trace (see landOnReturn): each thing you can touch in a set is
    outlined in crimson as it comes into view, once each time the set lands;
-   things in view together go one after another, 1.5s from the first to the
-   last. A glow, not movement, so it plays with reduced motion too.
+   things in view together go one after another (the file room's ripple out
+   from its middle, ring by ring), 1.5s from the first to the last. A glow,
+   not movement, so it plays with reduced motion too.
    trace-out rings a thing; trace-in lines the inside of a drawer or a band,
    as hovering one does; his head shows its brain through the hat instead. */
 @keyframes trace-out{0%,100%{box-shadow:0 0 0 0 rgba(184,36,26,0), 0 0 0 rgba(255,255,255,0);} 40%,60%{box-shadow:0 0 0 2px var(--red), 0 0 40px rgba(255,255,255,.22);}}
@@ -455,6 +456,30 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
   .cab-stage{justify-content:flex-start; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
   .cab-stage::-webkit-scrollbar{display:none;}
   .cab-stage-host{width:170%; flex:0 0 auto;}
+}
+/* where the room swipes, an arrow at each side with more of it that way
+   flashes as the crimson trace ripples out to the locker and the bag (see
+   .is-traced), nudging the way to swipe where motion is welcome */
+.cab-view{position:relative;}
+.cab-swipe{display:none;}
+@media(max-width:700px){
+  .cab-swipe{display:block; position:absolute; z-index:2; top:50%; width:36px; height:36px; margin-top:-18px; padding:6px; box-sizing:border-box;
+    border-radius:50%; background:rgba(255,255,255,.94); color:var(--red); box-shadow:0 0 0 2px var(--red), 0 2px 12px rgba(0,0,0,.35);
+    opacity:0; pointer-events:none; --dir:1;}
+  .cab-swipe--left{left:8px; --dir:-1;}
+  .cab-swipe--right{right:8px;}
+  .cab-view.is-at-start .cab-swipe--left, .cab-view.is-at-end .cab-swipe--right{visibility:hidden;}
+}
+@media(prefers-reduced-motion:reduce){ .cab-swipe, .cab-swipe--left{--dir:0;} }
+.cab-swipe.is-traced{animation-name:cab-swipe;}
+@keyframes cab-swipe{
+  0%{opacity:0; transform:translateX(0);}
+  15%{opacity:1;}
+  32%{opacity:1; transform:translateX(calc(var(--dir) * 6px));}
+  50%{opacity:.3; transform:translateX(0);}
+  66%{opacity:1;}
+  83%{opacity:1; transform:translateX(calc(var(--dir) * 6px));}
+  100%{opacity:0; transform:translateX(0);}
 }
 .cab-caption{font-family:var(--mono); font-size:12px; letter-spacing:.06em; line-height:1.45; color:var(--ink-soft); margin-top:8px; min-height:1.45em;}
 .cab-caption b{font-weight:400; color:var(--navy);}
@@ -1131,8 +1156,12 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   <div class="wrap">
     <h2 class="section-bar">The Book</h2>
     <div class="cab-wrap" id="cabWrap">
-      <div class="cab-stage" id="cabStage">
-        <div class="cab-stage-host" id="cabHost" aria-label="Three filing cabinets holding eighteen numbered drawers, one per chapter, beneath the book"></div>
+      <div class="cab-view">
+        <div class="cab-stage" id="cabStage">
+          <div class="cab-stage-host" id="cabHost" aria-label="Three filing cabinets holding eighteen numbered drawers, one per chapter, beneath the book"></div>
+        </div>
+        <svg class="cab-swipe cab-swipe--left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="cab-swipe cab-swipe--right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div class="cab-caption" id="cabCaption" aria-live="polite"></div>
     </div>
@@ -2902,9 +2931,12 @@ function buildCabinet(host, opts){
    listing the things in the set you can touch, in order, for the crimson
    trace (see .is-traced): each is outlined as it comes into view, once a
    landing; on arrival it waits for the pieces to settle, and things in view
-   together go one after another, 1.5s from the first to the last. On a phone
-   a set lands as soon as it shows, while its pieces may be a screen below
-   (or a swipe aside), so each waits for itself to be in view. */
+   together go one after another, 1.5s from the first to the last. An entry
+   that is a list is a ring, its things lit together, and rings go further
+   apart than single things, so a ripple reads. On a phone a set lands as
+   soon as it shows, while its pieces may be a screen below (or a swipe
+   aside), so each waits for itself to be in view; one cut off at a side
+   counts once a quarter of it shows, to say there is more that way. */
 function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
   // on a touch screen the pieces fade rather than move (see the CSS), and
   // they start as soon as any of the set shows: waiting for its share to be
@@ -2929,21 +2961,30 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
   function strike(){
     if(mayStrike && !mayStrike()) return;
     clearTimeout(done); el.classList.remove('is-landing'); el.classList.add('is-away');
-    landedAt = 0; traced.clear();
+    landedAt = 0; startedAt = 0; traced.clear();
     items.forEach(it => { clearTimeout(it.__trace); it.classList.remove('is-traced'); });
   }
   // the trace: the pieces move into place for .9s, or fade for .5s
   const settle = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce), (hover: none)').matches ? 500 : 900;
-  let items = [], landedAt = 0;
-  const shown = new Set(), traced = new Set();
+  let items = [], landedAt = 0, startedAt = 0, gap = 150, pace = 150, settling = 0;
+  const ring = new Map(), shown = new Set(), traced = new Set();
   function traceShown(){
     if(!landedAt) return;
+    // what comes into view while the pieces settle goes in one pass
+    const now = performance.now();
+    if(landedAt + settle > now){ clearTimeout(settling); settling = setTimeout(traceShown, landedAt + settle - now); return; }
     const due = items.filter(it => shown.has(it) && !traced.has(it));
     if(!due.length) return;
-    const wait = Math.max(0, landedAt + settle - performance.now());
-    const step = due.length > 1 ? Math.min(150, 600 / (due.length - 1)) : 0;
-    due.forEach((it, k) => {
-      const at = Math.round(wait + k * step);
+    // each ring goes after the one before it in the pass, and never before
+    // its turn counted from the landing's first, so a set scrolled into view
+    // a row at a time still ripples out in order
+    startedAt = startedAt || now;
+    const rings = due.map(it => ring.get(it)).filter((g, k, all) => all.indexOf(g) === k);
+    const step = rings.length > 1 ? Math.min(gap, 600 / (rings.length - 1)) : 0;
+    const when = new Map();
+    rings.reduce((t, g) => { t = Math.max(t, startedAt + g * pace); when.set(g, t); return t + step; }, now);
+    due.forEach(it => {
+      const at = Math.round(when.get(ring.get(it)) - now);
       traced.add(it);
       it.style.setProperty('--trace-delay', at + 'ms');
       it.classList.add('is-traced');
@@ -2953,11 +2994,14 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
   }
   // (listed once the pictures are in: by then the page has built them all)
   if(trace) ready.then(() => {
-    items = trace().filter(Boolean);
+    const list = trace();
+    list.forEach((t, g) => [].concat(t).filter(Boolean).forEach(it => { items.push(it); ring.set(it, g); }));
+    if(list.some(Array.isArray)) gap = 300;
+    pace = Math.min(gap, 600 / Math.max(1, list.length - 1));
     const io = new IntersectionObserver(es => {
       es.forEach(e => {
-        const r = e.rootBounds;
-        if(e.isIntersecting && (e.intersectionRatio >= .6 || (r && e.intersectionRect.height >= r.height * .5))) shown.add(e.target);
+        const r = e.rootBounds, b = e.boundingClientRect, v = e.intersectionRect;
+        if(e.isIntersecting && (v.height >= b.height * .6 || (r && v.height >= r.height * .5)) && v.width >= b.width * .25) shown.add(e.target);
         else shown.delete(e.target);
       });
       traceShown();
@@ -3063,15 +3107,26 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
   stage.style.setProperty('--art-ar', CAB_ART.ar);
   buildCabinet(host, {art: CAB_ART, noteEl: document.getElementById('cabCaption')});
   // the room lands each time it comes back into view, except while a drawer
-  // is out: an open drawer holds the room as it is
+  // is out: an open drawer holds the room as it is. Its trace ripples out
+  // from the middle: the middle cabinet, the two either side, then the
+  // locker and the bag, with the arrows at the sides where it swipes.
   const art = host.querySelector('.cab-art.is-away');
-  if(art) landOnReturn(stage, art, Array.prototype.slice.call(art.querySelectorAll('img')), 4200, .65,
+  const view = stage.parentNode, all = (root, sel) => Array.prototype.slice.call(root.querySelectorAll(sel));
+  if(art) landOnReturn(stage, art, all(art, 'img'), 4200, .65,
                        () => !art.parentNode.classList.contains('has-open'),
-                       () => [art.querySelector('.drawer--fixture[data-fixture="archive"]')]
-                               .concat(Array.prototype.slice.call(art.querySelectorAll('.drawer--hot:not(.drawer--fixture)')).sort((a, b) => a.dataset.n - b.dataset.n),
-                                       [art.querySelector('.drawer--fixture[data-fixture="ledger"]')]));
-  // a phone opens on the cabinets, with the reels and the bag a swipe away
+                       () => [all(art, '.drawer--hot[data-col="1"]'),
+                              all(art, '.drawer--hot[data-col="0"], .drawer--hot[data-col="2"]'),
+                              all(art, '.drawer--fixture').concat(all(view, '.cab-swipe'))]);
+  // a phone opens on the cabinets, with the reels and the bag a swipe away;
+  // an arrow only flashes on a side with more of the room that way
   if(stage.scrollWidth > stage.clientWidth + 1) stage.scrollLeft = host.clientWidth * 0.54 - stage.clientWidth / 2;
+  const ends = () => {
+    view.classList.toggle('is-at-start', stage.scrollLeft < 2);
+    view.classList.toggle('is-at-end', stage.scrollLeft > stage.scrollWidth - stage.clientWidth - 2);
+  };
+  ends();
+  stage.addEventListener('scroll', ends, {passive:true});
+  window.addEventListener('resize', ends);
   // pull a drawer from anywhere on the page (the reader's chapter chips)
   window.openChapterDrawer = function(chN){
     const stage = document.getElementById('cabStage');
