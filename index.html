@@ -71,14 +71,14 @@ a:hover{text-decoration:underline;}
 .nav-num{color:var(--red); font-weight:700;}
 .nav-count{color:#7C93A3;}
 #nav{position:sticky; top:0; z-index:100; background:var(--navy); color:var(--cream); box-shadow:0 2px 12px rgba(0,0,0,.15);}
-#nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 28px; gap:20px; flex-wrap:wrap; max-width:1700px;}
+#nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 28px; gap:20px; flex-wrap:wrap; max-width:1640px;}
 #nav .brand{display:flex; align-items:center; gap:13px; white-space:nowrap;}
 /* the wordmark is a crop of the cover's own lettering, knocked out to white */
 #nav .brand .brand-title{height:44px; width:auto; display:block;}
 /* the book-and-brain sticker stands as tall as the title beside it */
 #nav .brand .brand-icon{height:44px; width:auto; display:block;}
 #nav .brand .sub{font-family:var(--mono); font-size:10px; font-weight:400; font-style:normal; letter-spacing:.13em; line-height:1.5; white-space:normal; text-transform:uppercase; color:#8FA3B3;}
-@media(max-width:1699px){ #nav .brand .sub{display:none;} }   /* only where the whole nav still fits on one line */
+@media(max-width:1449px){ #nav .brand .sub{display:none;} }   /* only where the whole nav still fits on one line */
 @media(max-width:600px){ #nav .brand .brand-title, #nav .brand .brand-icon{height:34px;} #nav .brand{gap:10px;} }
 #nav ul{display:flex; gap:22px; list-style:none; flex-wrap:wrap;}
 #nav a{color:#E8E8E6; font-family:var(--sans); font-size:15px; font-weight:500; letter-spacing:.04em; text-transform:uppercase;}
@@ -616,47 +616,18 @@ footer{background:var(--navy); color:#9C9C9C; padding:24px 0; text-align:center;
 footer .stamp{color:var(--cream); font-weight:700; letter-spacing:.05em; margin-bottom:6px;}
 footer .build{margin-top:14px; font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:#6E6E6A;}
 /* the way to write in, and the notice of whose all this is */
-.foot-links{display:flex; justify-content:center; flex-wrap:wrap; gap:6px 14px; margin-top:14px; font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;}
-.foot-links span{color:#565656;}
+.foot-links{margin-top:14px; font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;}
 footer a{color:var(--cream); border-bottom:1px solid transparent;}
 footer a:hover{text-decoration:none; border-bottom-color:var(--red);}
 footer .copyright{max-width:62ch; margin:16px auto 0; padding:0 16px; font-size:13px; color:#C9C9C6;}
 footer .rights{max-width:62ch; margin:6px auto 0; padding:0 16px; font-size:12px; line-height:1.6; color:#8C8C88;}
 
-/* THE FORMS — the contact box and the receipt form share one set of fields:
-   a capital label, a white box, a mono hint under it, and a red line where
-   something is wanting. Optional fields say so; the rest are needed. */
-.cf-row{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-gap:0 16px; gap:0 16px;}
-.cf-field{display:block; min-width:0; margin:0 0 14px; padding:0; border:0;}
-.cf-label{display:block; padding:0; margin:0 0 5px; font-family:var(--sans); font-size:12px; font-weight:600; letter-spacing:.08em; line-height:1.4; text-transform:uppercase; color:var(--ink);}
-.cf-opt{font-weight:400; letter-spacing:.03em; text-transform:none; color:var(--ink-soft);}
-.cf-input{display:block; width:100%; margin:0; padding:9px 12px; font-family:var(--serif); font-size:17px; line-height:1.4; color:var(--ink); background:#fff; border:1px solid #BDBDB8; border-radius:2px;}
-.cf-input::placeholder{color:#9C9C98;}
-textarea.cf-input{resize:vertical; min-height:96px;}
-.cf-input:focus{outline:2px solid var(--red); outline-offset:-1px; border-color:var(--red);}
-.cf-hint, .cf-err{display:block; margin-top:5px; font-family:var(--mono); font-size:11.5px; line-height:1.5; color:var(--ink-soft);}
-.cf-hint:empty, .cf-err:empty{display:none;}
-.cf-err{color:var(--red); font-weight:700;}
-.cf-dup{color:var(--blue); font-weight:700;}
-.cf-field.is-invalid .cf-input{border-color:var(--red); box-shadow:0 0 0 1px var(--red);}
-.cf-actions{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:4px;}
-.cf-btn{min-height:46px; margin:0; padding:0 20px; font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--cream); background:var(--red); border:1px solid var(--red); border-radius:2px; cursor:pointer; touch-action:manipulation;}
-.cf-btn:hover{background:#97170F; border-color:#97170F;}
-.cf-btn:focus-visible{outline:2px solid var(--red); outline-offset:2px;}
-.cf-btn--ghost{color:var(--navy); background:transparent; border-color:var(--navy);}
-.cf-btn--ghost:hover{color:var(--cream); background:var(--navy); border-color:var(--navy);}
-.cf-note{margin-top:12px; font-family:var(--mono); font-size:12px; line-height:1.6; color:var(--ink-soft);}
-.cf-note a, .contact-to a{color:var(--navy); border-bottom:1px solid var(--red);}
-.cf-note a:hover, .contact-to a:hover{text-decoration:none; color:var(--red);}
-.cf-status{margin-top:12px; padding:10px 12px; font-family:var(--mono); font-size:12.5px; line-height:1.6; color:var(--ink); background:rgba(184,36,26,.05); border-left:3px solid var(--red);}
-.cf-status:empty{display:none;}
-@media(max-width:600px){ .cf-row{grid-template-columns:minmax(0,1fr);} }
-
-/* CONTACT — the pop-up behind every Contact link (the nav, the footer): a
-   message box addressed to the book's mailbox. A static page can't send mail
-   itself, so Send hands the message to the visitor's own email app, filled
-   in; Copy is there for anyone without one. Closed by its x, a click outside
-   it, or Escape. */
+/* CONTACT — the pop-up behind the footer's Contact us: a message box
+   addressed to the book's mailbox. A static page can't send mail itself, so
+   Send hands the message to the visitor's own email app, filled in; Copy is
+   there for anyone without one. Closed by its x, a click outside it, or
+   Escape. Each field is a capital label over a white box, with a red line
+   and a word under it where something is wanting. */
 .contact{position:fixed; top:0; right:0; bottom:0; left:0; z-index:300; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,.6);}
 .contact[hidden]{display:none;}
 .contact-panel{position:relative; width:100%; max-width:620px; max-height:100%; overflow:auto; overscroll-behavior:contain; background:var(--cream); border-top:3px solid var(--red); box-shadow:0 24px 60px rgba(0,0,0,.45); padding:22px 28px 22px;}
@@ -666,75 +637,33 @@ textarea.cf-input{resize:vertical; min-height:96px;}
 .contact-x{position:absolute; top:8px; right:10px; width:40px; height:40px; padding:0; background:none; border:0; font-size:26px; line-height:1; color:var(--ink-soft); cursor:pointer;}
 .contact-x:hover{color:var(--ink);}
 .contact-x:focus-visible{outline:2px solid var(--red); outline-offset:-4px;}
+.cf-row{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-gap:0 16px; gap:0 16px;}
+.cf-field{display:block; min-width:0; margin:0 0 14px;}
+.cf-label{display:block; margin:0 0 5px; font-family:var(--sans); font-size:12px; font-weight:600; letter-spacing:.08em; line-height:1.4; text-transform:uppercase; color:var(--ink);}
+.cf-opt{font-weight:400; letter-spacing:.03em; text-transform:none; color:var(--ink-soft);}
+.cf-input{display:block; width:100%; margin:0; padding:9px 12px; font-family:var(--serif); font-size:17px; line-height:1.4; color:var(--ink); background:#fff; border:1px solid #BDBDB8; border-radius:2px;}
+textarea.cf-input{resize:vertical; min-height:96px;}
+.cf-input:focus{outline:2px solid var(--red); outline-offset:-1px; border-color:var(--red);}
+.cf-err{display:block; margin-top:5px; font-family:var(--mono); font-size:11.5px; font-weight:700; line-height:1.5; color:var(--red);}
+.cf-err:empty{display:none;}
+.cf-field.is-invalid .cf-input{border-color:var(--red); box-shadow:0 0 0 1px var(--red);}
+.cf-actions{display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:4px;}
+.cf-btn{min-height:46px; margin:0; padding:0 20px; font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--cream); background:var(--red); border:1px solid var(--red); border-radius:2px; cursor:pointer; touch-action:manipulation;}
+.cf-btn:hover{background:#97170F; border-color:#97170F;}
+.cf-btn:focus-visible{outline:2px solid var(--red); outline-offset:2px;}
+.cf-btn--ghost{color:var(--navy); background:transparent; border-color:var(--navy);}
+.cf-btn--ghost:hover{color:var(--cream); background:var(--navy); border-color:var(--navy);}
+.cf-note{margin-top:12px; font-family:var(--mono); font-size:12px; line-height:1.6; color:var(--ink-soft);}
+.contact-to a{color:var(--navy); border-bottom:1px solid var(--red);}
+.contact-to a:hover{text-decoration:none; color:var(--red);}
+.cf-status{margin-top:12px; padding:10px 12px; font-family:var(--mono); font-size:12.5px; line-height:1.6; color:var(--ink); background:rgba(184,36,26,.05); border-left:3px solid var(--red);}
+.cf-status:empty{display:none;}
 /* a phone gives the box the whole screen, for the keyboard's sake */
 @media(max-width:600px){
   .contact{padding:0; align-items:stretch;}
   .contact-panel{max-width:none; padding:18px 18px 22px; padding-top:max(18px, env(safe-area-inset-top));}
   .contact-title{font-size:22px;}
-}
-
-/* CONTRIBUTE — a receipt the ledger is missing, filed in the ledger's own
-   shape so it can be checked: the black band says what a receipt needs, the
-   form takes it field by field, and the slip beside it types the receipt out
-   as it fills, in the order it will be sent. Send hands it to the visitor's
-   email app, addressed to the book's mailbox; Copy is for anyone without one. */
-.contrib-head{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); grid-gap:18px 48px; gap:18px 48px; align-items:start; margin-bottom:14px; padding:28px 34px 18px; background:#0C0C0C; color:#C9C9C6; border:1px solid #000; box-shadow:0 14px 40px rgba(0,0,0,.28);}
-.contrib-lede{margin-bottom:12px; font-family:var(--serif); font-style:italic; font-size:25px; line-height:1.35; color:#F4F4F2;}
-.contrib-intro p{max-width:46ch; font-size:17px; line-height:1.6;}
-.contrib-intro p + p{margin-top:10px;}
-.contrib-rules{margin:0; padding:0; list-style:none; counter-reset:rule;}
-.contrib-rules li{position:relative; counter-increment:rule; padding:0 0 13px 44px; font-size:16px; line-height:1.5;}
-.contrib-rules li::before{content:counter(rule, decimal-leading-zero); position:absolute; left:0; top:2px; font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:.06em; color:var(--red);}
-.contrib-rules b{display:block; font-family:var(--sans); font-size:14px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; color:#F4F4F2;}
-.contrib-exhibit{display:grid; grid-template-columns:minmax(0,1fr); grid-gap:26px; gap:26px; padding:14px; background:#0C0C0C; border:1px solid #000; box-shadow:0 14px 40px rgba(0,0,0,.28);}
-.contrib-fields, .contrib-actions{min-width:0; background:var(--cream); padding:24px 28px;}
-.contrib-fields > fieldset{min-width:0; margin:0 0 10px; padding:0; border:0;}
-.cf-legend{display:block; width:100%; margin:0 0 14px; padding:0 0 8px; font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--red); border-bottom:1px solid var(--border);}
-.cf-legend span{color:var(--ink-soft); text-transform:none; letter-spacing:.04em;}
-.cf-tiers{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-gap:8px; gap:8px;}
-.cf-tier{display:flex; align-items:flex-start; gap:10px; padding:10px 12px; background:#fff; border:1px solid #BDBDB8; border-radius:2px; cursor:pointer;}
-.cf-tier input, .cf-check input{flex:none; width:16px; height:16px; margin:4px 0 0; accent-color:var(--red);}
-.cf-tier b{display:block; font-family:var(--sans); font-size:13px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;}
-.cf-tier small{display:block; font-size:15px; line-height:1.4; color:var(--ink-soft);}
-.cf-tier.is-on{border-color:var(--red); box-shadow:0 0 0 1px var(--red);}
-.cf-field.is-invalid .cf-tier{border-color:var(--red);}
-.cf-check{display:flex; align-items:flex-start; gap:10px; font-size:16px; line-height:1.45; cursor:pointer;}
-.cf-check a{color:var(--navy); border-bottom:1px solid var(--red);}
-.cf-check.is-invalid span{color:var(--red);}
-/* the slip: a till receipt on the black, torn top and bottom. Until every
-   needed field is in, it is stamped a draft and counts what is left. */
-.contrib-slip{position:relative; justify-self:center; align-self:start; width:100%; max-width:440px; margin:12px 0; padding:22px 22px 24px; background:#FFFEF9; color:#1A1A18; font-family:var(--mono); font-size:13px; line-height:1.5; filter:drop-shadow(0 12px 22px rgba(0,0,0,.55));}
-.contrib-slip::before, .contrib-slip::after{content:""; position:absolute; left:0; right:0; height:12px; background-image:linear-gradient(45deg, #FFFEF9 50%, transparent 50%), linear-gradient(-45deg, #FFFEF9 50%, transparent 50%); background-size:12px 12px; background-repeat:repeat-x;}
-.contrib-slip::before{top:-11px;}
-.contrib-slip::after{bottom:-11px; transform:scaleY(-1);}
-.slip-head{margin-bottom:6px; padding-bottom:12px; text-align:center; border-bottom:1px dashed #9C9C98;}
-.slip-head b{display:block; font-family:'Bebas Neue','Oswald',Impact,'Arial Narrow',sans-serif; font-size:27px; font-weight:400; line-height:1.05; letter-spacing:.06em;}
-.slip-head span{display:block; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#565656;}
-.slip-head .slip-fac{margin-top:8px; color:var(--red);}
-.slip-lines{margin:0;}
-.slip-lines + .slip-lines{margin-top:12px; padding-top:4px; border-top:1px dashed #9C9C98;}
-.slip-lines dt{margin-top:9px; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#6E6E6A;}
-.slip-lines dd{margin:1px 0 0; white-space:pre-wrap; word-break:break-word; overflow-wrap:anywhere;}
-.slip-lines dd.is-missing{color:var(--red);}
-.slip-lines dd.is-empty{color:#9C9C98;}
-.slip-foot{display:flex; justify-content:space-between; gap:12px; margin-top:14px; padding-top:12px; border-top:1px dashed #9C9C98; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#565656;}
-.slip-stamp{display:table; margin:16px auto 2px; padding:5px 12px; font-weight:700; font-size:13px; letter-spacing:.22em; text-transform:uppercase; color:var(--red); border:2px solid var(--red); border-radius:3px; transform:rotate(-6deg); opacity:.9;}
-.slip-stamp.is-draft{color:#8A8A86; border:2px dashed #BFBFBA; transform:none;}
-/* on a computer the slip stands beside the form and stays in view as the
-   form scrolls past it */
-@media(min-width:1000px){
-  html.view-desktop .contrib-exhibit{grid-template-columns:minmax(0,1fr) 360px; grid-template-rows:auto auto; grid-gap:0 26px; gap:0 26px;}
-  html.view-desktop .contrib-fields{grid-column:1; grid-row:1; padding-bottom:4px;}
-  html.view-desktop .contrib-actions{grid-column:1; grid-row:2; padding-top:4px;}
-  html.view-desktop .contrib-slip{grid-column:2; grid-row:1 / span 2; position:-webkit-sticky; position:sticky; top:calc(var(--nav-h, 72px) + 26px);}
-}
-@media(max-width:900px){ .contrib-head{grid-template-columns:minmax(0,1fr); padding:24px 22px 12px;} }
-html.view-phone .contrib-head{grid-template-columns:minmax(0,1fr); padding:22px 18px 10px;}
-@media(max-width:600px){
-  .contrib-lede{font-size:21px;}
-  .contrib-exhibit{padding:10px;}
-  .contrib-fields, .contrib-actions{padding:20px 16px;}
-  .cf-tiers{grid-template-columns:minmax(0,1fr);}
+  .cf-row{grid-template-columns:minmax(0,1fr);}
 }
 
 @media(max-width:720px){
@@ -885,26 +814,20 @@ html.view-desktop #nav ul{display:flex !important; position:static; width:auto; 
 html.view-desktop #nav ul li{border:0; padding:0;}
 /* the nav stays on one line: as the window narrows it tightens in steps,
    the links and the switch smaller, then without their counts, then the
-   wordmark left to the icon alone, then the links without their numbers.
-   (A phone's view keeps its menu as is.) */
-@media(max-width:1459px){
+   wordmark left to the icon alone. (A phone's view keeps its menu as is.) */
+@media(max-width:1250px){
   html.view-desktop #nav .wrap{gap:16px;}
   html.view-desktop #nav ul{gap:16px;}
   html.view-desktop #nav a{font-size:14px;}
   html.view-desktop #navSearch{width:150px;}
   html.view-desktop .view-toggle button{padding:3px 6px; font-size:10px;}
 }
-@media(max-width:1339px){ html.view-desktop .nav-count{display:none;} }
-@media(max-width:1239px){
+@media(max-width:1135px){ html.view-desktop .nav-count{display:none;} }
+@media(max-width:1035px){
   html.view-desktop #nav .wrap{padding-left:16px; padding-right:16px;}
   html.view-desktop #nav .brand .brand-title{display:none;}
   html.view-desktop #navSearch{width:130px;}
 }
-@media(max-width:1099px){
-  html.view-desktop #nav .wrap, html.view-desktop #nav ul{gap:13px;}
-  html.view-desktop #nav .nav-num{display:none;}
-}
-@media(max-width:959px){ html.view-desktop #nav a{font-size:13px;} }
 html.view-desktop #ledgerCards{display:none !important;}
 html.view-desktop .ledger-table-wrap{display:block !important;}
 
@@ -1096,8 +1019,6 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
       <li><a href="#chapters"><span class="nav-num">02.</span> Chapters <span class="nav-count">(18)</span></a></li>
       <li><a href="#compendium"><span class="nav-num">03.</span> Compendium <span class="nav-count">(18)</span></a></li>
       <li><a href="#ledger"><span class="nav-num">04.</span> Receipts Ledger <span class="nav-count">(173)</span></a></li>
-      <li><a href="#contribute"><span class="nav-num">05.</span> Contribute</a></li>
-      <li><a href="#contact" aria-haspopup="dialog">Contact</a></li>
     </ul>
     <div class="nav-tools">
       <div class="view-toggle" role="group" aria-label="Layout">
@@ -1263,95 +1184,6 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   </div>
 </section>
 
-<section id="contribute">
-  <div class="wrap">
-    <h2 class="section-bar">Contribute a Receipt</h2>
-    <div class="contrib-head">
-      <div class="contrib-intro">
-        <p class="contrib-lede">Found a document the ledger is missing, or one that corrects it? File it here.</p>
-        <p>Nothing joins the ledger until it has been read against its source. Fill in every field the form asks for, so a reviewer can open the link, find the words and check them in a minute.</p>
-        <p>A receipt that holds up is given its FAC number and its final tier on review.</p>
-      </div>
-      <ol class="contrib-rules">
-        <li><b>One receipt, one event</b>A single document and the single thing it shows. Two documents are two receipts.</li>
-        <li><b>Link the source itself</b>The filing, the report, the transcript, the broadcast: not a write-up of it.</li>
-        <li><b>Quote it exactly, and pin it</b>The words as written, with the page, paragraph or timestamp they sit at.</li>
-        <li><b>Keep an archived copy</b>A Wayback Machine or archive.today link keeps the receipt alive if the original moves.</li>
-        <li><b>Propose a tier</b>Established, Strong or Supported, by the test the ledger uses. Unsure is fine.</li>
-      </ol>
-    </div>
-    <form class="contrib-exhibit" id="contribForm" novalidate aria-label="Contribute a receipt">
-      <div class="contrib-fields">
-        <fieldset>
-          <legend class="cf-legend">01 · The event</legend>
-          <div class="cf-row">
-            <div class="cf-field"><label class="cf-label" for="cfChapter">Chapter</label>
-              <select class="cf-input" id="cfChapter" name="chapter" required><option value="">Choose a chapter…</option><option value="new">None yet: a new thread</option></select></div>
-            <div class="cf-field"><label class="cf-label" for="cfDate">Date of the event</label>
-              <input class="cf-input" id="cfDate" name="date" required maxlength="60" placeholder="e.g. July 5, 2016" aria-describedby="cfDateHint"><small class="cf-hint" id="cfDateHint">The day if you have it; the month or a range if not.</small></div>
-          </div>
-          <div class="cf-field"><label class="cf-label" for="cfEvent">Event</label>
-            <input class="cf-input" id="cfEvent" name="event" required maxlength="140" placeholder="e.g. The Pre-Written Exoneration Drafts" aria-describedby="cfEventHint"><small class="cf-hint" id="cfEventHint">What happened, in a line, the way the ledger titles it.</small></div>
-        </fieldset>
-        <fieldset>
-          <legend class="cf-legend">02 · The source</legend>
-          <div class="cf-field"><label class="cf-label" for="cfSrcType">Kind of source</label>
-            <select class="cf-input" id="cfSrcType" name="srcType" required>
-              <option value="">Choose one…</option>
-              <option>Court record or filing</option>
-              <option>Guilty plea or sentencing record</option>
-              <option>Inspector General report</option>
-              <option>Sworn testimony or deposition</option>
-              <option>Government record or FOIA release</option>
-              <option>Authenticated email, memo or message</option>
-              <option>Unedited video or audio</option>
-              <option>Peer-reviewed paper or official dataset</option>
-              <option>News article or broadcast</option>
-              <option>Other</option>
-            </select></div>
-          <div class="cf-field"><label class="cf-label" for="cfBasis">Source basis</label>
-            <input class="cf-input" id="cfBasis" name="basis" required maxlength="200" placeholder="e.g. DOJ OIG (Horowitz) Report, June 2018" aria-describedby="cfBasisHint"><small class="cf-hint" id="cfBasisHint">Who issued it, what it is and when, as the ledger's Source column names it.</small></div>
-          <div class="cf-field"><label class="cf-label" for="cfUrl">Link to the source</label>
-            <input class="cf-input" type="url" id="cfUrl" name="url" required maxlength="500" pattern="https?://.+" placeholder="https://" aria-describedby="cfUrlHint cfUrlDup"><small class="cf-hint" id="cfUrlHint">The document itself: the PDF, the docket, the official page, the full video.</small><small class="cf-hint cf-dup" id="cfUrlDup" aria-live="polite"></small></div>
-          <div class="cf-field"><label class="cf-label" for="cfArchive">Archived copy <span class="cf-opt">(recommended)</span></label>
-            <input class="cf-input" type="url" id="cfArchive" name="archive" maxlength="500" pattern="https?://.+" placeholder="https://web.archive.org/…"></div>
-          <div class="cf-row">
-            <div class="cf-field"><label class="cf-label" for="cfPin">Pinpoint</label>
-              <input class="cf-input" id="cfPin" name="pinpoint" required maxlength="80" placeholder="e.g. p. 196, ¶ 3 or 00:12:34" aria-describedby="cfPinHint"><small class="cf-hint" id="cfPinHint">Where the words are: page, paragraph, exhibit or timestamp.</small></div>
-            <div class="cf-field"><label class="cf-label" for="cfVideo">Video <span class="cf-opt">(optional)</span></label>
-              <input class="cf-input" type="url" id="cfVideo" name="video" maxlength="500" pattern="https?://.+" placeholder="https://" aria-describedby="cfVideoHint"><small class="cf-hint" id="cfVideoHint">Footage of the moment itself, if there is any.</small></div>
-          </div>
-          <div class="cf-field"><label class="cf-label" for="cfQuote">Exact quote</label>
-            <textarea class="cf-input" id="cfQuote" name="quote" required maxlength="700" rows="4" aria-describedby="cfQuoteHint"></textarea><small class="cf-hint" id="cfQuoteHint">Word for word from the source, no paraphrase. Up to 700 characters.</small></div>
-        </fieldset>
-        <fieldset>
-          <legend class="cf-legend">03 · For the reviewer</legend>
-          <fieldset class="cf-field"><legend class="cf-label">Proposed tier</legend><div class="cf-tiers" id="cfTiers"></div></fieldset>
-          <div class="cf-field"><label class="cf-label" for="cfFac">Related FAC <span class="cf-opt">(optional)</span></label>
-            <input class="cf-input" id="cfFac" name="fac" maxlength="12" placeholder="e.g. FAC-003" autocomplete="off" aria-describedby="cfFacHint"><small class="cf-hint" id="cfFacHint">If this corrects or adds to a receipt already on file.</small></div>
-          <div class="cf-field"><label class="cf-label" for="cfNotes">Why it matters <span class="cf-opt">(optional)</span></label>
-            <textarea class="cf-input" id="cfNotes" name="notes" maxlength="700" rows="3" aria-describedby="cfNotesHint"></textarea><small class="cf-hint" id="cfNotesHint">What it shows, what it changes, anything the reviewer should know.</small></div>
-        </fieldset>
-        <fieldset>
-          <legend class="cf-legend">04 · You <span>(optional)</span></legend>
-          <div class="cf-row">
-            <div class="cf-field"><label class="cf-label" for="cfName">Name or handle</label><input class="cf-input" id="cfName" name="name" maxlength="80" autocomplete="name"></div>
-            <div class="cf-field"><label class="cf-label" for="cfEmail">Email for follow-up</label><input class="cf-input" type="email" id="cfEmail" name="email" maxlength="120" autocomplete="email"></div>
-          </div>
-        </fieldset>
-      </div>
-      <aside class="contrib-slip" id="contribSlip" aria-label="Your receipt, as it will be sent"></aside>
-      <div class="contrib-actions">
-        <label class="cf-field cf-check"><input type="checkbox" name="checkLedger" required data-says="Not already in the ledger"><span>I searched the <a href="#ledger">ledger</a>, and this receipt isn't already on file.</span></label>
-        <label class="cf-field cf-check"><input type="checkbox" name="checkSource" required data-says="Links the source itself, open to anyone"><span>The link goes to the source itself, not a summary of it, and anyone can open it.</span></label>
-        <div class="cf-actions"><button type="submit" class="cf-btn">Send for review</button><button type="button" class="cf-btn cf-btn--ghost" id="contribCopy">Copy receipt</button></div>
-        <p class="cf-note">Send for review opens your email app with the receipt filled in, addressed to <a class="tnf-mailbox" href="#contact">our mailbox</a>. Nothing is sent from this page. No email app? Copy the receipt and paste it into any email.</p>
-        <p class="cf-status" id="contribStatus" role="status" aria-live="polite"></p>
-      </div>
-    </form>
-  </div>
-</section>
-
 <div class="contact" id="contactDialog" role="dialog" aria-modal="true" aria-labelledby="contactTitle" hidden>
   <div class="contact-panel">
     <button type="button" class="contact-x" aria-label="Close">&times;</button>
@@ -1374,7 +1206,7 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
       <div class="cf-field"><label class="cf-label" for="ctMessage">Message</label>
         <textarea class="cf-input" id="ctMessage" name="message" required maxlength="2000" rows="7"></textarea></div>
       <div class="cf-actions"><button type="submit" class="cf-btn">Send message</button><button type="button" class="cf-btn cf-btn--ghost" id="contactCopy">Copy message</button></div>
-      <p class="cf-note">Send opens your email app with the message filled in; nothing is sent from this page. No email app? Copy the message and paste it into an email to <span class="tnf-mailbox">our mailbox</span>. Adding a receipt? <a href="#contribute">The contribute form</a> puts it in the shape a review needs.</p>
+      <p class="cf-note">Send opens your email app with the message filled in; nothing is sent from this page. No email app? Copy the message and paste it into an email to <span class="tnf-mailbox">our mailbox</span>.</p>
       <p class="cf-status" id="contactStatus" role="status" aria-live="polite"></p>
     </form>
   </div>
@@ -1438,7 +1270,7 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 <footer>
   <div class="stamp">THE RECEIPTS ARE THE ARGUMENT</div>
   <div>The Narrative Forgery — A Book of Receipts, 2016–2026</div>
-  <div class="foot-links"><a href="#contact" aria-haspopup="dialog">Contact us</a><span aria-hidden="true">·</span><a href="#contribute">Contribute a receipt</a></div>
+  <div class="foot-links"><a href="#contact" aria-haspopup="dialog">Contact us</a></div>
   <p class="copyright">&copy; 2026 The Narrative Forgery. All rights reserved.</p>
   <p class="rights">No part of the book or this site may be reproduced without written permission, except for brief quotations in reviews, criticism or commentary. The documents linked from the ledger belong to their publishers.</p>
   <div class="build" id="buildStamp"></div>
@@ -3261,20 +3093,41 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
 
 </script>
 <script>
-// CONTACT and CONTRIBUTE. A static page can't send mail, so both forms hand
-// what was written to the visitor's own email app, filled in and addressed to
-// the book's mailbox, and both can copy it instead for anyone without one.
-// The address is put together here rather than written into the page, so the
-// harvesters that comb pages for addresses pass it by. Its own script, in
-// syntax an old TV browser reads, so nothing here can stop the book above.
+// CONTACT. A static page can't send mail, so the contact box hands what was
+// written to the visitor's own email app, filled in and addressed to the
+// book's mailbox, and can copy it instead for anyone without one. The address
+// is put together here rather than written into the page, so the harvesters
+// that comb pages for addresses pass it by. Its own script, in syntax an old
+// TV browser reads, so nothing here can stop the book above.
 (function(){
+  var box = document.getElementById('contactDialog'), form = document.getElementById('contactForm');
+  if(!box || !form) return;
   var MAILBOX = ['narrativeforgery', 'proton.me'].join('@');
   [].forEach.call(document.querySelectorAll('.tnf-mailbox'), function(el){
     if(el.tagName === 'A') el.href = 'mailto:' + MAILBOX;
     el.textContent = MAILBOX;
   });
-  var pad2 = function(n){ return String(n).padStart(2, '0'); };
-  var today = function(){ var d = new Date(); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); };
+  var status = document.getElementById('contactStatus'), from = null;
+
+  var openContact = function(){
+    if(!box.hidden) return;
+    from = document.activeElement;
+    box.hidden = false; document.body.style.overflow = 'hidden';
+    box.querySelector('.contact-panel').scrollTop = 0;
+    // a mouse starts typing at once; a finger isn't handed the keyboard unasked
+    if(window.matchMedia && matchMedia('(hover:hover)').matches) form.elements.name.focus();
+    else box.querySelector('.contact-x').focus();
+  };
+  var closeContact = function(){
+    if(box.hidden) return;
+    box.hidden = true; document.body.style.overflow = '';
+    if(from && from.focus) from.focus({preventScroll:true});
+    from = null;
+  };
+  var message = function(){
+    var el = form.elements, who = el.name.value.trim(), mail = el.email.value.trim();
+    return el.message.value.trim() + '\n\n—\nFrom: ' + (who || '—') + '\nReply to: ' + (mail || '—') + '\nSent with the contact form on The Narrative Forgery';
+  };
 
   // hand the message to the mail app. A long one is copied as well, since
   // some mail apps cut a long link short.
@@ -3300,225 +3153,68 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
     return ok;
   }
 
-  // a field the browser finds wanting gets a red line and a message of its
-  // own under it; touching it again clears both once it is right
+  // a field the browser finds wanting gets a red line and a word under it,
+  // and both go as soon as it is right
   var errN = 0;
-  function messageFor(c){
-    var v = c.validity;
-    if(v.customError) return c.validationMessage;
-    if(v.valueMissing) return c.type === 'checkbox' ? 'Confirm this before sending.' : c.type === 'radio' ? 'Pick one.' : 'Needed for review.';
-    if(c.type === 'url') return 'Paste the whole link, starting with https://';
-    if(c.type === 'email') return 'That doesn’t look like an email address.';
-    return c.validationMessage;
-  }
   function mark(c){
     var f = c.closest('.cf-field'); if(!f) return true;
     var ok = c.checkValidity(), e = f.querySelector('.cf-err');
     if(!e){
-      e = document.createElement('small'); e.className = 'cf-err'; e.id = 'cfErr' + (++errN);
-      if(f.classList.contains('cf-check')) f.querySelector('span').appendChild(e); else f.appendChild(e);
+      e = document.createElement('small'); e.className = 'cf-err'; e.id = 'ctErr' + (++errN);
+      f.appendChild(e); c.setAttribute('aria-describedby', e.id);
     }
-    e.textContent = ok ? '' : messageFor(c);
+    e.textContent = ok ? '' : c.validity.valueMissing ? 'Write your message first.' : c.type === 'email' ? 'That doesn’t look like an email address.' : c.validationMessage;
     f.classList.toggle('is-invalid', !ok);
     if(ok) c.removeAttribute('aria-invalid'); else c.setAttribute('aria-invalid', 'true');
-    var ids = (c.getAttribute('aria-describedby') || '').split(' ').filter(function(id){ return id && id !== e.id; });
-    if(!ok) ids.push(e.id);
-    if(ids.length) c.setAttribute('aria-describedby', ids.join(' ')); else c.removeAttribute('aria-describedby');
     return ok;
   }
-  // checks every field, and brings the first one wanting into view
-  function checkAll(form, status){
-    var first = null;
-    status.classList.remove('is-ask');
-    [].forEach.call(form.querySelectorAll('input, select, textarea'), function(c){ if(!mark(c) && !first) first = c; });
-    if(first){ status.classList.add('is-ask'); first.focus({preventScroll:true}); first.scrollIntoView({block:'center'}); }
-    return !first;
-  }
-  // a field marked wanting is checked again as it changes, and the notice
-  // asking for the marked fields goes once none is left
-  function watch(form, status){
-    var again = function(e){
-      var f = e.target.closest && e.target.closest('.cf-field');
-      if(!f || !f.classList.contains('is-invalid')) return;
-      mark(e.target);
-      if(status.classList.contains('is-ask') && !form.querySelector('.cf-field.is-invalid')){ status.textContent = ''; status.classList.remove('is-ask'); }
-    };
-    form.addEventListener('input', again);
-    form.addEventListener('change', again);
-  }
-
-  // ── THE CONTACT BOX ──
-  var box = document.getElementById('contactDialog'), form = document.getElementById('contactForm');
-  if(box && form){
-    var status = document.getElementById('contactStatus'), from = null;
-    var openContact = function(){
-      if(!box.hidden) return;
-      from = document.activeElement;
-      box.hidden = false; document.body.style.overflow = 'hidden';
-      box.querySelector('.contact-panel').scrollTop = 0;
-      // a mouse starts typing at once; a finger isn't handed the keyboard unasked
-      if(window.matchMedia && matchMedia('(hover:hover)').matches) form.elements.name.focus();
-      else box.querySelector('.contact-x').focus();
-    };
-    var closeContact = function(){
-      if(box.hidden) return;
-      box.hidden = true; document.body.style.overflow = '';
-      if(from && from.focus) from.focus({preventScroll:true});
-      from = null;
-    };
-    var message = function(){
-      var el = form.elements, who = el.name.value.trim(), mail = el.email.value.trim();
-      return el.message.value.trim() + '\n\n—\nFrom: ' + (who || '—') + '\nReply to: ' + (mail || '—') + '\nSent with the contact form on The Narrative Forgery';
-    };
-    // every Contact link opens the box: heard on the document, so the phone's
-    // menu has shut itself (and given the page back its scroll) first
-    document.addEventListener('click', function(e){
-      var a = e.target.closest && e.target.closest('a[href="#contact"]');
-      if(!a) return;
-      e.preventDefault();
-      openContact();
-    });
-    box.querySelector('.contact-x').addEventListener('click', closeContact);
-    box.addEventListener('click', function(e){ if(e.target === box) closeContact(); });
-    // the way to the contribute form shuts the box, then goes there
-    form.querySelector('a[href="#contribute"]').addEventListener('click', closeContact);
-    document.addEventListener('keydown', function(e){
-      if(box.hidden) return;
-      if(e.key === 'Escape'){ closeContact(); return; }
-      if(e.key !== 'Tab') return;
-      var f = [].filter.call(box.querySelectorAll('a[href], button:not([disabled]), input, select, textarea'), function(el){ return el.offsetParent !== null; });
-      if(!f.length) return;
-      var first = f[0], last = f[f.length - 1];
-      if(!box.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
-      else if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-      else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-    });
-    watch(form, status);
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      if(!checkAll(form, status)){ status.textContent = 'The marked fields need another look.'; return; }
-      var long = send('The Narrative Forgery: ' + form.elements.topic.value, message());
-      status.textContent = 'Your email app should now be open with the message addressed to ' + MAILBOX + '. Press send there.'
-        + (long ? ' It’s a long one, so it has been copied too: if it arrives cut short, paste it in.' : '')
-        + ' Nothing opened? Use Copy message and paste it into an email.';
-    });
-    document.getElementById('contactCopy').addEventListener('click', function(){
-      copyText(message()).then(function(ok){
-        status.textContent = ok ? 'Copied. Paste it into an email to ' + MAILBOX + '.' : 'Your browser wouldn’t copy it. Select the message and copy it by hand.';
-      });
-    });
-    // a link to the page's #contact opens the box on arrival
-    if(location.hash === '#contact') openContact();
-  }
-
-  // ── THE RECEIPT FORM ──
-  var cf = document.getElementById('contribForm');
-  if(!cf) return;
-  var el = cf.elements, slip = document.getElementById('contribSlip'), cfStatus = document.getElementById('contribStatus');
-  // the chapters and the tiers come off the page's own data, so the form can
-  // never offer one the book doesn't have
-  CHAPTERS.forEach(function(c){ el.chapter.add(new Option('Ch ' + pad2(c.n) + ' · ' + c.title, c.n), el.chapter.options.length - 1); });
-  var tiers = [].map.call(document.querySelectorAll('#tierInfo dt'), function(dt){ return [dt.textContent.trim(), dt.nextElementSibling.textContent.trim()]; });
-  tiers.push(['Not sure', 'Leave the tier to the reviewer.']);
-  document.getElementById('cfTiers').innerHTML = tiers.map(function(t){
-    return '<label class="cf-tier"><input type="radio" name="tier" value="' + esc(t[0]) + '" required><span><b>' + esc(t[0]) + '</b><small>' + esc(t[1]) + '</small></span></label>';
-  }).join('');
-
-  // the receipt's lines, in the order the reviewer reads them
-  var LINES = [
-    ['chapter', 'Chapter'], ['event', 'Event'], ['date', 'Event date'],
-    ['srcType', 'Source type'], ['basis', 'Source basis'], ['url', 'Source URL'], ['archive', 'Archived copy'],
-    ['pinpoint', 'Pinpoint'], ['quote', 'Exact quote'], ['video', 'Video'],
-    ['tier', 'Proposed tier'], ['fac', 'Related FAC'], ['notes', 'Notes']
-  ];
-  var WHO = [['name', 'Submitted by'], ['email', 'Reply to'], ['checks', 'Checks']];
-  var normFac = function(s){ var m = /^\s*(?:fac[\s-]*)?(\d{1,3})\s*$/i.exec(s); return m ? 'FAC-' + ('00' + m[1]).slice(-3) : ''; };
-  var checks = [].slice.call(cf.querySelectorAll('.cf-check input'));
-  function val(name){
-    if(name === 'chapter') return el.chapter.value ? el.chapter.options[el.chapter.selectedIndex].text : '';
-    if(name === 'tier'){ var r = cf.querySelector('input[name="tier"]:checked'); return r ? r.value : ''; }
-    if(name === 'fac') return normFac(el.fac.value) || el.fac.value.trim();
-    if(name === 'quote'){ var q = el.quote.value.trim().replace(/^["“”]+|["“”]+$/g, ''); return q ? '“' + q + '”' : ''; }
-    if(name === 'checks') return checks.filter(function(c){ return c.checked; }).map(function(c){ return c.dataset.says; }).join(' · ');
-    return el[name] ? el[name].value.trim() : '';
-  }
-  function needed(name){
-    if(name === 'checks') return checks.some(function(c){ return !c.checked; });
-    var c = cf.querySelector('[name="' + name + '"]');
-    return !!(c && c.required) && !val(name);
-  }
-  function receiptText(){
-    var line = function(l){ return (l[1] + ':                ').slice(0, 16) + (val(l[0]) || '—').replace(/\n+/g, '\n                '); };
-    return ['THE NARRATIVE FORGERY · RECEIPT FOR REVIEW', '']
-      .concat(LINES.map(line), [''], WHO.map(line), ['Filed:          ' + today()]).join('\n');
-  }
-  function subject(){
-    var ch = el.chapter.value;
-    return 'Receipt for review: ' + (ch === 'new' ? 'New thread' : ch ? 'Ch ' + pad2(ch) : 'No chapter') + ' · ' + (val('event') || 'Untitled');
-  }
-  function missing(){ return LINES.concat(WHO).filter(function(l){ return needed(l[0]); }).length; }
-  // the slip types the receipt out as the form fills: what is needed and
-  // still empty shows in red, what is optional and empty as a dash
-  function renderSlip(){
-    var lines = function(set){
-      return '<dl class="slip-lines">' + set.map(function(l){
-        var v = val(l[0]), need = needed(l[0]);
-        if(l[0] === 'checks' && need) v = '';
-        return '<dt>' + l[1] + '</dt><dd' + (v ? '' : need ? ' class="is-missing"' : ' class="is-empty"') + '>'
-          + (v ? esc(v) : need ? (l[0] === 'checks' ? 'confirm both, below' : 'needed') : '—') + '</dd>';
-      }).join('') + '</dl>';
-    };
-    var left = missing();
-    slip.innerHTML = '<div class="slip-head"><b>The Narrative Forgery</b><span>Receipt for review</span><span class="slip-fac">FAC-??? · given on review</span></div>'
-      + lines(LINES) + lines(WHO)
-      + '<div class="slip-foot"><span>Filed ' + today() + '</span><span>' + (left ? left + ' to go' : 'Complete') + '</span></div>'
-      + '<div class="slip-stamp' + (left ? ' is-draft' : '') + '">' + (left ? 'Draft' : 'Ready for review') + '</div>';
-    [].forEach.call(cf.querySelectorAll('.cf-tier'), function(t){ t.classList.toggle('is-on', t.querySelector('input').checked); });
-  }
-
-  // a related FAC must be one on file; once it is, its event is named under it
-  var facHint = document.getElementById('cfFacHint'), facHintText = facHint.textContent;
-  function checkFac(){
-    var raw = el.fac.value.trim(), id = normFac(raw), hit = null, msg = '';
-    if(raw && !id) msg = 'Write it as a FAC number, like FAC-003.';
-    else if(id){ hit = LEDGER.find(function(r){ return r.fac === id; }); if(!hit) msg = 'There is no ' + id + ' in the ledger.'; }
-    el.fac.setCustomValidity(msg);
-    facHint.textContent = hit ? 'On file: ' + hit.fac + ' · ' + hit.event : facHintText;
-  }
-  el.fac.addEventListener('input', checkFac);
-  el.fac.addEventListener('blur', function(){ var id = normFac(el.fac.value); if(id){ el.fac.value = id; renderSlip(); } });
-  // a link the ledger already cites is pointed out, though not refused: a
-  // second receipt can come from the same document
-  var dup = document.getElementById('cfUrlDup');
-  var normUrl = function(s){ return String(s || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/#.*$/, '').replace(/\/+$/, ''); };
-  el.url.addEventListener('input', function(){
-    var u = normUrl(el.url.value);
-    var hit = u.length > 8 && LEDGER.find(function(r){ return normUrl(r.sourceUrl) === u || normUrl(r.videoUrl) === u; });
-    dup.textContent = hit ? 'Already on file as ' + hit.fac + ' · ' + hit.event + '. If yours adds something new, name ' + hit.fac + ' under Related FAC.' : '';
+  form.addEventListener('input', function(e){
+    var f = e.target.closest && e.target.closest('.cf-field');
+    if(!f || !f.classList.contains('is-invalid')) return;
+    mark(e.target);
+    if(!form.querySelector('.cf-field.is-invalid') && status.classList.contains('is-ask')){ status.textContent = ''; status.classList.remove('is-ask'); }
   });
-
-  watch(cf, cfStatus);
-  cf.addEventListener('input', renderSlip);
-  cf.addEventListener('change', renderSlip);
-  renderSlip();
-  cf.addEventListener('submit', function(e){
+  form.addEventListener('submit', function(e){
     e.preventDefault();
-    checkFac();
-    if(!checkAll(cf, cfStatus)){ cfStatus.textContent = 'The marked fields need filling in: a receipt can’t be reviewed without them.'; return; }
-    var long = send(subject(), receiptText());
-    cfStatus.textContent = 'Your email app should now be open with the receipt addressed to ' + MAILBOX + '. Press send there.'
+    var first = null;
+    [].forEach.call(form.querySelectorAll('input, select, textarea'), function(c){ if(!mark(c) && !first) first = c; });
+    if(first){ status.textContent = 'The marked field needs another look.'; status.classList.add('is-ask'); first.focus(); return; }
+    status.classList.remove('is-ask');
+    var long = send('The Narrative Forgery: ' + form.elements.topic.value, message());
+    status.textContent = 'Your email app should now be open with the message addressed to ' + MAILBOX + '. Press send there.'
       + (long ? ' It’s a long one, so it has been copied too: if it arrives cut short, paste it in.' : '')
-      + ' Nothing opened? Use Copy receipt and paste it into an email.';
+      + ' Nothing opened? Use Copy message and paste it into an email.';
   });
-  document.getElementById('contribCopy').addEventListener('click', function(){
-    checkFac();
-    var left = missing();
-    copyText(receiptText()).then(function(ok){
-      cfStatus.textContent = !ok ? 'Your browser wouldn’t copy it. Try Send for review instead.'
-        : 'Receipt copied. Paste it into an email to ' + MAILBOX + '.'
-          + (left ? ' It still has ' + left + ' needed field' + (left === 1 ? '' : 's') + ' empty, and a receipt is reviewed only when complete.' : '');
+  document.getElementById('contactCopy').addEventListener('click', function(){
+    copyText(message()).then(function(ok){
+      status.classList.remove('is-ask');
+      status.textContent = ok ? 'Copied. Paste it into an email to ' + MAILBOX + '.' : 'Your browser wouldn’t copy it. Select the message and copy it by hand.';
     });
   });
+
+  // the footer's Contact us opens the box (as would any link to #contact)
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href="#contact"]');
+    if(!a) return;
+    e.preventDefault();
+    openContact();
+  });
+  box.querySelector('.contact-x').addEventListener('click', closeContact);
+  box.addEventListener('click', function(e){ if(e.target === box) closeContact(); });
+  // Escape shuts it, and Tab and Shift+Tab cycle inside it while it is open
+  document.addEventListener('keydown', function(e){
+    if(box.hidden) return;
+    if(e.key === 'Escape'){ closeContact(); return; }
+    if(e.key !== 'Tab') return;
+    var f = [].filter.call(box.querySelectorAll('a[href], button:not([disabled]), input, select, textarea'), function(el){ return el.offsetParent !== null; });
+    if(!f.length) return;
+    var first = f[0], last = f[f.length - 1];
+    if(!box.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
+    else if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+  // a link to the page's #contact opens the box on arrival
+  if(location.hash === '#contact') openContact();
 })();
 </script>
 </body>
