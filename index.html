@@ -2212,6 +2212,15 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
       return { branches };
     }
 
+    // The column's visible edges: the content box of a section's .wrap, since
+    // the wrap's own padding is empty margin too (and narrows in the phone view)
+    const wrap = document.querySelector('section .wrap');
+    function columnEdges(){
+      if (!wrap){ const m = (W - 1200) / 2; return [m, W - m]; }
+      const r = wrap.getBoundingClientRect(), s = getComputedStyle(wrap);
+      return [r.left + parseFloat(s.paddingLeft), r.right - parseFloat(s.paddingRight)];
+    }
+
     function buildMasters(){
       W = Math.max(1, window.innerWidth);
       H = Math.max(1, window.innerHeight);
@@ -2219,28 +2228,37 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
       canvas.height = Math.round(H * dpr);
       canvas.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // The band the roots grow in, capped so they read as a vine along the
-      // column's edge rather than smearing across a huge empty margin — and
-      // anchored flush against the COLUMN's own edge (less a clearance so
-      // they never touch the text), growing outward from there. On a wide
-      // screen that puts them right next to what you're reading, instead of
-      // stranded out at the true edge where they're easy to miss. Where
-      // there is no margin (a laptop, a phone) they keep to a slim strip at
-      // the screen edge, fainter.
-      const col = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--col')) || 1200;
-      const margin = (W - col) / 2;
-      const clearance = 18;
-      const band = margin > 60 ? Math.min(margin - clearance, 220) : (W < 700 ? 14 : 20);
-      canvas.style.opacity = band < 40 ? '.34' : '.62';
+      // The roots fill each margin edge to edge: from just past the window's
+      // edge (so they run off it) right up to the column, less a hair so a
+      // stroke never lands on the text. Where there is no margin (a laptop,
+      // a phone) they keep to a slim strip at the screen edge, fainter.
+      const [colL, colR] = columnEdges();
+      const clearance = 4, bleed = 24;
+      const wide = colL > 60;
+      const strip = W < 700 ? 14 : 20;
+      canvas.style.opacity = wide ? '.62' : '.34';
       const len = Math.min(H * 0.21, 270);
 
-      const nearL = margin > 60 ? (margin - clearance) : band;
-      const nearR = margin > 60 ? (W - margin + clearance) : (W - band);
+      // One root system per ~240px of margin, spread across it, each free to
+      // wander the whole margin so they knit together without seams. Past two
+      // to a side (an ultrawide screen) they grow a level shallower, so the
+      // strokes a frame draws don't climb with the width of the screen.
+      const seen = document.documentElement.clientWidth || W;   // less the scrollbar
+      function plant(minX, maxX, seed){
+        const lo = Math.max(minX, 0), hi = Math.min(maxX, seen);
+        const n = Math.max(1, Math.round((hi - lo) / 240));
+        const levels = n > 2 ? 10 : 11;
+        let out = [];
+        for (let i = 0; i < n; i++){
+          const x = lo + (hi - lo) * (i + 0.5) / n;
+          out = out.concat(growTree(x, -12, Math.PI/2, len, seed + i * 97, levels, 30, minX, maxX).branches);
+        }
+        return out;
+      }
+      const left  = wide ? plant(-bleed, colL - clearance, 2044) : plant(-20, strip, 2044);
+      const right = wide ? plant(colR + clearance, W + bleed, 2071) : plant(W - strip, W + 20, 2071);
 
-      const left  = growTree(nearL - band * 0.45, -12, Math.PI/2, len, 2044, 11, 30, nearL - band - 20, nearL);
-      const right = growTree(nearR + band * 0.45, -12, Math.PI/2, len, 2071, 11, 30, nearR, nearR + band + 20);
-
-      const branches = left.branches.concat(right.branches);
+      const branches = left.concat(right);
       branches.sort((a,b)=>a.birth-b.birth);
       master = { branches };
     }
@@ -2296,10 +2314,14 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
       render(current);
       window.addEventListener('scroll', function(){ setTarget(depth()); }, {passive:true});
       let resizeTimer;
-      window.addEventListener('resize', function(){
+      function rebuild(){
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function(){ buildMasters(); render(current); }, 200);
-      });
+      }
+      window.addEventListener('resize', rebuild);
+      // switching between the phone and computer views moves the column's
+      // edge without resizing the window
+      if (wrap && window.ResizeObserver) new ResizeObserver(rebuild).observe(wrap);
     }
 
     let started = false;
