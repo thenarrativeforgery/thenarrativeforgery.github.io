@@ -132,6 +132,9 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .noirbar-hot--head{left:55.07%; top:12.86%; width:14.28%; height:20.21%; border-radius:50%;}
 .noirbar-hot--record{left:.885%; top:61.11%; width:30.22%; height:26.6%;}
 .noirbar-hot--sign{left:72.43%; top:9.58%; width:24.17%; height:44.3%;}
+/* on a phone the papers and his head are under a finger's width, so each
+   takes touches a little past its edge */
+@media(hover:none){ .noirbar-hot--papers::before, .noirbar-hot--head::before{content:""; position:absolute; top:-10px; right:-6px; bottom:-10px; left:-6px;} }
 /* the framed sign behind him turns to its next saying with each click, then
    back round to the photo's own, "The truth is bad for business." Each
    saying is the photo's own poster at twice its pixels, 1204-1382 x 196-368,
@@ -237,7 +240,7 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
    width, and the whole band is the way in */
 .noirbar-seat{display:none;}
 @media(max-width:720px){
-  .noirbar-stool .noirbar-say{display:none;}
+  .noirbar-stool{display:none;}
   .noirbar-seat{display:flex; flex-direction:column; align-items:center; gap:8px; width:100%; margin:0; padding:14px 16px 16px; background:#000; border:0; border-radius:0; color:var(--cream); line-height:1.2; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent;}
   .noirbar-seat-q{font-family:var(--serif); font-style:italic; font-size:20px; letter-spacing:.02em; text-shadow:0 0 14px rgba(255,255,255,.35);}
   .noirbar-seat-go{font-family:var(--mono); font-weight:700; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--red);}
@@ -280,6 +283,9 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
    inset inside it, white capital serif */
 .section-bar{display:block; margin:0 0 14px; padding:18px 28px; background:#000; color:#fff; outline:2px solid #fff; outline-offset:-7px;
   font-family:var(--serif); font-weight:600; font-size:clamp(20px, 2.6vw, 30px); line-height:1.2; letter-spacing:.16em; text-transform:uppercase; text-align:center;}
+/* on a phone the bar is slimmer and every title keeps to one line, the
+   longest ("The Receipts Ledger") down to a 320px screen */
+@media(max-width:720px){ .section-bar{padding:12px 12px; outline-offset:-6px; font-size:17px; font-size:clamp(14px, 4.4vw, 19px); letter-spacing:.12em; white-space:nowrap;} }
 
 /* THE TIERS — what each one means, in a pop-up: opened from the ledger's
    Tier heading, or by clicking any tier badge (the phone's cards have no
@@ -440,9 +446,11 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
    of the eighteen drawers, one per chapter. The picture is the one kept in
    the art store, so it costs nothing extra. */
 .cab-wrap{margin:0;}
-/* The stage holds the picture at the section's full width. On a phone the
-   room is wider than the screen and swipes sideways, opening on the
-   cabinets; the drawer card pins to whatever part is in view. */
+/* The stage holds the picture at the section's full width. On a phone it
+   holds only the cover over the three cabinets, upright and at the screen's
+   width, with nothing to swipe: the picture is cropped to them and the
+   stage clips the rest (the locker, the whiteboard and the burn bag), and a
+   pulled drawer's card is a sheet across the foot of the crop. */
 .cab-stage{
   position:relative; display:flex; justify-content:center; background:#fff; border:1px solid #000;
   box-shadow:0 14px 40px rgba(0,0,0,.28); padding:0;
@@ -452,34 +460,15 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
    height, never narrower than 560px (an old TV browser without max() just
    lets it fill the column) */
 @media(min-width:701px){ .cab-stage-host{max-width:max(560px, calc((100vh - 110px) * 2000 / 1493));} }
+/* the crop, in % of the picture: 36.2-71% across (the cabinets, clear of the
+   locker's edge and the whiteboard's frame) and 5.5-91.6% down (the cover's
+   top to the cabinets' feet). The stage takes the crop's shape, and the
+   picture is laid out at the size and offset that put the crop in it. */
 @media(max-width:700px){
-  .cab-stage{justify-content:flex-start; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
-  .cab-stage::-webkit-scrollbar{display:none;}
-  .cab-stage-host{width:170%; flex:0 0 auto;}
-}
-/* where the room swipes, an arrow at each side with more of it that way
-   flashes as the crimson trace ripples out to the locker and the bag (see
-   .is-traced), nudging the way to swipe where motion is welcome */
-.cab-view{position:relative;}
-.cab-swipe{display:none;}
-@media(max-width:700px){
-  .cab-swipe{display:block; position:absolute; z-index:2; top:50%; width:36px; height:36px; margin-top:-18px; padding:6px; box-sizing:border-box;
-    border-radius:50%; background:rgba(255,255,255,.94); color:var(--red); box-shadow:0 0 0 2px var(--red), 0 2px 12px rgba(0,0,0,.35);
-    opacity:0; pointer-events:none; --dir:1;}
-  .cab-swipe--left{left:8px; --dir:-1;}
-  .cab-swipe--right{right:8px;}
-  .cab-view.is-at-start .cab-swipe--left, .cab-view.is-at-end .cab-swipe--right{visibility:hidden;}
-}
-@media(prefers-reduced-motion:reduce){ .cab-swipe, .cab-swipe--left{--dir:0;} }
-.cab-swipe.is-traced{animation-name:cab-swipe;}
-@keyframes cab-swipe{
-  0%{opacity:0; transform:translateX(0);}
-  15%{opacity:1;}
-  32%{opacity:1; transform:translateX(calc(var(--dir) * 6px));}
-  50%{opacity:.3; transform:translateX(0);}
-  66%{opacity:1;}
-  83%{opacity:1; transform:translateX(calc(var(--dir) * 6px));}
-  100%{opacity:0; transform:translateX(0);}
+  .cab-stage{overflow:hidden;}
+  .cab-stage-host{aspect-ratio:69600 / 128547;}
+  .cab-stage .cab-art{position:absolute; left:-104.023%; top:-6.388%; width:287.356%; height:116.144%;}
+  .cab-stage .drawer--fixture{display:none;}
 }
 .cab-caption{font-family:var(--mono); font-size:12px; letter-spacing:.06em; line-height:1.45; color:var(--ink-soft); margin-top:8px; min-height:1.45em;}
 .cab-caption b{font-weight:400; color:var(--navy);}
@@ -830,8 +819,8 @@ html.view-phone .type-scale{display:none;}
 html.view-phone #readerOverlay{padding:0;}
 html.view-phone .reader-panel{margin:0; min-height:100%; border-radius:0; max-width:none;}
 html.view-phone .reader-head{padding-top:env(safe-area-inset-top);}
-html.view-phone .tnf-ring{--tnf-ring-size:190px;}
-@supports (width:clamp(1px, 1vw, 2px)){ html.view-phone .tnf-ring{--tnf-ring-size:clamp(153px, 47.6vw, 221px);} }
+html.view-phone .tnf-ring{--tnf-ring-size:150px;}
+@supports (width:clamp(1px, 1vw, 2px)){ html.view-phone .tnf-ring{--tnf-ring-size:clamp(128px, 38vw, 221px);} }
 
 /* Desktop forced view on wide screens still respects toggle */
 html.view-desktop .nav-burger{display:none;}
@@ -867,6 +856,11 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   }
   #nav ul.open{display:flex !important;}
   #nav ul li{border-bottom:1px solid #333; padding:14px 0;}
+  /* one row: the menu, the wordmark, and the search in what's left (the
+     wordmark leaves the icon alone on the narrowest phones, below) */
+  #nav .wrap{flex-wrap:nowrap; gap:12px; padding-top:10px; padding-bottom:10px;}
+  #nav .nav-tools{flex:1 1 auto; min-width:0; justify-content:flex-end;}
+  #nav #navSearch{flex:1 1 auto; width:auto; min-width:0; max-width:220px;}
   .ledger-table-wrap{display:none !important;}
   #ledgerCards{display:block !important;}
   .ledger-picker{display:block;}
@@ -881,6 +875,7 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 }
 
 @media(max-width:720px) and (pointer:coarse){ .view-toggle{display:none;} }
+@media(max-width:374px){ #nav .brand .brand-title{display:none;} }
 @media(max-width:320px){
   .wrap{padding-left:12px; padding-right:12px;}
   .view-toggle button{padding:3px 6px; font-size:10px;}
@@ -998,7 +993,7 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   box-shadow:inset 0 0 0 2px var(--red), 0 18px 44px rgba(0,0,0,.85), 0 0 34px rgba(255,255,255,.22);
   transform:translateY(3px) scale(1.05);
 }
-.drawer-card.is-sheet{top:auto !important; bottom:0; width:auto;}
+.drawer-card.is-sheet{top:auto !important; right:0; bottom:0; left:0; width:auto; max-height:100%; overflow-y:auto; overscroll-behavior:contain;}
 
 /* the drawer's card — dark cousin of the file room's panel. Its sizes follow
    the room (cqh/cqw); each comes after a plain one, its size in a full-width
@@ -1025,6 +1020,17 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 .drawer-card .media-btn:hover{border-color:#fff; text-decoration:none;}
 .drawer-card .media-btn.read{border-color:var(--red); color:var(--red);}
 .drawer-card .media-btn.pending{color:#6E6E6A; border-color:#4A4A46;}
+/* the phone's sheet (see placeCard) keeps a phone's own sizes: the room's
+   units shrink with its crop, and a finger needs room to land */
+.drawer-card.is-sheet{padding:14px 16px 16px;}
+.drawer-card.is-sheet .cd-num{font-size:12px;}
+.drawer-card.is-sheet .cd-x{font-size:30px; min-width:44px; min-height:44px; margin:-10px -12px -10px 0;}
+.drawer-card.is-sheet h4{font-size:20px; margin:2px 0 12px;}
+.drawer-card.is-sheet .cd-label{font-size:11px; margin:0 0 8px;}
+.drawer-card.is-sheet .chip-row{gap:6px; margin-bottom:14px;}
+.drawer-card.is-sheet .chip{font-size:13px; padding:9px 10px;}
+.drawer-card.is-sheet .media-row{gap:8px;}
+.drawer-card.is-sheet .media-btn{font-size:12px; padding:12px 12px;}
 
 </style>
 </head>
@@ -1156,12 +1162,8 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   <div class="wrap">
     <h2 class="section-bar">The Book</h2>
     <div class="cab-wrap" id="cabWrap">
-      <div class="cab-view">
-        <div class="cab-stage" id="cabStage">
-          <div class="cab-stage-host" id="cabHost" aria-label="Three filing cabinets holding eighteen numbered drawers, one per chapter, beneath the book"></div>
-        </div>
-        <svg class="cab-swipe cab-swipe--left" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <svg class="cab-swipe cab-swipe--right" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="cab-stage" id="cabStage">
+        <div class="cab-stage-host" id="cabHost" aria-label="Three filing cabinets holding eighteen numbered drawers, one per chapter, beneath the book"></div>
       </div>
       <div class="cab-caption" id="cabCaption" aria-live="polite"></div>
     </div>
@@ -2965,16 +2967,16 @@ function buildCabinet(host, opts){
     for(let n = el; n && n !== root; n = n.offsetParent){ x += n.offsetLeft; y += n.offsetTop; }
     return {x, y};
   };
+  // a phone's room is cropped to the cabinets (see .cab-stage): the card is
+  // a sheet across the foot of the crop instead
+  const cropped = window.matchMedia ? matchMedia('(max-width: 700px)') : {matches: false};
   function placeCard(d){
-    const stage = cabinet.closest('.cab-stage');
-    // a phone: the stage scrolls sideways, so the card is a sheet pinned to
-    // the part of the room in view
-    if(stage && stage.scrollWidth > stage.clientWidth + 1){
+    if(cropped.matches){
       card.classList.add('is-sheet');
-      card.style.left = stage.scrollLeft + 'px'; card.style.width = stage.clientWidth + 'px'; card.style.top = 'auto';
+      card.style.left = card.style.top = '';
       return;
     }
-    card.classList.remove('is-sheet'); card.style.width = '';
+    card.classList.remove('is-sheet');
     const gap = 10, w = card.offsetWidth, h = card.offsetHeight;
     const o = offsetWithin(d, cabinet);
     const cw = cabinet.clientWidth, chh = cabinet.clientHeight;
@@ -2983,8 +2985,6 @@ function buildCabinet(host, opts){
     let top = Math.max(0, Math.min(o.y, chh - h));
     card.style.left = left + 'px'; card.style.top = top + 'px';
   }
-  // keep the sheet under your thumb as the room is swiped
-  { const stage = cabinet.closest('.cab-stage'); if(stage) stage.addEventListener('scroll', () => { if(open) placeCard(open); }, {passive:true}); }
   function openDrawer(d){
     if(open === d){ closeDrawer(true); return; }
     closeDrawer(false);
@@ -3141,9 +3141,8 @@ function buildCabinet(host, opts){
    together go one after another, 1.5s from the first to the last. An entry
    that is a list is a ring, its things lit together, and rings go further
    apart than single things, so a ripple reads. On a phone a set lands as
-   soon as it shows, while its pieces may be a screen below (or a swipe
-   aside), so each waits for itself to be in view; one cut off at a side
-   counts once a quarter of it shows, to say there is more that way. */
+   soon as it shows, while its pieces may be a screen below, so each waits
+   for itself to be in view. */
 function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
   // on a touch screen the pieces fade rather than move (see the CSS), and
   // they start as soon as any of the set shows: waiting for its share to be
@@ -3207,8 +3206,8 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
     pace = Math.min(gap, 600 / Math.max(1, list.length - 1));
     const io = new IntersectionObserver(es => {
       es.forEach(e => {
-        const r = e.rootBounds, b = e.boundingClientRect, v = e.intersectionRect;
-        if(e.isIntersecting && (v.height >= b.height * .6 || (r && v.height >= r.height * .5)) && v.width >= b.width * .25) shown.add(e.target);
+        const r = e.rootBounds;
+        if(e.isIntersecting && (e.intersectionRatio >= .6 || (r && e.intersectionRect.height >= r.height * .5))) shown.add(e.target);
         else shown.delete(e.target);
       });
       traceShown();
@@ -3316,24 +3315,14 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
   // the room lands each time it comes back into view, except while a drawer
   // is out: an open drawer holds the room as it is. Its trace ripples out
   // from the middle: the middle cabinet, the two either side, then the
-  // locker and the bag, with the arrows at the sides where it swipes.
+  // locker and the bag (which a phone's crop leaves out).
   const art = host.querySelector('.cab-art.is-away');
-  const view = stage.parentNode, all = (root, sel) => Array.prototype.slice.call(root.querySelectorAll(sel));
+  const all = (root, sel) => Array.prototype.slice.call(root.querySelectorAll(sel));
   if(art) landOnReturn(stage, art, all(art, 'img'), 4200, .65,
                        () => !art.parentNode.classList.contains('has-open'),
                        () => [all(art, '.drawer--hot[data-col="1"]'),
                               all(art, '.drawer--hot[data-col="0"], .drawer--hot[data-col="2"]'),
-                              all(art, '.drawer--fixture').concat(all(view, '.cab-swipe'))]);
-  // a phone opens on the cabinets, with the reels and the bag a swipe away;
-  // an arrow only flashes on a side with more of the room that way
-  if(stage.scrollWidth > stage.clientWidth + 1) stage.scrollLeft = host.clientWidth * 0.54 - stage.clientWidth / 2;
-  const ends = () => {
-    view.classList.toggle('is-at-start', stage.scrollLeft < 2);
-    view.classList.toggle('is-at-end', stage.scrollLeft > stage.scrollWidth - stage.clientWidth - 2);
-  };
-  ends();
-  stage.addEventListener('scroll', ends, {passive:true});
-  window.addEventListener('resize', ends);
+                              all(art, '.drawer--fixture')]);
   // pull a drawer from anywhere on the page (the reader's chapter chips)
   window.openChapterDrawer = function(chN){
     const stage = document.getElementById('cabStage');
