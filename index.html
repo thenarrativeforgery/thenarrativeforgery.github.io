@@ -987,6 +987,18 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
   background:rgba(255,255,255,.07);
   box-shadow:inset 0 0 0 2px var(--red), 0 0 26px rgba(255,255,255,.28); outline:none;
 }
+/* a finger can't hover, so on a touch screen every chapter's drawer keeps a
+   crimson outline at rest. It is a line of its own, so the trace's glow
+   still brightens over it as the room lands; while a drawer is out, the
+   rest step back and leave the room dimmed under its card. */
+@media(hover:none){
+  .drawer.drawer--hot:not(.drawer--fixture)::after{content:""; position:absolute; top:0; right:0; bottom:0; left:0; border:2px solid rgba(184,36,26,.8); border-radius:inherit; pointer-events:none;}
+  .cabinet.has-open .drawer.drawer--hot::after{display:none;}
+  /* over that line the trace swells, with a crimson halo, so the ripple
+     still reads */
+  .drawer--hot.is-traced:not(.drawer--fixture){animation-name:trace-in-touch;}
+}
+@keyframes trace-in-touch{0%,100%{box-shadow:inset 0 0 0 0 rgba(184,36,26,0), 0 0 0 rgba(184,36,26,0);} 40%,60%{box-shadow:inset 0 0 0 4px var(--red), 0 0 16px rgba(184,36,26,.5);}}
 .drawer.drawer--hot.is-open{
   z-index:3; background-color:#000; background-image:var(--art); background-repeat:no-repeat;
   background-size:var(--bs); background-position:var(--bp);
