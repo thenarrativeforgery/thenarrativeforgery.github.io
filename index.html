@@ -461,13 +461,20 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
    lets it fill the column) */
 @media(min-width:701px){ .cab-stage-host{max-width:max(560px, calc((100vh - 110px) * 2000 / 1493));} }
 /* the crop, in % of the picture: 36.2-71% across (the cabinets, clear of the
-   locker's edge and the whiteboard's frame) and 5.5-91.6% down (the cover's
-   top to the cabinets' feet). The stage takes the crop's shape, and the
-   picture is laid out at the size and offset that put the crop in it. */
+   locker's edge and the whiteboard's frame) and -14.7-91.6% down (from just
+   above the cover to the cabinets' feet). The stage takes the crop's shape,
+   and the picture is laid out at the size and offset that put the crop in
+   it. The cover is as wide as the three cabinets under it (its ink from the
+   first one's left edge to the third one's right), still standing on them,
+   so it rises above the picture's top into the stage's white, which is the
+   wall's; the room's dimming reaches up over it when a drawer is out. */
 @media(max-width:700px){
   .cab-stage{overflow:hidden;}
-  .cab-stage-host{aspect-ratio:69600 / 128547;}
-  .cab-stage .cab-art{position:absolute; left:-104.023%; top:-6.388%; width:287.356%; height:116.144%;}
+  .cab-stage-host{aspect-ratio:69600 / 158706;}
+  .cab-stage .cab-art{position:absolute; left:-104.023%; top:13.829%; width:287.356%; height:94.073%;}
+  .cab-stage .cab-art::after{top:-16%;}
+  .cab-stage .cab-piece--logo{overflow:visible;}
+  .cab-stage .cab-piece--logo img{left:36.980% !important; top:-13.345% !important; width:33.592% !important; height:46.834% !important;}
   .cab-stage .drawer--fixture{display:none;}
 }
 .cab-caption{font-family:var(--mono); font-size:12px; letter-spacing:.06em; line-height:1.45; color:var(--ink-soft); margin-top:8px; min-height:1.45em;}
