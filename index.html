@@ -1158,9 +1158,9 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
       <a class="noirbar-hot noirbar-hot--papers" href="#chapters" aria-label="The papers on the bar: go to the chapters"></a>
       <a class="noirbar-hot noirbar-hot--head" href="#compendium" aria-label="The man's head: go to the compendium"></a>
       <a class="noirbar-hot noirbar-hot--clock" href="#ledger" aria-label="The clock on the wall: go to the ledger"></a>
-      <button type="button" class="noirbar-hot noirbar-hot--record" id="barRecord" aria-pressed="false" aria-label="The record player: play The Narrative Forgery (instrumental)"></button>
+      <button type="button" class="noirbar-hot noirbar-hot--record" id="barRecord" aria-pressed="false" aria-label="The record player: play The Meta Theory"></button>
       <button type="button" class="noirbar-hot noirbar-hot--sign" id="barSign" aria-label="The sign reads &ldquo;The truth is bad for business.&rdquo; Turn it to the next saying"></button>
-      <audio id="barAudio" preload="none" src="audio/narrative-forgery-instrumental.mp3?v=2"></audio>
+      <audio id="barAudio" preload="none" src="audio/the-meta-theory.mp3"></audio>
       <button type="button" class="noirbar-stool" id="barStool" aria-label="What is the Narrative Forgery? Take a seat: open the introduction">
         <span class="noirbar-say noirbar-ask" aria-hidden="true">What is the Narrative Forgery?<small>Take a seat &rarr;</small></span>
         <span class="noirbar-say noirbar-unsee" aria-hidden="true">It&rsquo;s hard to unsee.</span>
@@ -3266,7 +3266,7 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
     () => ['papers', 'brain', 'clock', 'record', 'sign'].map(k => bar.querySelector(k === 'brain' ? '.noirbar-brain' : '.noirbar-hot--' + k)));
 })();
 
-// the bar's record player plays the instrumental. It and the dossier's record
+// the bar's record player plays The Meta Theory. It and the dossier's record
 // (the meta song) take turns: starting either one stops the other.
 (function(){
   const btn = document.getElementById('barRecord'), audio = document.getElementById('barAudio');
