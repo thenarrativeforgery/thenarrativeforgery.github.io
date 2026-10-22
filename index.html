@@ -286,6 +286,17 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 /* on a phone the bar is slimmer and every title keeps to one line, the
    longest ("The Receipts Ledger") down to a 320px screen */
 @media(max-width:720px){ .section-bar{padding:12px 12px; outline-offset:-6px; font-size:17px; font-size:clamp(14px, 4.4vw, 19px); letter-spacing:.12em; white-space:nowrap;} }
+/* on a desktop the Book's, the Compendium's and the Ledger's titles stay
+   under the nav while their sections scroll by, each going up with its
+   section's end as the next one comes. What the page scrolls to inside
+   one lands below its title (--sec-bar-h is measured with the nav's). */
+html.view-desktop #chapters .section-bar, html.view-desktop #compendium .section-bar, html.view-desktop #ledger .section-bar{position:sticky; top:var(--nav-h, 72px); z-index:50;}
+/* each holds until the next one meets it: its section's column runs on,
+   moving nothing, to where the next title starts (the section's foot and
+   the next one's head, 24px each, and the title's own 14px under it) */
+html.view-desktop #chapters > .wrap, html.view-desktop #compendium > .wrap{margin-bottom:-62px;}
+html.view-desktop #chapters > .wrap::after, html.view-desktop #compendium > .wrap::after{content:""; display:block; height:62px;}
+html.view-desktop #ledger .section-head, html.view-desktop .ledger-controls{scroll-margin-top:calc(var(--nav-h, 72px) + var(--sec-bar-h, 72px) + 12px);}
 
 /* THE TIERS — what each one means, in a pop-up: opened from the ledger's
    Tier heading, or by clicking any tier badge (the phone's cards have no
@@ -460,6 +471,8 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
    height, never narrower than 560px (an old TV browser without max() just
    lets it fill the column) */
 @media(min-width:701px){ .cab-stage-host{max-width:max(560px, calc((100vh - 110px) * 2000 / 1493));} }
+/* a desktop's room fits under its title, which stays put as it scrolls */
+@media(min-width:701px){ html.view-desktop .cab-stage-host{max-width:max(560px, calc((100vh - 110px - var(--sec-bar-h, 72px)) * 2000 / 1493));} }
 /* the crop, in % of the picture: 36.2-71% across (the cabinets, clear of the
    locker's edge and the whiteboard's frame) and -17.4-91.6% down (from just
    above the cover to the cabinets' feet). The stage takes the crop's shape,
@@ -2684,10 +2697,15 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
 
   // the sticky nav's real height, so anchor jumps (#intro, #ledger...) land
   // below it even when the bar wraps to two lines on a phone
-  var navEl = document.getElementById('nav');
-  function measureNav(){ if(navEl) document.documentElement.style.setProperty('--nav-h', navEl.offsetHeight + 'px'); }
+  var navEl = document.getElementById('nav'), secBar = document.querySelector('#chapters .section-bar');
+  function measureNav(){
+    if(navEl) document.documentElement.style.setProperty('--nav-h', navEl.offsetHeight + 'px');
+    // and a section's title, which a desktop keeps under the nav as its section scrolls
+    if(secBar) document.documentElement.style.setProperty('--sec-bar-h', secBar.offsetHeight + 'px');
+  }
   measureNav();
   window.addEventListener('resize', measureNav);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(measureNav);
 
   // the nav marks the section you are in: whichever one crosses a line a
   // third of the way down the screen
