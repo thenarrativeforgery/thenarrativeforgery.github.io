@@ -286,17 +286,16 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 /* on a phone the bar is slimmer and every title keeps to one line, the
    longest ("The Receipts Ledger") down to a 320px screen */
 @media(max-width:720px){ .section-bar{padding:12px 12px; outline-offset:-6px; font-size:17px; font-size:clamp(14px, 4.4vw, 19px); letter-spacing:.12em; white-space:nowrap;} }
-/* on a desktop the Book's, the Compendium's and the Ledger's titles stay
-   under the nav while their sections scroll by, each going up with its
-   section's end as the next one comes. What the page scrolls to inside
-   one lands below its title (--sec-bar-h is measured with the nav's). */
-html.view-desktop #chapters .section-bar, html.view-desktop #compendium .section-bar, html.view-desktop #ledger .section-bar{position:sticky; top:var(--nav-h, 72px); z-index:50;}
+/* the Book's, the Compendium's and the Ledger's titles stay under the nav
+   while their sections scroll by, on a phone as on a desktop, so you know
+   where you are. What the page scrolls to inside one (the ledger's search
+   and controls) lands below its title: --sec-bar-h, measured with the nav's. */
+#chapters .section-bar, #compendium .section-bar, #ledger .section-bar{position:sticky; top:var(--nav-h, 72px); z-index:50;}
 /* each holds until the next one meets it: its section's column runs on,
    moving nothing, to where the next title starts (the section's foot and
    the next one's head, 24px each, and the title's own 14px under it) */
-html.view-desktop #chapters > .wrap, html.view-desktop #compendium > .wrap{margin-bottom:-62px;}
-html.view-desktop #chapters > .wrap::after, html.view-desktop #compendium > .wrap::after{content:""; display:block; height:62px;}
-html.view-desktop #ledger .section-head, html.view-desktop .ledger-controls{scroll-margin-top:calc(var(--nav-h, 72px) + var(--sec-bar-h, 72px) + 12px);}
+#chapters > .wrap, #compendium > .wrap{margin-bottom:-62px;}
+#chapters > .wrap::after, #compendium > .wrap::after{content:""; display:block; height:62px;}
 
 /* THE TIERS — what each one means, in a pop-up: opened from the ledger's
    Tier heading, or by clicking any tier badge (the phone's cards have no
@@ -627,7 +626,7 @@ tbody tr:not(.ledger-detail-row){cursor:pointer;}
    under the ring, still inside the band. The ring has no plate of its own: it
    is open, its white line-work straight on the band. The hidden hotspot at
    its centre downloads the book. */
-#ledger .section-head{display:flex; align-items:center; justify-content:center; background:#0C0C0C; border:1px solid #000; box-shadow:0 14px 40px rgba(0,0,0,.28); padding:18px 40px 18px 28px; scroll-margin-top:calc(var(--nav-h, 72px) + 8px);}
+#ledger .section-head{display:flex; align-items:center; justify-content:center; background:#0C0C0C; border:1px solid #000; box-shadow:0 14px 40px rgba(0,0,0,.28); padding:18px 40px 18px 28px; scroll-margin-top:calc(var(--nav-h, 72px) + var(--sec-bar-h, 0px) + 12px);}
 #ledger .section-head .tnf-ring{flex:0 0 auto; margin:0 44px 0 0;}
 #ledger .section-head .ledger-controls{display:flex; flex-direction:column; flex-wrap:nowrap; gap:0; flex:1 1 auto; min-width:0; max-width:620px; margin:0;}
 #ledger .section-head .ledger-controls > *{flex:none; order:0; width:100%; min-width:0;}
@@ -784,7 +783,7 @@ body{overflow-x:clip; padding-left:env(safe-area-inset-left); padding-right:env(
    grid stands in for the chapter dropdown wherever the cards stand in for
    the table. */
 .ledger-picker{display:none; flex:1 1 100%; order:1;}
-.ledger-controls{scroll-margin-top:calc(var(--nav-h, 72px) + 8px);}
+.ledger-controls{scroll-margin-top:calc(var(--nav-h, 72px) + var(--sec-bar-h, 0px) + 12px);}
 html.view-phone .ledger-picker{display:block;}
 html.view-phone #chapterFilter{display:none;}
 html.view-phone #tierFilter{flex:1 1 100%; order:2;}
@@ -2700,7 +2699,7 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
   var navEl = document.getElementById('nav'), secBar = document.querySelector('#chapters .section-bar');
   function measureNav(){
     if(navEl) document.documentElement.style.setProperty('--nav-h', navEl.offsetHeight + 'px');
-    // and a section's title, which a desktop keeps under the nav as its section scrolls
+    // and a section's title, which stays under the nav as its section scrolls
     if(secBar) document.documentElement.style.setProperty('--sec-bar-h', secBar.offsetHeight + 'px');
   }
   measureNav();
