@@ -1393,7 +1393,7 @@ function openReader(chNum){
   setReaderPos('book', chNum);
 }
 
-// a chapter's plain text as the reader's paragraphs: a short all-caps first
+// a chapter's plain text as the reader's paragraphs: an all-caps first
 // line is the dateline, later ones are subheads, a paragraph that is wholly
 // a quotation is a pull-quote, a block whose every line opens "* " is a
 // bulleted list, and the first real paragraph gets the drop cap
@@ -1405,7 +1405,8 @@ function proseHtml(text){
     if (lines.every(l => /^\*\s/.test(l)))
       return `<ul>${lines.map(l => `<li>${l.replace(/^\*\s+/,'')}</li>`).join('')}</ul>`;
     const p = lines.join(' ');
-    const isLabelLike = p.length < 60 && p === p.toUpperCase() && /[A-Z]/.test(p);
+    // a name's "Mc" (McCABE) still counts as all caps
+    const isLabelLike = p.length < 100 && p.replace(/\bMc(?=[A-Z])/g, 'MC') === p.toUpperCase() && /[A-Z]/.test(p);
     if (isLabelLike && i === 0) return `<div class="dateline">${p}</div>`;
     if (isLabelLike) return `<div class="subhead">${p}</div>`;
     const isQuote = /^["“]/.test(p) && /["”][\s.]*$/.test(p) && p.length < 400;
