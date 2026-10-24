@@ -729,7 +729,13 @@ textarea.cf-input{resize:vertical; min-height:96px;}
 .reader-body p{font-family:var(--serif); font-size:1em; line-height:1.85; color:var(--ink); margin-bottom:1em; max-width:66ch;}
 .reader-body ul{font-family:var(--serif); font-size:1em; line-height:1.7; color:var(--ink); margin:0 0 1.1em; padding-left:1.4em; max-width:66ch;}
 .reader-body li{margin-bottom:.45em;}
-.reader-body p a{color:var(--red); text-decoration:underline; text-underline-offset:.15em;}
+/* a link in the text reads as the text itself until it is hovered (or
+   reached by keyboard), when the word goes bold. A hidden bold copy of the
+   word (its data-text) holds the bold width from the start, so the line
+   never shifts as it turns. */
+.reader-body p a{color:inherit; text-decoration:none; display:inline-flex; flex-direction:column;}
+.reader-body p a::after{content:attr(data-text); font-weight:600; height:0; overflow:hidden; visibility:hidden; pointer-events:none; user-select:none;}
+.reader-body p a:hover, .reader-body p a:focus-visible{font-weight:600; outline:none;}
 .reader-body li::marker{color:var(--red);}
 .reader-body p.lead::first-letter{font-family:var(--sans); font-weight:700; font-size:3.1em; float:left; line-height:.85; padding:6px 8px 0 0; color:var(--navy);}
 .reader-body .subhead{font-family:var(--sans); font-size:.75em; font-weight:700; letter-spacing:.1em; color:var(--red); text-transform:uppercase; margin:1.7em 0 .7em; padding-top:2px;}
@@ -1930,7 +1936,7 @@ function openIntroReader(){
 
   // the intro's opening "video" links to the footage it describes
   showReader(proseHtml(INTRO_TEXT).replace('A video exists',
-    'A <a href="https://www.c-span.org/clip/campaign-2024/user-clip-look-if-we-finally-beat-medicare/5122591" target="_blank" rel="noopener">video</a> exists'));
+    'A <a href="https://www.c-span.org/clip/campaign-2024/user-clip-look-if-we-finally-beat-medicare/5122591" target="_blank" rel="noopener" data-text="video">video</a> exists'));
 }
 
 
