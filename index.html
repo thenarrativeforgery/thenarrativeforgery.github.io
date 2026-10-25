@@ -519,7 +519,9 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
    into the page so the white is the page's own. */
 .plate{margin:0 auto;}
 .plate img{display:block; width:100%; height:auto; mix-blend-mode:multiply;}
-.plate--bridge{max-width:760px; margin-top:28px;}
+.plate--bridge{position:relative; max-width:760px; margin-top:28px;}
+/* the margins' dendrites reaching in beside it, on a desktop (see buildReach) */
+.plate-reach{position:absolute; top:0; pointer-events:none;}
 .plate--end{padding:40px 16px 32px; background:var(--cream);}
 .plate--end img{max-width:520px; margin:0 auto;}
 
@@ -2430,6 +2432,7 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
         margin(W - strip, W + 20, W - strip, 2071);
       }
       scene = {neurons, fibres};
+      buildReach(colL, colR, seen, canvas.style.opacity);
     }
 
     // The part of a neurite grown by `g`, as a path made by `shape`: the
@@ -2475,8 +2478,8 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
 
     // Ink at the top of the page turning crimson toward its foot, each piece
     // darkening as it matures
-    function tint(g, t0, alpha){
-      const local = clamp01((g - t0) / 0.1);
+    function tint(g, t0, alpha){ return shade(g, clamp01((g - t0) / 0.1), alpha); }
+    function shade(g, local, alpha){
       const c = lerpRgb(ink, attr, clamp01(local * 0.5 + g * 0.55 - 0.25));
       return `rgba(${c[0]|0},${c[1]|0},${c[2]|0},${(alpha * (0.55 + 0.45 * local)).toFixed(3)})`;
     }
@@ -2538,6 +2541,144 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
         const r = d.r * (0.3 + 0.7 * clamp01((g - d.t) / 0.02));
         ctx.moveTo(d.x + r, d.y);
         ctx.arc(d.x, d.y, r, 0, Math.PI * 2);
+      }
+      ctx.fillStyle = `rgba(${attr[0]},${attr[1]},${attr[2]},.8)`;
+      ctx.fill();
+      renderReach(g);
+    }
+
+    // ── The reach. Beside the bridge plate, the book and the brain drawn
+    //    apart at the foot of the Book, the margins' dendrites come in from
+    //    each side on a desktop: toward the book's spine from the left and the
+    //    brain's outer edge from the right, stopping just short of the ink,
+    //    with nothing between the two. They are drawn on a canvas of their
+    //    own laid over the plate, so they scroll with it, and they grow as
+    //    the plate comes up the screen and withdraw as it goes back down ──
+    const plateImg = document.querySelector('.plate--bridge img');
+    // the ink's outer edges, in fractions of the picture: the book's spine
+    // runs straight down its left; the brain's edge bulges out on its right,
+    // given every 5% of its height
+    const SPINE = 0.0206;
+    const BRAIN = [[0.10, 0.858], [0.15, 0.898], [0.20, 0.928], [0.25, 0.938], [0.30, 0.958], [0.35, 0.966],
+      [0.40, 0.972], [0.45, 0.983], [0.50, 0.982], [0.55, 0.977], [0.60, 0.979], [0.65, 0.968], [0.70, 0.962],
+      [0.75, 0.944], [0.80, 0.932], [0.85, 0.896], [0.90, 0.878], [0.95, 0.810]];
+    function brainEdge(v){
+      if (v <= BRAIN[0][0]) return BRAIN[0][1];
+      for (let i = 1; i < BRAIN.length; i++) if (v <= BRAIN[i][0]){
+        const a = BRAIN[i-1], b = BRAIN[i];
+        return a[1] + (b[1] - a[1]) * (v - a[0]) / (b[0] - a[0]);
+      }
+      return BRAIN[BRAIN.length - 1][1];
+    }
+    let reach = null, reachCanvas = null;
+
+    function buildReach(colL, colR, seen, opacity){
+      reach = null;
+      if (!plateImg) return;
+      const plate = plateImg.parentNode, r = plateImg.getBoundingClientRect();
+      const pw = r.width, ph = r.height, spine = r.left + SPINE * pw;
+      // a desktop only, and only where the column leaves room beside the plate
+      const room = !document.documentElement.classList.contains('view-phone') && ph > 0 && spine - colL > 60;
+      if (reachCanvas) reachCanvas.hidden = !room;
+      if (!room) return;
+      if (!reachCanvas){
+        reachCanvas = document.createElement('canvas');
+        reachCanvas.className = 'plate-reach';
+        reachCanvas.setAttribute('aria-hidden', 'true');
+        plate.appendChild(reachCanvas);
+      }
+      // the canvas runs the window's width, over the plate's height
+      reachCanvas.style.left = -plate.getBoundingClientRect().left + 'px';
+      reachCanvas.style.width = seen + 'px';
+      reachCanvas.style.height = ph + 'px';
+      reachCanvas.style.opacity = opacity;
+      reachCanvas.width = Math.round(seen * dpr);
+      reachCanvas.height = Math.round(ph * dpr);
+      const ctx = reachCanvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const parts = [], spines = [], dots = [], pad = 8;
+      // a wall the branches never cross: one nearing it bends to run along it
+      const fold = (x, wall, dir, soft) => {
+        const d = (x - wall) * dir + soft;
+        return d > 0 ? wall - dir * soft * Math.exp(-d / soft) : x;
+      };
+      // four trees down each side, each rooted among the margin's cells and
+      // forking three times on its way in, its tips a little short of the ink
+      function side(dir, seed){
+        const rnd = mulberry32(seed);
+        const x0 = dir > 0 ? colL - Math.min(0.6 * colL, 70) : colR + Math.min(0.6 * (seen - colR), 70);
+        const edge = dir > 0 ? () => spine : y => r.left + brainEdge(y / ph) * pw;
+        for (let i = 0; i < 4; i++){
+          const y0 = ph * (0.17 + 0.22 * i + (rnd() - 0.5) * 0.08);
+          const gap = 8 + rnd() * 16, span = (edge(y0) - x0) * dir - gap;
+          const rate = 0.8 / span, own = [];
+          (function fork(x, y, ang, len, w, depth, t0){
+            const pts = wander(rnd, x, y, ang, len, 0.2);
+            const n = neurite(pts, w, depth ? w * 0.62 : 0.35, t0, rate, 'den');
+            n.leaf = !depth;
+            own.push(n);
+            if (!depth) return;
+            const k = pts.length - 1, end = pts[k];
+            const heading = Math.atan2(end[1] - pts[k-1][1], end[0] - pts[k-1][0]);
+            const kids = rnd() < 0.3 ? 3 : 2;
+            for (let j = 0; j < kids; j++){
+              const u = j / (kids - 1) - 0.5;
+              fork(end[0], end[1], heading + u * 0.9 * (0.7 + rnd() * 0.6), len * (0.6 + rnd() * 0.2), w * 0.6, depth - 1, n.t[k]);
+            }
+          })(x0, y0, (dir > 0 ? 0 : Math.PI) + (rnd() - 0.5) * 0.35, span * 0.44, 3.4, 3, rnd() * 0.12);
+          for (const n of own){
+            const p = n.pts, last = p.length - 1;
+            for (const q of p){
+              q[1] = fold(fold(q[1], ph - pad, 1, 14), pad, -1, 14);
+              q[0] = fold(q[0], edge(q[1]) - dir * gap, dir, 18);
+            }
+            // the spines, as on the margins' dendrites, and a synapse at
+            // some of the tips
+            for (let i = 1; i < last; i++){
+              if (rnd() > 0.55) continue;
+              const dx = p[i+1][0] - p[i-1][0], dy = p[i+1][1] - p[i-1][1], d = Math.hypot(dx, dy) || 1;
+              const s = rnd() < 0.5 ? -1 : 1, tilt = (rnd() - 0.5) * 0.9;
+              const nx = -dy / d * s, ny = dx / d * s;
+              const ux = nx * Math.cos(tilt) - ny * Math.sin(tilt), uy = nx * Math.sin(tilt) + ny * Math.cos(tilt);
+              const half = (n.w0 + (n.w1 - n.w0) * i / last) / 2, len = (1.3 + rnd() * 2.1);
+              spines.push({x1: p[i][0] + ux * half, y1: p[i][1] + uy * half, x2: p[i][0] + ux * (half + len), y2: p[i][1] + uy * (half + len), t: n.t[i]});
+            }
+            if (n.leaf && rnd() < 0.4) dots.push({x: p[last][0], y: p[last][1], r: 1 + rnd() * 0.6, t: n.t[last]});
+            parts.push(n);
+          }
+        }
+      }
+      side(1, 3301);
+      side(-1, 3343);
+      reach = {ctx, w: seen, h: ph, parts, spines, dots, r: -1, g: -1};
+    }
+
+    // how far the plate has come up the screen: none of it as its top comes
+    // in at the foot, all of it once its top is 30% from the top
+    function renderReach(g){
+      if (!reach) return;
+      const r = clamp01((H - plateImg.getBoundingClientRect().top) / (0.7 * H));
+      if (Math.abs(r - reach.r) < 0.001 && Math.abs(g - reach.g) < 0.003) return;
+      reach.r = r; reach.g = g;
+      const ctx = reach.ctx;
+      ctx.clearRect(0, 0, reach.w, reach.h);
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      for (const n of reach.parts){
+        if (r <= n.t[0]) continue;
+        ctx.fillStyle = shade(g, clamp01((r - n.t[0]) / 0.1), 0.72);
+        ctx.fill(grown(n, r, ribbon));
+      }
+      ctx.beginPath();
+      for (const sp of reach.spines) if (r > sp.t){ ctx.moveTo(sp.x1, sp.y1); ctx.lineTo(sp.x2, sp.y2); }
+      ctx.strokeStyle = shade(g, r, 0.55);
+      ctx.lineWidth = 0.65;
+      ctx.stroke();
+      ctx.beginPath();
+      for (const d of reach.dots) if (r > d.t){
+        const s = d.r * (0.3 + 0.7 * clamp01((r - d.t) / 0.02));
+        ctx.moveTo(d.x + s, d.y);
+        ctx.arc(d.x, d.y, s, 0, Math.PI * 2);
       }
       ctx.fillStyle = `rgba(${attr[0]},${attr[1]},${attr[2]},.8)`;
       ctx.fill();
