@@ -246,10 +246,15 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
    picture, on the black front of the counter just left of the seat, so its
    arrow points at the seat as it does on a wider screen: it hangs off the
    band's top, centred on the seat's middle (the seat is 72 of the photo's
-   1536 wide, so half of it is 2.344% of the width), and ends at its edge */
+   1536 wide, so half of it is 2.344% of the width), and ends at its edge.
+   The seat itself is still the way in too, without its words; on a phone it
+   is under 20px tall, so its touch area reaches up over the bare counter
+   above it (nothing else to touch there) to a finger's height */
 .noirbar-seat{display:none;}
 @media(max-width:720px){
-  .noirbar-stool{display:none;}
+  .noirbar-stool{touch-action:manipulation;}
+  .noirbar-stool .noirbar-say{display:none;}
+  .noirbar-stool::before{content:""; position:absolute; left:-4px; right:-4px; bottom:0; height:44px;}
   .noirbar-seat{position:relative; display:flex; flex-direction:column; align-items:center; width:100%; margin:0; padding:14px 16px 16px; background:#000; border:0; border-radius:0; color:var(--cream); line-height:1.2; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent;}
   .noirbar-seat-q{font-family:var(--serif); font-style:italic; font-size:20px; letter-spacing:.02em; text-shadow:0 0 14px rgba(255,255,255,.35);}
   .noirbar-seat-go{position:absolute; bottom:100%; right:calc(34.115% + 8px); margin-bottom:2.344%; transform:translateY(50%); white-space:nowrap; line-height:1; font-family:var(--mono); font-weight:700; font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--red); text-shadow:0 0 2px #000;}
