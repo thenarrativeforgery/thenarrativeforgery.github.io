@@ -68,7 +68,7 @@ a:hover{text-decoration:underline;}
 
 
 /* NAV */
-.nav-num{color:var(--red); font-weight:700;}
+.nav-num{color:var(--red); font-weight:600;}
 .nav-count{color:#7C93A3;}
 #nav{position:sticky; top:0; z-index:100; background:var(--navy); color:var(--cream); box-shadow:0 2px 12px rgba(0,0,0,.15);}
 #nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 28px; gap:20px; flex-wrap:wrap; max-width:1640px;}
@@ -81,7 +81,8 @@ a:hover{text-decoration:underline;}
 @media(max-width:1449px){ #nav .brand .sub{display:none;} }   /* only where the whole nav still fits on one line */
 @media(max-width:600px){ #nav .brand .brand-title, #nav .brand .brand-icon{height:34px;} #nav .brand{gap:10px;} }
 #nav ul{display:flex; gap:22px; list-style:none; flex-wrap:wrap;}
-#nav a{color:#E8E8E6; font-family:var(--sans); font-size:15px; font-weight:500; letter-spacing:.04em; text-transform:uppercase;}
+/* the links in the section bars' capital serif */
+#nav a{color:#E8E8E6; font-family:var(--serif); font-size:15px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;}
 #nav a:hover, #nav a[aria-current]{color:var(--cream); text-decoration:none; border-bottom:2px solid var(--red);}
 #navSearch{background:#262626; border:1px solid #444444; color:var(--cream); padding:7px 12px; border-radius:3px; font-family:var(--serif); font-size:16px; width:180px;}
 #navSearch::placeholder{color:#9C9C9C;}
