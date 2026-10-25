@@ -522,6 +522,12 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0;}
 .plate--bridge{position:relative; max-width:760px; margin-top:28px;}
 /* the margins' dendrites reaching in beside it, on a desktop (see buildReach) */
 .plate-reach{position:absolute; top:0; pointer-events:none;}
+/* the bridge plate cut in two between the birds and the brain's roots, the
+   book and the birds on one side and the brain on the other, so the two can
+   be drawn apart and brought back together with the scroll (see parting) */
+.plate-book, .plate-brain{will-change:transform;}
+.plate-book{-webkit-clip-path:inset(0 46.5% 0 0); clip-path:inset(0 46.5% 0 0);}
+.plate .plate-brain{position:absolute; top:0; left:0; -webkit-clip-path:inset(0 0 0 53.5%); clip-path:inset(0 0 0 53.5%);}
 .plate--end{padding:40px 16px 32px; background:var(--cream);}
 .plate--end img{max-width:520px; margin:0 auto;}
 
@@ -2223,6 +2229,44 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
     return [a[0] + (b[0]-a[0])*t, a[1] + (b[1]-a[1])*t, a[2] + (b[2]-a[2])*t];
   }
 
+  // ── The parting. The bridge plate's book and brain come up the screen
+  //    drawn apart, each pushed out toward its own side, and close in as you
+  //    scroll on, landing where the picture has them once the plate's top is
+  //    30% from the top; scrolling back up parts them again. On every screen,
+  //    phone or desktop, whatever runs past the window's edge is cut off.
+  //    Returns how far each is from home, in px, for the reach to follow ──
+  const parting = (function(){
+    const fig = document.querySelector('.plate--bridge'), book = fig && fig.querySelector('img');
+    if (!book || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return () => 0;
+    const brain = book.cloneNode();
+    brain.alt = '';
+    brain.setAttribute('aria-hidden', 'true');
+    brain.className = 'plate-brain';
+    book.classList.add('plate-book');
+    fig.insertBefore(brain, book.nextSibling);
+    // each starts this far out, as a share of the plate's width
+    const APART = 0.18;
+    function offset(){
+      const r = fig.getBoundingClientRect(), H = Math.max(1, window.innerHeight);
+      const p = clamp01((H - r.top) / (0.7 * H));
+      return APART * r.width * (1 - p) * (1 - p);
+    }
+    let shown = -1, queued = false;
+    function place(){
+      queued = false;
+      const d = Math.round(offset() * 10) / 10;
+      if (d === shown) return;
+      shown = d;
+      book.style.transform = d ? 'translate3d(' + (-d) + 'px,0,0)' : '';
+      brain.style.transform = d ? 'translate3d(' + d + 'px,0,0)' : '';
+    }
+    function queue(){ if (!queued){ queued = true; requestAnimationFrame(place); } }
+    window.addEventListener('scroll', queue, {passive:true});
+    window.addEventListener('resize', queue);
+    place();
+    return offset;
+  })();
+
   // ── The neurons. Down each side margin runs a chain of nerve cells, drawn
   //    after the textbook figure: a cell body with its nucleus, dendrites
   //    branching off it, one long axon leaving it, and the axon's branches
@@ -2576,7 +2620,8 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
     function buildReach(colL, colR, seen, opacity){
       reach = null;
       if (!plateImg) return;
-      const plate = plateImg.parentNode, r = plateImg.getBoundingClientRect();
+      // the figure, not the picture, which the parting may have moved aside
+      const plate = plateImg.parentNode, r = plate.getBoundingClientRect();
       const pw = r.width, ph = r.height, spine = r.left + SPINE * pw;
       // a desktop only, and only where the column leaves room beside the plate
       const room = !document.documentElement.classList.contains('view-phone') && ph > 0 && spine - colL > 60;
@@ -2617,7 +2662,7 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
           (function fork(x, y, ang, len, w, depth, t0){
             const pts = wander(rnd, x, y, ang, len, 0.2);
             const n = neurite(pts, w, depth ? w * 0.62 : 0.35, t0, rate, 'den');
-            n.leaf = !depth;
+            n.leaf = !depth; n.dir = dir;
             own.push(n);
             if (!depth) return;
             const k = pts.length - 1, end = pts[k];
@@ -2643,9 +2688,9 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
               const nx = -dy / d * s, ny = dx / d * s;
               const ux = nx * Math.cos(tilt) - ny * Math.sin(tilt), uy = nx * Math.sin(tilt) + ny * Math.cos(tilt);
               const half = (n.w0 + (n.w1 - n.w0) * i / last) / 2, len = (1.3 + rnd() * 2.1);
-              spines.push({x1: p[i][0] + ux * half, y1: p[i][1] + uy * half, x2: p[i][0] + ux * (half + len), y2: p[i][1] + uy * (half + len), t: n.t[i]});
+              spines.push({x1: p[i][0] + ux * half, y1: p[i][1] + uy * half, x2: p[i][0] + ux * (half + len), y2: p[i][1] + uy * (half + len), t: n.t[i], dir});
             }
-            if (n.leaf && rnd() < 0.4) dots.push({x: p[last][0], y: p[last][1], r: 1 + rnd() * 0.6, t: n.t[last]});
+            if (n.leaf && rnd() < 0.4) dots.push({x: p[last][0], y: p[last][1], r: 1 + rnd() * 0.6, t: n.t[last], dir});
             parts.push(n);
           }
         }
@@ -2656,33 +2701,39 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
     }
 
     // how far the plate has come up the screen: none of it as its top comes
-    // in at the foot, all of it once its top is 30% from the top
+    // in at the foot, all of it once its top is 30% from the top. Each side's
+    // trees are carried out with the half they reach for while the two are
+    // parted, so their tips stay just short of its ink
     function renderReach(g){
       if (!reach) return;
-      const r = clamp01((H - plateImg.getBoundingClientRect().top) / (0.7 * H));
+      const r = clamp01((H - plateImg.parentNode.getBoundingClientRect().top) / (0.7 * H));
       if (Math.abs(r - reach.r) < 0.001 && Math.abs(g - reach.g) < 0.003) return;
       reach.r = r; reach.g = g;
-      const ctx = reach.ctx;
+      const ctx = reach.ctx, apart = parting();
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, reach.w, reach.h);
       ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-      for (const n of reach.parts){
-        if (r <= n.t[0]) continue;
-        ctx.fillStyle = shade(g, clamp01((r - n.t[0]) / 0.1), 0.72);
-        ctx.fill(grown(n, r, ribbon));
+      for (const dir of [1, -1]){
+        ctx.setTransform(dpr, 0, 0, dpr, -dir * apart * dpr, 0);
+        for (const n of reach.parts){
+          if (n.dir !== dir || r <= n.t[0]) continue;
+          ctx.fillStyle = shade(g, clamp01((r - n.t[0]) / 0.1), 0.72);
+          ctx.fill(grown(n, r, ribbon));
+        }
+        ctx.beginPath();
+        for (const sp of reach.spines) if (sp.dir === dir && r > sp.t){ ctx.moveTo(sp.x1, sp.y1); ctx.lineTo(sp.x2, sp.y2); }
+        ctx.strokeStyle = shade(g, r, 0.55);
+        ctx.lineWidth = 0.65;
+        ctx.stroke();
+        ctx.beginPath();
+        for (const d of reach.dots) if (d.dir === dir && r > d.t){
+          const s = d.r * (0.3 + 0.7 * clamp01((r - d.t) / 0.02));
+          ctx.moveTo(d.x + s, d.y);
+          ctx.arc(d.x, d.y, s, 0, Math.PI * 2);
+        }
+        ctx.fillStyle = `rgba(${attr[0]},${attr[1]},${attr[2]},.8)`;
+        ctx.fill();
       }
-      ctx.beginPath();
-      for (const sp of reach.spines) if (r > sp.t){ ctx.moveTo(sp.x1, sp.y1); ctx.lineTo(sp.x2, sp.y2); }
-      ctx.strokeStyle = shade(g, r, 0.55);
-      ctx.lineWidth = 0.65;
-      ctx.stroke();
-      ctx.beginPath();
-      for (const d of reach.dots) if (r > d.t){
-        const s = d.r * (0.3 + 0.7 * clamp01((r - d.t) / 0.02));
-        ctx.moveTo(d.x + s, d.y);
-        ctx.arc(d.x, d.y, s, 0, Math.PI * 2);
-      }
-      ctx.fillStyle = `rgba(${attr[0]},${attr[1]},${attr[2]},.8)`;
-      ctx.fill();
     }
 
     // Growth is how far down the page you are: a sprout at the top, and by the
