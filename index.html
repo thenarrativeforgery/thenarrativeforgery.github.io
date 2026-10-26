@@ -480,19 +480,29 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0; background:v
    locker's edge and the whiteboard's frame) and -14.2-91.6% down (from just
    above the cover to the cabinets' feet). The stage takes the crop's shape,
    and the picture is laid out at the size and offset that put the crop in
-   it. The cover is as wide as the three cabinets under it (its ink from the
-   first one's left edge to the third one's right), still standing on them,
-   so it rises above the picture's top into the stage's white, which is the
-   wall's; the room's dimming reaches up over it when a drawer is out. */
+   it. The cover is drawn a fifth narrower than the three cabinets under it,
+   centred over them, so it rises above the picture's top into the stage's
+   white, which is the wall's, and stops short of them, leaving room at its
+   foot on the right for "Chapters" and an arrow down to the drawers; the
+   room's dimming reaches up over it when a drawer is out. */
 @media(max-width:700px){
   .cab-stage{overflow:hidden;}
   .cab-stage-host{aspect-ratio:69600 / 157959;}
   .cab-stage .cab-art{position:absolute; left:-104.023%; top:13.422%; width:287.356%; height:94.518%;}
   .cab-stage .cab-art::after{top:-19%;}
   .cab-stage .cab-piece--logo{overflow:visible;}
-  .cab-stage .cab-piece--logo img{left:36.907% !important; top:-13.053% !important; width:33.386% !important; height:46.734% !important;}
+  .cab-stage .cab-piece--logo img{left:40.246% !important; top:-11.753% !important; width:26.709% !important; height:37.387% !important;}
   .cab-stage .drawer--fixture{display:none;}
+  .cab-stage .cab-chapters{display:flex;}
 }
+/* "Chapters", on a phone: under the cover's title, over the third cabinet,
+   with an arrow down to its top drawer. Set in % of the picture, it dims
+   with the room and lands as the cover does (see .cab-art.is-landing) */
+.cab-chapters{display:none; position:absolute; left:59.45%; top:24.6%; width:11.5%; height:10.4%; flex-direction:column; align-items:center; pointer-events:none;
+  font-family:var(--serif); font-size:18px; font-size:5cqw; font-weight:500; line-height:1; letter-spacing:.04em; text-transform:uppercase; color:var(--ink);}
+.cab-chapters svg{display:block; flex:1 1 auto; width:1.4em; margin-top:.25em; overflow:visible;}
+.cab-art.is-away .cab-chapters{opacity:0;}
+.cab-art.is-landing .cab-chapters{animation:noirbar-fade .6s .5s ease-out both;}
 .cab-caption{font-family:var(--mono); font-size:12px; letter-spacing:.06em; line-height:1.45; color:var(--ink-soft); margin-top:8px; min-height:1.45em;}
 .cab-caption b{font-weight:400; color:var(--navy);}
 /* room for the longest drawer name, so hovering never moves the page: one
@@ -3052,6 +3062,9 @@ const CAB_ART = {
     {id:'bag', img:'roomBag', x:70.850, y:46.885, w:25.100, h:45.881}
   ]
 };
+// "Chapters" and its arrow down to the drawers, shown on a phone (see .cab-chapters)
+const CAB_CHAPTERS = '<div class="cab-chapters" aria-hidden="true"><span>Chapters</span>'
+  + '<svg viewBox="0 0 24 60" preserveAspectRatio="none"><path d="M12 2v54M4 46l8 11 8-11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>';
 /* The chapters cabinet: a is the picture and its hotspots (CAB_ART); note
    is where the hover line is written. */
 function buildCabinet(host, a, note){
@@ -3096,7 +3109,7 @@ function buildCabinet(host, a, note){
     + b.layers.map((id, i) => '<img class="cab-board cab-board--' + i + '" alt="" src="' + srcOf(id) + '" style="' + box(b) + '">').join('');
   host.innerHTML = '<div class="cabinet">'
     + '<div class="cab-art' + (lands ? ' is-away' : '') + '"><img src="' + srcOf(a.room) + '" alt="' + esc(a.alt) + '">'
-    + board + pieces + hots + fixtures + '</div>'
+    + board + pieces + CAB_CHAPTERS + hots + fixtures + '</div>'
     + '<div class="drawer-card" role="dialog" aria-label="Chapter drawer" tabindex="-1" hidden></div></div>';
 
   const cabinet = host.querySelector('.cabinet');
