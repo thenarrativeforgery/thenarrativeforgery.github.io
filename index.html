@@ -518,8 +518,9 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0; background:v
 .plate-book, .plate-brain{will-change:transform;}
 .plate-book{-webkit-clip-path:inset(0 46.5% 0 0); clip-path:inset(0 46.5% 0 0);}
 .plate .plate-brain{position:absolute; top:0; left:0; -webkit-clip-path:inset(0 0 0 53.5%); clip-path:inset(0 0 0 53.5%);}
-/* the sparks: crimson at the tips of the brain's roots, each lighting up in
-   its own time and going out again, as if feeling for a synapse (see sparks).
+/* the sparks: crimson at the tips of the roots, the brain's and the book's,
+   each lighting up in its own time and going out again, as if feeling for a
+   synapse (see sparks).
    A spark is sized and set off by the plate's width, so it holds its tip at
    any size; it twinkles only while the plate is on screen */
 .plate-sparks{position:absolute; top:0; right:0; bottom:0; left:0; pointer-events:none; will-change:transform;}
@@ -2196,28 +2197,34 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
   }
   function clamp01(v){ return Math.max(0, Math.min(1, v)); }
 
-  // ── The sparks. At the tips of the brain's roots in the bridge plate,
-  //    crimson points light up and go out, each on its own clock, as if the
-  //    roots were feeling for a synapse. The tips are read off the picture,
-  //    in fractions of its width and height; the parting carries them with
-  //    the brain ──
+  // ── The sparks. At the tips of the roots in the bridge plate, the
+  //    brain's and the book's, crimson points light up and go out, each on
+  //    its own clock, as if the roots were feeling for a synapse. The tips
+  //    are read off the picture, in fractions of its width and height; the
+  //    parting carries each side's with its half ──
   (function(){
     const fig = document.querySelector('.plate--bridge');
     if (!fig) return;
-    const TIPS = '0.7160,0.1349 0.7070,0.1369 0.6959,0.1776 0.7137,0.1994 0.6948,0.2113 0.6847,0.2361 0.7087,0.2361 0.6886,0.2738 0.6948,0.2937 0.6730,0.2996 0.7065,0.3304 0.6920,0.3462 0.6724,0.3780 0.6858,0.3929 0.6987,0.4058 0.6116,0.6012 0.6004,0.6062 0.5753,0.6101 0.5910,0.6111 0.5569,0.6161 0.6786,0.6329 0.6646,0.6429 0.5714,0.6518 0.5619,0.6647 0.5859,0.6667 0.6546,0.6687 0.5781,0.6746 0.6004,0.6776 0.6401,0.6835 0.5541,0.6845 0.6311,0.7034 0.5625,0.7093 0.6529,0.7123 0.7081,0.7202 0.6429,0.7242 0.6183,0.7292 0.6780,0.7292 0.5463,0.7371 0.6373,0.7381 0.7143,0.7431 0.6518,0.7440 0.5379,0.7460 0.6239,0.7460 0.5647,0.7520 0.6334,0.7550 0.7037,0.7550 0.6122,0.7669 0.6752,0.7688 0.5742,0.7738 0.6250,0.7738 0.6345,0.7788 0.5552,0.7798 0.5402,0.7837 0.6027,0.7837 0.6512,0.7857 0.6758,0.7897 0.5921,0.7946 0.6987,0.7976 0.5636,0.8065 0.5848,0.8075 0.6680,0.8185 0.6998,0.8194 0.7176,0.8194 0.6272,0.8323 0.6970,0.8373 0.5675,0.8393 0.5770,0.8413 0.6239,0.8472 0.7087,0.8482 0.6529,0.8522 0.6652,0.8552 0.7031,0.8621 0.6797,0.8631 0.6295,0.8700 0.6473,0.8720 0.7076,0.8929 0.7148,0.9137';
-    const rnd = mulberry32(1871), layer = document.createElement('div');
-    layer.className = 'plate-sparks';
-    layer.setAttribute('aria-hidden', 'true');
+    const BRAIN_TIPS = '0.7160,0.1349 0.7070,0.1369 0.6959,0.1776 0.7137,0.1994 0.6948,0.2113 0.6847,0.2361 0.7087,0.2361 0.6886,0.2738 0.6948,0.2937 0.6730,0.2996 0.7065,0.3304 0.6920,0.3462 0.6724,0.3780 0.6858,0.3929 0.6987,0.4058 0.6116,0.6012 0.6004,0.6062 0.5753,0.6101 0.5910,0.6111 0.5569,0.6161 0.6786,0.6329 0.6646,0.6429 0.5714,0.6518 0.5619,0.6647 0.5859,0.6667 0.6546,0.6687 0.5781,0.6746 0.6004,0.6776 0.6401,0.6835 0.5541,0.6845 0.6311,0.7034 0.5625,0.7093 0.6529,0.7123 0.7081,0.7202 0.6429,0.7242 0.6183,0.7292 0.6780,0.7292 0.5463,0.7371 0.6373,0.7381 0.7143,0.7431 0.6518,0.7440 0.5379,0.7460 0.6239,0.7460 0.5647,0.7520 0.6334,0.7550 0.7037,0.7550 0.6122,0.7669 0.6752,0.7688 0.5742,0.7738 0.6250,0.7738 0.6345,0.7788 0.5552,0.7798 0.5402,0.7837 0.6027,0.7837 0.6512,0.7857 0.6758,0.7897 0.5921,0.7946 0.6987,0.7976 0.5636,0.8065 0.5848,0.8075 0.6680,0.8185 0.6998,0.8194 0.7176,0.8194 0.6272,0.8323 0.6970,0.8373 0.5675,0.8393 0.5770,0.8413 0.6239,0.8472 0.7087,0.8482 0.6529,0.8522 0.6652,0.8552 0.7031,0.8621 0.6797,0.8631 0.6295,0.8700 0.6473,0.8720 0.7076,0.8929 0.7148,0.9137';
+    const BOOK_TIPS = '0.3400,0.4355 0.3181,0.4590 0.3060,0.4772 0.3400,0.4868 0.3525,0.5099 0.3432,0.5337 0.3525,0.5397 0.3735,0.5407 0.3850,0.5595 0.3218,0.5694 0.3865,0.5754 0.3744,0.5876 0.3735,0.5972 0.3157,0.6045 0.3296,0.6138 0.2539,0.6607 0.2476,0.6726 0.2420,0.6801 0.2455,0.7024 0.2400,0.7292 0.2600,0.7679 0.2160,0.7718 0.1875,0.7738 0.2316,0.7738 0.2422,0.7748 0.2706,0.7748 0.2238,0.7817 0.2589,0.7867 0.2411,0.7976 0.1975,0.8016 0.2483,0.8085 0.2327,0.8145 0.2606,0.8175 0.1948,0.8185 0.2494,0.8234 0.2824,0.8502 0.2467,0.8552 0.2567,0.8552 0.2243,0.8661 0.2573,0.8720 0.2411,0.8770 0.2215,0.8800 0.2712,0.8810 0.1763,0.8869 0.2651,0.8948 0.2400,0.8978 0.2779,0.9038 0.2048,0.9048 0.1819,0.9077 0.2785,0.9464 0.2885,0.9514';
+    const rnd = mulberry32(1871);
     // a flash takes the first two fifths of a spark's clock, which runs
     // 3.5-8s, so at any moment about a third of them are lit
-    layer.innerHTML = TIPS.split(' ').map(t => {
-      const xy = t.split(','), dur = 3.5 + rnd() * 4.5;
-      return '<i class="plate-spark" style="left:' + (xy[0] * 100).toFixed(2) + '%;top:' + (xy[1] * 100).toFixed(2)
-        + '%;animation-duration:' + dur.toFixed(2) + 's;animation-delay:' + (-rnd() * dur).toFixed(2) + 's"></i>';
-    }).join('');
-    fig.appendChild(layer);
-    if (!('IntersectionObserver' in window)){ layer.classList.add('is-live'); return; }
-    new IntersectionObserver(es => es.forEach(e => layer.classList.toggle('is-live', e.isIntersecting)), {rootMargin:'10% 0px'}).observe(fig);
+    const layers = [['brain', BRAIN_TIPS], ['book', BOOK_TIPS]].map(side => {
+      const layer = document.createElement('div');
+      layer.className = 'plate-sparks plate-sparks--' + side[0];
+      layer.setAttribute('aria-hidden', 'true');
+      layer.innerHTML = side[1].split(' ').map(t => {
+        const xy = t.split(','), dur = 3.5 + rnd() * 4.5;
+        return '<i class="plate-spark" style="left:' + (xy[0] * 100).toFixed(2) + '%;top:' + (xy[1] * 100).toFixed(2)
+          + '%;animation-duration:' + dur.toFixed(2) + 's;animation-delay:' + (-rnd() * dur).toFixed(2) + 's"></i>';
+      }).join('');
+      fig.appendChild(layer);
+      return layer;
+    });
+    const live = on => layers.forEach(l => l.classList.toggle('is-live', on));
+    if (!('IntersectionObserver' in window)){ live(true); return; }
+    new IntersectionObserver(es => es.forEach(e => live(e.isIntersecting)), {rootMargin:'10% 0px'}).observe(fig);
   })();
 
   // ── The parting. The bridge plate's book and brain come up the screen
@@ -2235,7 +2242,7 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
     brain.className = 'plate-brain';
     book.classList.add('plate-book');
     fig.insertBefore(brain, book.nextSibling);
-    const sparks = fig.querySelector('.plate-sparks');
+    const sparksBrain = fig.querySelector('.plate-sparks--brain'), sparksBook = fig.querySelector('.plate-sparks--book');
     // each starts this far out, as a share of the plate's width
     const APART = 0.18;
     function offset(){
@@ -2251,7 +2258,8 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
       shown = d;
       book.style.transform = d ? 'translate3d(' + (-d) + 'px,0,0)' : '';
       brain.style.transform = d ? 'translate3d(' + d + 'px,0,0)' : '';
-      if (sparks) sparks.style.transform = brain.style.transform;
+      if (sparksBrain) sparksBrain.style.transform = brain.style.transform;
+      if (sparksBook) sparksBook.style.transform = book.style.transform;
     }
     function queue(){ if (!queued){ queued = true; requestAnimationFrame(place); } }
     window.addEventListener('scroll', queue, {passive:true});
