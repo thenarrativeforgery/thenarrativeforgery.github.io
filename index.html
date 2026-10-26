@@ -493,14 +493,16 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0; background:v
   .cab-stage .cab-piece--logo{overflow:visible;}
   .cab-stage .cab-piece--logo img{left:40.246% !important; top:-11.753% !important; width:26.709% !important; height:37.387% !important;}
   .cab-stage .drawer--fixture{display:none;}
-  .cab-stage .cab-chapters{display:flex;}
+  .cab-stage .cab-chapters{display:block;}
 }
 /* "Chapters", on a phone: under the cover's title, over the third cabinet,
-   with an arrow down to its top drawer. Set in % of the picture, it dims
+   with an arrow slanting down to the middle of the cabinets' tops. Set in %
+   of the picture (the arrow's box is 180x104 of its 2000x1493), it dims
    with the room and lands as the cover does (see .cab-art.is-landing) */
-.cab-chapters{display:none; position:absolute; left:59.45%; top:24.6%; width:11.5%; height:10.4%; flex-direction:column; align-items:center; pointer-events:none;
-  font-family:var(--serif); font-size:18px; font-size:5cqw; font-weight:500; line-height:1; letter-spacing:.04em; text-transform:uppercase; color:var(--ink);}
-.cab-chapters svg{display:block; flex:1 1 auto; width:1.4em; margin-top:.25em; overflow:visible;}
+.cab-chapters{display:none; position:absolute; top:0; right:0; bottom:0; left:0; pointer-events:none; color:var(--ink);}
+.cab-chapters span{position:absolute; left:59.45%; top:24.6%; width:11.5%; text-align:center;
+  font-family:var(--serif); font-size:18px; font-size:5cqw; font-weight:500; line-height:1; letter-spacing:.04em; text-transform:uppercase;}
+.cab-chapters svg{position:absolute; left:53%; top:27.6%; width:9%; height:7%; overflow:visible;}
 .cab-art.is-away .cab-chapters{opacity:0;}
 .cab-art.is-landing .cab-chapters{animation:noirbar-fade .6s .5s ease-out both;}
 .cab-caption{font-family:var(--mono); font-size:12px; letter-spacing:.06em; line-height:1.45; color:var(--ink-soft); margin-top:8px; min-height:1.45em;}
@@ -3064,7 +3066,7 @@ const CAB_ART = {
 };
 // "Chapters" and its arrow down to the drawers, shown on a phone (see .cab-chapters)
 const CAB_CHAPTERS = '<div class="cab-chapters" aria-hidden="true"><span>Chapters</span>'
-  + '<svg viewBox="0 0 24 60" preserveAspectRatio="none"><path d="M12 2v54M4 46l8 11 8-11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>';
+  + '<svg viewBox="0 0 180 104" preserveAspectRatio="none"><path d="M160 9L22 98.5M38 97.7L22 98.5L29.3 84.3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>';
 /* The chapters cabinet: a is the picture and its hotspots (CAB_ART); note
    is where the hover line is written. */
 function buildCabinet(host, a, note){
