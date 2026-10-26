@@ -495,15 +495,12 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0; background:v
   .cab-stage .drawer--fixture{display:none;}
   .cab-stage .cab-chapters{display:block;}
 }
-/* "Chapters", on a phone: just under the cover's title, a line dropping
-   from it to a bracket that spans the three cabinets, its ends turned down
-   to their tops. Set in % of the picture (the lines' box is 640x264 of its
-   2000x1493), it dims with the room and lands as the cover does (see
+/* "Chapters", on a phone: standing on the middle cabinet's top. Set in %
+   of the picture, it dims with the room and lands as the cover does (see
    .cab-art.is-landing) */
 .cab-chapters{display:none; position:absolute; top:0; right:0; bottom:0; left:0; pointer-events:none; color:var(--ink);}
-.cab-chapters span{position:absolute; left:56.5%; top:12.5%; width:12%; text-align:center;
+.cab-chapters span{position:absolute; left:48.075%; top:32.3%; width:12%; text-align:center;
   font-family:var(--serif); font-size:13px; font-size:3.7cqw; font-weight:500; line-height:1; letter-spacing:.04em; text-transform:uppercase;}
-.cab-chapters svg{position:absolute; left:38%; top:15.5%; width:32%; height:17.7%; overflow:visible;}
 .cab-art.is-away .cab-chapters{opacity:0;}
 .cab-art.is-landing .cab-chapters{animation:noirbar-fade .6s .5s ease-out both;}
 .cab-caption{font-family:var(--mono); font-size:12px; letter-spacing:.06em; line-height:1.45; color:var(--ink-soft); margin-top:8px; min-height:1.45em;}
@@ -3065,9 +3062,8 @@ const CAB_ART = {
     {id:'bag', img:'roomBag', x:70.850, y:46.885, w:25.100, h:45.881}
   ]
 };
-// "Chapters" and its bracket over the drawers, shown on a phone (see .cab-chapters)
-const CAB_CHAPTERS = '<div class="cab-chapters" aria-hidden="true"><span>Chapters</span>'
-  + '<svg viewBox="0 0 640 264" preserveAspectRatio="none"><path d="M490 -9V194M6 258V194H634V258" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>';
+// "Chapters", on the drawers, shown on a phone (see .cab-chapters)
+const CAB_CHAPTERS = '<div class="cab-chapters" aria-hidden="true"><span>Chapters</span></div>';
 /* The chapters cabinet: a is the picture and its hotspots (CAB_ART); note
    is where the hover line is written. */
 function buildCabinet(host, a, note){
