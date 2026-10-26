@@ -502,7 +502,7 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0; background:v
    .cab-art.is-landing) */
 .cab-chapters{display:none; position:absolute; top:0; right:0; bottom:0; left:0; pointer-events:none; color:var(--ink);}
 .cab-chapters span{position:absolute; left:56.5%; top:12.5%; width:12%; text-align:center;
-  font-family:var(--serif); font-size:18px; font-size:5cqw; font-weight:500; line-height:1; letter-spacing:.04em; text-transform:uppercase;}
+  font-family:var(--serif); font-size:13px; font-size:3.7cqw; font-weight:500; line-height:1; letter-spacing:.04em; text-transform:uppercase;}
 .cab-chapters svg{position:absolute; left:38%; top:15.5%; width:32%; height:17.7%; overflow:visible;}
 .cab-art.is-away .cab-chapters{opacity:0;}
 .cab-art.is-landing .cab-chapters{animation:noirbar-fade .6s .5s ease-out both;}
@@ -3067,7 +3067,7 @@ const CAB_ART = {
 };
 // "Chapters" and its bracket over the drawers, shown on a phone (see .cab-chapters)
 const CAB_CHAPTERS = '<div class="cab-chapters" aria-hidden="true"><span>Chapters</span>'
-  + '<svg viewBox="0 0 640 264" preserveAspectRatio="none"><path d="M490 6V194M6 258V194H634V258" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>';
+  + '<svg viewBox="0 0 640 264" preserveAspectRatio="none"><path d="M490 -9V194M6 258V194H634V258" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>';
 /* The chapters cabinet: a is the picture and its hotspots (CAB_ART); note
    is where the hover line is written. */
 function buildCabinet(host, a, note){
