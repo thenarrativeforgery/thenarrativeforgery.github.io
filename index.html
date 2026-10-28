@@ -518,8 +518,21 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0; background:v
 .plate-book, .plate-brain{will-change:transform;}
 .plate-book{-webkit-clip-path:inset(0 46.5% 0 0); clip-path:inset(0 46.5% 0 0);}
 .plate .plate-brain{position:absolute; top:0; left:0; -webkit-clip-path:inset(0 0 0 53.5%); clip-path:inset(0 0 0 53.5%);}
-.plate--end{padding:40px 16px 32px; background:var(--cream);}
+.plate--end{position:relative; padding:40px 16px 32px; background:var(--cream);}
 .plate--end img{max-width:520px; margin:0 auto;}
+/* the end plate cut in two down the book's gutter, so the book and the brain
+   can be drawn together with the scroll and struck into one (see the meeting) */
+.plate-stage{position:relative; max-width:520px; margin:0 auto;}
+.plate-stage .plate-half{position:absolute; top:0; left:0; will-change:transform;}
+.plate-half--book{-webkit-clip-path:inset(0 53.75% 0 0); clip-path:inset(0 53.75% 0 0);}
+.plate-half--brain{-webkit-clip-path:inset(0 0 0 46.25%); clip-path:inset(0 0 0 46.25%);}
+/* once they have met, a faint crimson glow off the ink and the dendrites, as
+   the record has its white one */
+.plate-stage .plate-glow{position:absolute; top:0; left:0; filter:url(#inkGlow); opacity:0; transition:opacity .2s ease; pointer-events:none;}
+.plate--end.is-met .plate-glow{opacity:1; transition:opacity 1s ease .1s;}
+.plate--end .plate-reach{transition:filter .2s ease;}
+.plate--end.is-met .plate-reach{filter:drop-shadow(0 0 5px rgba(184,36,26,.5)); transition:filter 1s ease .1s;}
+@media(prefers-reduced-motion:reduce){ .plate-stage .plate-glow, .plate--end .plate-reach{transition:none;} }
 
 
 /* VIDEO LIBRARY — the TV's own index: every stage, mechanism, and chapter
@@ -2439,6 +2452,7 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
     }
     scene = {neurons, fibres};
     buildReach(colL, colR, seen, canvas.style.opacity);
+    buildMeet(colL, colR, seen, canvas.style.opacity);
   }
 
   // The part of a neurite grown by `g`, as a path made by `shape`: the
@@ -2557,6 +2571,8 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
 
     drawSynapses(ctx, synapses, g);
     renderReach(g);
+    // while the meeting is moving it paints on its own frames
+    if (!meetRaf) paintMeet(g);
   }
 
   // ── The reach. Beside the bridge plate, the book and the brain drawn
@@ -2676,6 +2692,382 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
       }
       drawSpines(ctx, s.spines, r, shade(g, r, 0.55), 0.65);
       drawSynapses(ctx, s.dots, r);
+    }
+  }
+
+  // ── The meeting. At the foot of the page the end plate, the two volumes as
+  //    one, is cut in two down the book's gutter: the book, and the brain
+  //    with its birds and the foot of the pages it sits on. They come up the
+  //    screen far apart and are drawn in as you scroll, faster as they near,
+  //    the brain riding a little high; once the picture's middle is 55% of
+  //    the way down the window (or the page runs out first) they snap the
+  //    last stretch shut, strike, recoil a hair and lock, ink flying from the
+  //    seam, and a faint crimson glow comes up off them. From then on they
+  //    are one picture however far you scroll; scrolling back up breaks them
+  //    apart and they go out the way they came. On a desktop the margins'
+  //    dendrites grow in after each half, as thick as the margins will hold
+  //    them, reaching its ink just as the two strike, and their synapses fire
+  //    outward from the seam when they do. With reduced motion asked for the
+  //    plate stays whole and still, and only the dendrites grow ──
+  const endFig = document.querySelector('.plate--end'), endImg = endFig && endFig.querySelector('img');
+  // where the picture is cut, in fractions of it: down the gutter, its crease
+  // going with the brain, from the head of the pages to their foot
+  const GUTTER = 0.4625, HEAD = 0.065, FOOT = 0.962;
+  // the ink's outer edges every 2.5% of the picture's height, from 2.5% to
+  // 97.5%: the book's spine on the left, and on the right the brain's edge,
+  // or above it the birds flying off
+  const BOOK_EDGE = [0.106, 0.051, 0.049, 0.049, 0.049, 0.049, 0.049, 0.049, 0.049, 0.049, 0.049,
+    0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+    0.049, 0.049, 0.049, 0.049, 0.049, 0.049, 0.047];
+  const BIRD_EDGE = [0.996, 0.996, 0.996, 0.970, 0.956, 0.938, 0.927, 0.927, 0.927, 0.926, 0.881, 0.868, 0.804,
+    0.804, 0.815, 0.823, 0.827, 0.828, 0.828, 0.824, 0.822, 0.824, 0.824, 0.823, 0.818, 0.812, 0.812, 0.809,
+    0.801, 0.788, 0.786, 0.779, 0.766, 0.752, 0.745, 0.729, 0.686, 0.665, 0.642];
+  function inked(table, v){
+    const k = Math.max(0, Math.min(table.length - 1, v / 0.025 - 1)), i = Math.min(table.length - 2, k | 0);
+    return table[i] + (table[i+1] - table[i]) * (k - i);
+  }
+  const still = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  // how far each half starts out, at most, as a share of the picture's width;
+  // the gap still open when the snap takes over, as a share of that; how fast
+  // the snap closes it; how far back up the scroll must go to break the lock;
+  // and how high the brain rides while apart, as a share of the picture's height
+  const OUT = 0.55, GAP = 0.15, SNAP = 40, LET_GO = 0.97, LIFT = 0.04;
+  // the room over the plate's top that the canvas keeps for the flying ink
+  const RISE = 70;
+  let endStage = null, endHalves = null;
+  function copy(cls){
+    const h = endImg.cloneNode();
+    h.alt = '';
+    h.setAttribute('aria-hidden', 'true');
+    h.className = cls;
+    endStage.appendChild(h);
+    return h;
+  }
+  if (endImg){
+    endStage = document.createElement('div');
+    endStage.className = 'plate-stage';
+    endFig.insertBefore(endStage, endImg);
+    endStage.appendChild(endImg);
+    if (!still) endHalves = [copy('plate-half plate-half--book'), copy('plate-half plate-half--brain')];
+    // the glow they give off once they have met, as the record gives off its
+    // white one: the ink itself turned crimson, blurred, and laid faintly
+    // over the plate (the dendrites' is a shadow on their canvas)
+    endStage.insertAdjacentHTML('beforeend', '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="inkGlow" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">'
+      + '<feColorMatrix type="matrix" values="0 0 0 0 .722  0 0 0 0 .141  0 0 0 0 .102  -.3 -.59 -.11 0 1"/>'
+      + '<feComposite in2="SourceAlpha" operator="in"/>'
+      + '<feGaussianBlur stdDeviation="9"/>'
+      + '<feComponentTransfer><feFuncA type="linear" slope=".45"/></feComponentTransfer>'
+      + '</filter></svg>');
+    copy('plate-glow');
+  }
+  // u is how far apart the halves are, 1 at the start and 0 struck together
+  let meetU = -1, meetV = 0, meetLocked = false, meetWant = 0, struckAt = -1;
+  let meetOff = 0, meetLift = 0, meetShake = 0, meetWhole = null, meetShown = '', meetMet = null;
+  let meetRaf = 0, meetLast = 0, meetScene = null, meetCanvas = null;
+
+  // how far the plate has come toward the meeting: none of it as its top
+  // comes in at the foot of the window, all of it once the picture's middle
+  // is 55% of the way down, or once the page has no further to scroll
+  function meetAim(){
+    const f = endFig.getBoundingClientRect(), s = endStage.getBoundingClientRect(), h = Math.max(1, window.innerHeight);
+    const come = h - f.top, mid = s.top + s.height / 2 - f.top;
+    const left = Math.max(0, document.documentElement.scrollHeight - h - window.pageYOffset);
+    const at = Math.min(0.45 * h + mid, come + left - 2);
+    return at > 0 ? clamp01(come / at) : 1;
+  }
+
+  function meetFrame(now){
+    meetRaf = 0;
+    const dt = meetLast ? Math.min(0.05, (now - meetLast) / 1000) : 1 / 60;
+    meetLast = now;
+    const want = meetWant = meetAim();
+    let busy = false;
+    if (endHalves){
+      if (meetU < 0){ meetLocked = want >= 1; meetU = meetLocked ? 0 : GAP + (1 - GAP) * (1 - want * want); }
+      if (meetLocked && want < LET_GO) meetLocked = false;
+      if (!meetLocked){
+        if (want >= 1){
+          // the last stretch shuts on its own, quickening, the way two things
+          // pulled together do, from whatever speed the scroll gave them
+          meetV += SNAP * dt;
+          meetU -= meetV * dt;
+          if (meetU <= 0){ meetU = 0; meetV = 0; meetLocked = true; struckAt = now; strike(); }
+          busy = true;
+        } else {
+          const to = GAP + (1 - GAP) * (1 - want * want);
+          const next = meetU + (to - meetU) * (1 - Math.exp(-dt / 0.07));
+          meetV = Math.max(0, (meetU - next) / dt);
+          meetU = Math.abs(to - next) < 0.0005 ? to : next;
+          busy = meetU !== to;
+        }
+      }
+      // the strike: each half kicks back a hair and settles, and the two
+      // shudder together
+      const tau = struckAt < 0 ? 1e9 : now - struckAt, iw = endStage.offsetWidth, ih = endStage.offsetHeight;
+      const cw = document.documentElement.clientWidth || iw;
+      const apart = Math.min(OUT * iw, (cw - iw) / 2 + 0.3 * iw);
+      const kick = tau < 700 ? 0.018 * iw * Math.exp(-tau / 110) * Math.abs(Math.sin(Math.PI * tau / 100)) : 0;
+      meetShake = tau < 400 ? 1.8 * Math.exp(-tau / 80) * Math.sin(2 * Math.PI * tau / 55) : 0;
+      meetOff = meetU * apart + kick;
+      meetLift = LIFT * ih * meetU;
+      if (tau < 1100) busy = true;
+      const x = Math.round(meetOff * 10) / 10, y = Math.round(meetShake * 10) / 10, lift = Math.round(meetLift * 10) / 10;
+      const shown = x + ' ' + y + ' ' + lift;
+      if (shown !== meetShown){
+        meetShown = shown;
+        endHalves[0].style.transform = 'translate3d(' + (-x) + 'px,' + y + 'px,0)';
+        endHalves[1].style.transform = 'translate3d(' + x + 'px,' + (y - lift) + 'px,0)';
+      }
+      // once they have settled they are the one picture again
+      const whole = meetLocked && tau >= 700;
+      if (whole !== meetWhole){
+        meetWhole = whole;
+        endImg.style.opacity = whole ? '' : '0';
+        endHalves[0].style.visibility = endHalves[1].style.visibility = whole ? 'hidden' : '';
+      }
+    }
+    // the glow comes up as they strike, and goes as soon as they part
+    const met = endHalves ? meetLocked : want >= 1;
+    if (met !== meetMet){ meetMet = met; endFig.classList.toggle('is-met', met); }
+    paintMeet(current, now);
+    if (busy) meetRaf = requestAnimationFrame(meetFrame);
+  }
+  function meetQueue(){ if (!meetRaf){ meetLast = 0; meetRaf = requestAnimationFrame(meetFrame); } }
+  if (endImg){
+    window.addEventListener('scroll', meetQueue, {passive:true});
+    window.addEventListener('resize', meetQueue);
+    meetQueue();
+  }
+
+  function buildMeet(colL, colR, seen, opacity){
+    meetScene = null;
+    if (!endImg) return;
+    const f = endFig.getBoundingClientRect(), s = endStage.getBoundingClientRect();
+    const fh = f.height, iw = s.width, ih = s.height, ix = s.left, iy = s.top - f.top;
+    if (!meetCanvas){
+      meetCanvas = document.createElement('canvas');
+      meetCanvas.className = 'plate-reach';
+      meetCanvas.setAttribute('aria-hidden', 'true');
+      endFig.appendChild(meetCanvas);
+    }
+    // the canvas runs the window's width, over the plate and a little above it
+    meetCanvas.style.left = -f.left + 'px';
+    meetCanvas.style.top = -RISE + 'px';
+    meetCanvas.style.width = seen + 'px';
+    meetCanvas.style.height = (fh + RISE) + 'px';
+    meetCanvas.width = Math.round(seen * dpr);
+    meetCanvas.height = Math.round((fh + RISE) * dpr);
+    const ctx = meetCanvas.getContext('2d');
+
+    // a desktop only, and only where the column leaves room beside the plate
+    const room = !document.documentElement.classList.contains('view-phone') && ih > 0 && ix + BOOK_EDGE[20] * iw - colL > 60;
+    const lo = 6, hi = fh - 6;
+    // A thicket down each side: a tree every ~34px of the plate's height,
+    // rooted across the margin and forking five or six times on its way in,
+    // two or three ways at each fork, its tips a little short of the ink,
+    // over a felt of fine fibres beaded with synapses. Each side is kept apart, to be drawn out
+    // after its half, and timed so that it reaches the ink as the two strike
+    function thicket(dir, seed){
+      const rnd = mulberry32(seed), parts = [], spines = [], dots = [], fibres = [];
+      const table = dir > 0 ? BOOK_EDGE : BIRD_EDGE;
+      const edge = y => ix + inked(table, (y - iy) / ih) * iw;
+      const near = dir > 0 ? colL - 4 : colR + 4, far = dir > 0 ? 0 : seen;
+      const bead = (x, y, r, t) => dots.push({x, y, r, t, out: Math.abs(edge(y) - x)});
+      const n = Math.round((hi - lo) / 34);
+      for (let i = 0; i < n; i++){
+        const y0 = lo + (hi - lo) * (i + 0.5 + (rnd() - 0.5) * 0.7) / n;
+        const x0 = near + (far - near) * rnd() * 0.7;
+        const gap = 4 + rnd() * 12, span = (edge(y0) - x0) * dir - gap;
+        if (span < 40) continue;
+        const own = [];
+        (function fork(x, y, ang, len, w, depth, t0){
+          const pts = wander(rnd, x, y, ang, len, 0.16);
+          const b = neurite(pts, w, depth ? w * 0.66 : 0.3, t0, 0.8 / span, 'den');
+          b.leaf = !depth;
+          own.push(b);
+          if (!depth) return;
+          const k = pts.length - 1, end = pts[k];
+          const heading = Math.atan2(end[1] - pts[k-1][1], end[0] - pts[k-1][0]);
+          const kids = rnd() < 0.4 ? 3 : 2;
+          for (let j = 0; j < kids; j++){
+            const u = j / (kids - 1) - 0.5;
+            fork(end[0], end[1], heading + u * (0.9 + rnd() * 0.6), len * (0.68 + rnd() * 0.14), w * 0.66, depth - 1, b.t[k]);
+          }
+        })(x0, y0, (dir > 0 ? 0 : Math.PI) + (rnd() - 0.5) * 0.6, span * (0.32 + rnd() * 0.08), 3.2 + rnd() * 2, rnd() < 0.5 ? 6 : 5, rnd() * 0.08);
+        let last = 0;
+        for (const b of own){
+          for (const q of b.pts){
+            q[1] = fold(fold(q[1], hi, 1, 14), lo, -1, 14);
+            q[0] = fold(q[0], edge(q[1]) - dir * gap, dir, 18);
+          }
+          last = Math.max(last, b.t[b.t.length - 1]);
+        }
+        // the tree's last tip lands just as the two strike
+        const t0 = own[0].t[0], k = (0.96 + rnd() * 0.04 - t0) / ((last - t0) || 1);
+        for (const b of own){
+          for (let j = 0; j < b.t.length; j++) b.t[j] = t0 + (b.t[j] - t0) * k;
+          bristle(rnd, b, spines, 1.2, 2, 1);
+          const p = b.pts, end = p[p.length - 1];
+          if (rnd() < (b.leaf ? 0.5 : 0.2)) bead(end[0], end[1], 0.9 + rnd() * 0.7, b.t[b.t.length - 1]);
+          parts.push(b);
+        }
+      }
+      // the felt, growing from each fibre's outer end
+      const count = Math.round(Math.abs(edge((lo + hi) / 2) - far) * (hi - lo) / 2400);
+      for (let i = 0; i < count; i++){
+        const y = lo + rnd() * (hi - lo), x = far + (edge(y) - dir * 10 - far) * rnd();
+        let pts = wander(rnd, x, y, rnd() * Math.PI * 2, 40 + rnd() * 120, 0.1);
+        const cut = pts.findIndex(q => (q[0] - edge(q[1]) + dir * 8) * dir > 0 || q[1] < lo || q[1] > hi);
+        if (cut >= 0) pts = pts.slice(0, cut);
+        if (pts.length < 3) continue;
+        if ((pts[pts.length - 1][0] - pts[0][0]) * dir < 0) pts.reverse();
+        let len = 0;
+        for (let j = 1; j < pts.length; j++) len += Math.hypot(pts[j][0] - pts[j-1][0], pts[j][1] - pts[j-1][1]);
+        const t0 = rnd() * 0.75, fb = neurite(pts, 0.4 + rnd() * 0.45, 0, t0, (0.97 - t0) / (len || 1), 'fibre');
+        for (let j = 3 + (rnd() * 10 | 0); j < pts.length; j += 6 + (rnd() * 10 | 0)) bead(pts[j][0], pts[j][1], 0.8 + rnd() * 0.6, fb.t[j]);
+        fibres.push(fb);
+      }
+      // the least room the side has, from the window's edge to the ink
+      let room = Infinity;
+      for (let y = lo; y <= hi; y += 4) room = Math.min(room, Math.abs(edge(y) - far));
+      return {dir, far, room, parts, spines, dots, fibres};
+    }
+    meetScene = {
+      ctx, cw: meetCanvas.width, ch: meetCanvas.height, fh, alpha: parseFloat(opacity) || 1,
+      sides: room ? [thicket(1, 4421), thicket(-1, 4483)] : [],
+      // the seam, down the gutter from the head of the pages to their foot
+      seam: [[ix + GUTTER * iw, iy + HEAD * ih], [ix + GUTTER * iw, iy + FOOT * ih]],
+      burst: null, key: '', drawn: false
+    };
+  }
+
+  // the ink the strike throws: up out of the head of the seam, out along the
+  // foot of the pages, and squeezed from the seam between
+  function strike(){
+    const m = meetScene;
+    if (!m) return;
+    const rnd = mulberry32(4507), [head, foot] = m.seam, bits = [];
+    function spray(n, x, y, a0, a1, v0, v1){
+      for (let i = 0; i < n; i++){
+        const a = a0 + (a1 - a0) * rnd(), v = v0 + (v1 - v0) * rnd();
+        bits.push({x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, w: 0.6 + rnd() * 1.8, life: 0.45 + rnd() * 0.5, red: rnd() < 0.3});
+      }
+    }
+    spray(24, head[0], head[1], -Math.PI * 0.88, -Math.PI * 0.12, 90, 380);
+    spray(9, foot[0], foot[1], -0.4, -0.05, 120, 420);
+    spray(9, foot[0], foot[1], Math.PI + 0.05, Math.PI + 0.4, 120, 420);
+    for (let i = 0; i < 18; i++){
+      const y = head[1] + (foot[1] - head[1]) * rnd();
+      spray(1, head[0], y, rnd() < 0.5 ? -0.5 : Math.PI - 0.5, rnd() < 0.5 ? 0.5 : Math.PI + 0.5, 40, 170);
+    }
+    m.burst = bits;
+  }
+
+  function paintMeet(g, now){
+    const m = meetScene;
+    if (!m) return;
+    if (now === undefined) now = performance.now();
+    const tau = struckAt < 0 ? 1e9 : now - struckAt, live = tau < 1100;
+    // the dendrites grow from the start of the approach, and the last of
+    // them land as the two strike
+    const r = endHalves ? (meetU < 0 ? 0 : Math.pow(1 - meetU, 0.7)) : meetWant, ctx = m.ctx;
+    if (r <= 0 && !live){
+      if (m.drawn){ ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, m.cw, m.ch); m.drawn = false; m.key = ''; }
+      return;
+    }
+    const key = r.toFixed(4) + ' ' + meetOff.toFixed(1) + ' ' + meetLift.toFixed(1) + ' ' + g.toFixed(3) + ' ' + (live ? tau | 0 : '');
+    if (key === m.key) return;
+    m.key = key; m.drawn = true;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, m.cw, m.ch);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    // the strike runs red through the thicket and out of it again
+    const hot = g + (tau < 700 ? 0.9 * Math.exp(-tau / 220) : 0);
+    ctx.globalAlpha = m.alpha;
+    for (const s of m.sides){
+      // each side is held at the window's edge and drawn out to just short
+      // of its half, wherever that has got to: x goes to x0 + x * k
+      const k = clamp01(1 - meetOff / s.room), x0 = s.far * (1 - k);
+      const ty = (RISE + meetShake - (s.dir < 0 ? meetLift : 0)) * dpr;
+      ctx.setTransform(k * dpr, 0, 0, dpr, x0 * dpr, ty);
+      for (const fb of s.fibres){
+        if (r <= fb.t[0]) continue;
+        ctx.strokeStyle = shade(hot, clamp01((r - fb.t[0]) / 0.1), 0.34);
+        ctx.lineWidth = fb.w0;
+        ctx.stroke(grown(fb, r, line));
+      }
+      for (const n of s.parts){
+        if (r <= n.t[0]) continue;
+        ctx.fillStyle = shade(hot, clamp01((r - n.t[0]) / 0.1), 0.72);
+        ctx.fill(grown(n, r, ribbon));
+      }
+      // the spines and synapses are placed the same way but not squeezed
+      ctx.setTransform(dpr, 0, 0, dpr, 0, ty);
+      ctx.beginPath();
+      for (const sp of s.spines) if (r > sp.t){ ctx.moveTo(x0 + sp.x1 * k, sp.y1); ctx.lineTo(x0 + sp.x2 * k, sp.y2); }
+      ctx.strokeStyle = shade(hot, r, 0.55);
+      ctx.lineWidth = 0.6;
+      ctx.stroke();
+      ctx.beginPath();
+      for (const d of s.dots) if (r > d.t){
+        const rr = d.r * (0.3 + 0.7 * clamp01((r - d.t) / 0.02)), x = x0 + d.x * k;
+        ctx.moveTo(x + rr, d.y);
+        ctx.arc(x, d.y, rr, 0, Math.PI * 2);
+      }
+      ctx.fillStyle = SYNAPSE;
+      ctx.fill();
+      // each synapse fires as the strike's wave runs out to it from the ink
+      if (live){
+        ctx.beginPath();
+        for (const d of s.dots){
+          const ph = tau - d.out / 1.1;
+          if (r <= d.t || ph <= 0 || ph > 900) continue;
+          const rr = d.r * (1.5 + 3 * Math.exp(-ph / 200) * clamp01(ph / 30)), x = x0 + d.x * k;
+          ctx.moveTo(x + rr, d.y);
+          ctx.arc(x, d.y, rr, 0, Math.PI * 2);
+        }
+        ctx.fillStyle = `rgba(${attr[0]},${attr[1]},${attr[2]},.35)`;
+        ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+    // the thickets thin away at the plate's top and foot rather than stop dead
+    if (m.sides.length){
+      ctx.setTransform(dpr, 0, 0, dpr, 0, RISE * dpr);
+      ctx.globalCompositeOperation = 'destination-out';
+      for (const [a, b] of [[0, 56], [m.fh, m.fh - 44]]){
+        const fade = ctx.createLinearGradient(0, a, 0, b);
+        fade.addColorStop(0, 'rgba(0,0,0,1)');
+        fade.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = fade;
+        ctx.fillRect(0, Math.min(a, b) - 2, m.cw, Math.abs(b - a) + 4);
+      }
+      ctx.globalCompositeOperation = 'source-over';
+    }
+    if (!live || !m.burst) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, (RISE + meetShake) * dpr);
+    // the seam flares red where they met, and cools
+    if (tau < 450){
+      const a = Math.exp(-tau / 120);
+      ctx.beginPath();
+      ctx.moveTo(m.seam[0][0], m.seam[0][1]);
+      ctx.lineTo(m.seam[1][0], m.seam[1][1]);
+      ctx.strokeStyle = `rgba(${attr[0]},${attr[1]},${attr[2]},${(0.8 * a).toFixed(3)})`;
+      ctx.lineWidth = 0.6 + 2.2 * a;
+      ctx.stroke();
+    }
+    // each fleck streaks out, falls and fades
+    const t = tau / 1000, t1 = Math.max(0, t - 0.018);
+    for (const b of m.burst){
+      const age = t / b.life;
+      if (age >= 1) continue;
+      ctx.beginPath();
+      ctx.moveTo(b.x + b.vx * t1, b.y + b.vy * t1 + 350 * t1 * t1);
+      ctx.lineTo(b.x + b.vx * t, b.y + b.vy * t + 350 * t * t);
+      const c = b.red ? attr : ink;
+      ctx.strokeStyle = `rgba(${c[0]},${c[1]},${c[2]},${(0.85 * (1 - age)).toFixed(3)})`;
+      ctx.lineWidth = b.w * (1 - 0.5 * age);
+      ctx.stroke();
     }
   }
 
