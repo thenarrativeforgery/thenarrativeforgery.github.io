@@ -453,6 +453,18 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0; background:v
   .dossier-head{padding:0 14px;}
 }
 @media(max-width:320px){ .mech-map-wrap{margin:0 -12px;} }
+/* on a phone the box reads down in one column: the cover, the five bands,
+   then the record and the pitch. The dossier's boxes give way so its
+   pieces sit in the box's own column, which clips them as they land. */
+html.view-phone .mech-map-wrap{display:flex; flex-direction:column; overflow:hidden;}
+html.view-phone .dossier, html.view-phone .dossier-head, html.view-phone .dossier-side{display:contents;}
+html.view-phone .dossier-cover-wrap{order:1; align-self:center; width:min(392px, calc(100% - 28px)); margin:16px 0 20px;}
+html.view-phone .mbands{order:2; border-bottom:1px solid #2A2A28;}
+html.view-phone .vinyl{order:3; align-self:center; margin-top:28px;}
+html.view-phone .dossier-pitch{order:4; align-self:center; width:min(320px, calc(100% - 28px)); margin:34px 0 22px;}
+/* down there they are well past the cover, so they don't land with it */
+html.view-phone .dossier.is-away .vinyl, html.view-phone .dossier.is-away .dossier-pitch{transform:none; opacity:1;}
+html.view-phone .dossier.is-landing .vinyl, html.view-phone .dossier.is-landing .dossier-pitch{animation:none;}
 
 
 /* THE PLATES — the volumes drawn without their titles: the book alone,
@@ -1532,11 +1544,14 @@ function buildDossier(){
     if(window.ResizeObserver) new ResizeObserver(fit).observe(side);
   })();
 
-  // the box lands each time it comes back into view (see .dossier.is-away),
-  // but not while the pitch is playing full screen
+  // the box lands each time its cover comes back into view (see
+  // .dossier.is-away), but not while the pitch is playing full screen. The
+  // cover is watched rather than the box: on a phone the box gives way to
+  // the column it reads down (see html.view-phone .dossier) and has no
+  // size of its own to watch.
   if('IntersectionObserver' in window && window.Promise){
     host.classList.add('is-away');
-    landOnReturn(host, host, Array.prototype.slice.call(host.querySelectorAll('.dossier-cover')), 2500, .5,
+    landOnReturn(host.querySelector('.dossier-cover-wrap') || host, host, Array.prototype.slice.call(host.querySelectorAll('.dossier-cover')), 2500, .5,
                  () => !(document.fullscreenElement || document.webkitFullscreenElement),
                  () => [host.querySelector('.vinyl-disc'), host.querySelector('.dossier-pitch-frame')]
                          .concat(Array.prototype.slice.call(document.querySelectorAll('#mechBands .mband-head'))));
