@@ -476,6 +476,12 @@ section#intro{position:relative; overflow:hidden; padding-bottom:0; background:v
    page whole, since its container is a group of its own. */
 .plate--contents{position:relative; max-width:1040px;}
 @media(min-width:701px){ .plate--contents{max-width:min(1040px, max(560px, calc((100vh - 110px - var(--sec-bar-h, 72px)) * 1500 / 1008)));} }
+/* once the Compendium's cover is up, the book stands exactly as tall as its
+   brain, ink for ink, so the two would cut out and close into the end
+   plate's book and brain: the book's ink runs 943 of the stage's 1008,
+   and --brain-h is the brain's own height on the page (see fitCover) */
+.plate--contents.is-matched{max-width:calc(var(--brain-h) * 880 / 943);}
+@media(min-width:701px){ .plate--contents.is-matched{max-width:calc(var(--brain-h) * 1500 / 943);} }
 .bk-stage{--sw:1500; position:relative; aspect-ratio:1500 / 1008; container-type:size; mix-blend-mode:multiply;}
 .plate .bk-art{position:absolute; top:0; left:0; width:calc(690 / var(--sw) * 100%); height:100%;}
 /* each line runs from just short of the list to the stage's edge, so the
@@ -1505,14 +1511,21 @@ function buildDossier(){
 
   // the cover fills the square that the record and the pitch make beside it:
   // as wide as that column is tall, or as wide as the room beside it allows.
-  // Where the two stack (a narrow screen) it keeps its own size.
+  // Where the two stack (a narrow screen) it keeps its own size. The Book's
+  // book is sized to the brain it draws: 918 of the square's 1024, top to
+  // bottom (see .plate--contents.is-matched).
   (function fitCover(){
     const headEl = host.querySelector('.dossier-head'), wrap = host.querySelector('.dossier-cover-wrap'), side = host.querySelector('.dossier-side');
     if(!headEl || !wrap || !side) return;
+    const img = wrap.querySelector('.dossier-cover'), book = document.getElementById('bookContents');
     const fit = () => {
       const gap = parseFloat(getComputedStyle(headEl).columnGap) || 56;
       const room = headEl.clientWidth - side.offsetWidth - gap;
       wrap.style.width = room >= 300 ? Math.floor(Math.min(side.offsetHeight, room)) + 'px' : '';
+      if(book && img.clientWidth){
+        book.style.setProperty('--brain-h', (img.clientWidth * 918 / 1024).toFixed(2) + 'px');
+        book.classList.add('is-matched');
+      }
     };
     fit();
     window.addEventListener('resize', fit);
@@ -2916,8 +2929,10 @@ document.getElementById('navSearch').addEventListener('keydown', (e)=>{
     }
     window.addEventListener('resize', rebuild);
     // switching between the phone and computer views moves the column's
-    // edge without resizing the window
+    // edge without resizing the window; the contents' plate follows the
+    // Compendium's cover, which settles as its fonts come in
     if (wrap && window.ResizeObserver) new ResizeObserver(rebuild).observe(wrap);
+    if (plate && window.ResizeObserver) new ResizeObserver(rebuild).observe(plate);
   }
 
   let started = false;
