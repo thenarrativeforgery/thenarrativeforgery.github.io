@@ -3779,17 +3779,37 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
   }
 })();
 
-// the sign turns to its next saying with each click: the photo's own first,
-// then each one in the sign's stack, then back round
+// the sign opens on a saying picked at random (the photo's own among them),
+// and turns to another with each click, dealt like a shuffled deck: each
+// once a round in a fresh order, and never the one it already reads
 (function(){
   const btn = document.getElementById('barSign');
   const says = Array.prototype.slice.call(document.querySelectorAll('.noirbar-sign img'));
   if(!btn || !says.length) return;
   const words = ['The truth is bad for business.'].concat(says.map(s => s.getAttribute('data-say')));
-  let at = 0;   // 0 is the photo's own; n is says[n - 1]
+  let at = Math.floor(Math.random() * words.length);   // 0 is the photo's own; n is says[n - 1]
+  if(at){
+    // up at once, not faded in: it rides in on the poster
+    const first = says[at - 1];
+    first.style.transition = 'none';
+    first.classList.add('is-on');
+    void first.offsetWidth;
+    first.style.transition = '';
+    btn.setAttribute('aria-label', 'The sign reads “' + words[at] + '” Turn it to the next saying');
+    const photo = document.getElementById('noirBarPhoto');
+    if(photo) photo.alt = photo.alt.replace('“' + words[0] + '”', '“' + words[at] + '”');
+  }
+  let deck = [];
+  const deal = () => {
+    if(!deck.length){
+      deck = words.map((w, i) => i).filter(i => i !== at);
+      for(let i = deck.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+    }
+    return deck.pop();
+  };
   btn.addEventListener('click', () => {
     const out = at ? says[at - 1] : null;
-    at = (at + 1) % words.length;
+    at = deal();
     const into = at ? says[at - 1] : null;
     if(into) into.classList.add('is-on');
     if(out){
