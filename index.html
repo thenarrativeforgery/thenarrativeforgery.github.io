@@ -443,6 +443,62 @@ section#intro{position:relative; overflow:hidden; padding-top:calc(var(--sec-pad
 .dossier-cover--flow{border-color:transparent; filter:invert(1) url(#goop); transform:translateZ(0);}
 /* only while the cover is on screen — the field is repainted every frame */
 .dossier-cover-wrap:not(.is-live) .dossier-cover-flow-mask{display:none;}
+/* "DECEPTION" in the cover's title glitches as the man at the bar does (see
+   noirbar-glitch), every 15s once the box has landed, 1.5s after. Four
+   copies of the cover stand over the word, each clipped to it (in the
+   cover's pixels, x 120-380, y 381-419; the colon stays put): the patch is
+   the blank paper 300px above it, slid down over it, so it cuts the gap;
+   two copies carry the torn bands, screened so only the white ink shows;
+   one carries a crimson ghost (#dcgRed), its white turned to the one red. */
+.dossier-cover.dcg{position:absolute; top:0; left:0; border-color:transparent; visibility:hidden; pointer-events:none;}
+.dcg--a, .dcg--b, .dcg--red{mix-blend-mode:screen;}
+.dossier-cover.dcg--red{filter:invert(1) url(#dcgRed);}
+@keyframes dcg-patch{
+  0%{visibility:visible; clip-path:inset(7.91% 62.891% 90.82% 11.719%); transform:translateY(29.297%);}
+  .5%{clip-path:inset(8.984% 62.891% 89.648% 11.719%);}
+  1%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(10.254% 62.891% 88.379% 11.719%);}
+  1.9%{clip-path:inset(7.91% 62.891% 88.379% 11.719%);}
+  2.4%{visibility:hidden;}
+  2.8%{visibility:visible; clip-path:inset(7.91% 62.891% 90.82% 11.719%);}
+  3.3%{clip-path:inset(7.91% 62.891% 88.379% 11.719%);}
+  3.8%, 100%{visibility:hidden;}
+}
+@keyframes dcg-a{
+  0%{visibility:visible; clip-path:inset(37.207% 62.891% 61.523% 11.719%); transform:translateX(-3%);}
+  .5%{clip-path:inset(38.281% 62.891% 60.352% 11.719%); transform:translateX(3.5%);}
+  1%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(39.551% 62.891% 59.082% 11.719%); transform:translateX(-4%);}
+  1.9%{clip-path:inset(37.207% 62.891% 59.082% 11.719%); transform:translateX(1.5%);}
+  2.4%{visibility:hidden;}
+  2.8%{visibility:visible; clip-path:inset(37.207% 62.891% 61.523% 11.719%); transform:translateX(3%) skewX(-12deg);}
+  3.3%{clip-path:inset(37.207% 62.891% 59.082% 11.719%); transform:translateX(-2%);}
+  3.8%, 100%{visibility:hidden;}
+}
+@keyframes dcg-red{
+  0%{visibility:visible; clip-path:inset(37.207% 62.891% 61.523% 11.719%); transform:translateX(-2%);}
+  .5%{clip-path:inset(38.281% 62.891% 60.352% 11.719%); transform:translateX(2.4%);}
+  1%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(39.551% 62.891% 59.082% 11.719%); transform:translateX(-2.8%);}
+  1.9%{clip-path:inset(37.207% 62.891% 59.082% 11.719%); transform:translateX(.6%);}
+  2.4%{visibility:hidden;}
+  2.8%{visibility:visible; clip-path:inset(37.207% 62.891% 61.523% 11.719%); transform:translateX(2%) skewX(-12deg);}
+  3.3%{clip-path:inset(37.207% 62.891% 59.082% 11.719%); transform:translateX(-.9%);}
+  3.8%{clip-path:inset(37.207% 62.891% 59.082% 11.719%); transform:translateX(1%); opacity:.75;}
+  4.3%, 100%{visibility:hidden; opacity:1;}
+}
+@keyframes dcg-b{
+  0%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(37.207% 62.891% 61.523% 11.719%); transform:translateX(1.5%);}
+  1.9%{visibility:hidden;}
+  3.3%{visibility:visible; clip-path:inset(39.551% 62.891% 59.082% 11.719%); transform:translateX(2.5%);}
+  3.8%, 100%{visibility:hidden;}
+}
+.dossier:not(.is-away):not(.is-landing) .dcg--patch{animation:dcg-patch 15s 1.5s step-end infinite;}
+.dossier:not(.is-away):not(.is-landing) .dcg--red{animation:dcg-red 15s 1.5s step-end infinite;}
+.dossier:not(.is-away):not(.is-landing) .dcg--a{animation:dcg-a 15s 1.5s step-end infinite;}
+.dossier:not(.is-away):not(.is-landing) .dcg--b{animation:dcg-b 15s 1.5s step-end infinite;}
+@media(prefers-reduced-motion:reduce){ .dossier-cover.dcg{animation:none !important;} }
 /* the record beside the cover: plays the meta song, spins while it plays */
 .vinyl{display:flex; flex-direction:column; align-items:center; gap:14px; width:min(100%, 280px);}
 .vinyl-deck{position:relative; width:min(240px, 62vw); aspect-ratio:1;}
@@ -1727,6 +1783,20 @@ function buildDossier(){
     + '</div>';
 
   host.innerHTML = '<div class="dossier-head">' + head + '</div>';
+
+  // "DECEPTION" glitches (see .dcg): four copies of the cover over the word,
+  // and the filter that turns the white ink crimson
+  (function(){
+    const wrap = host.querySelector('.dossier-cover-wrap'), img = wrap && wrap.querySelector('.dossier-cover');
+    if(!img) return;
+    wrap.insertAdjacentHTML('beforeend', '<svg width="0" height="0" style="position:absolute" aria-hidden="true">'
+      + '<filter id="dcgRed" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values=".722 0 0 0 0  0 .141 0 0 0  0 0 .102 0 0  0 0 0 1 0"/></filter></svg>');
+    ['patch', 'red', 'a', 'b'].forEach(k => {
+      const im = img.cloneNode(false);
+      im.className = 'dossier-cover dcg dcg--' + k; im.alt = ''; im.setAttribute('aria-hidden', 'true');
+      wrap.appendChild(im);
+    });
+  })();
 
   // the cover fills the square that the record and the pitch make beside it:
   // as wide as that column is tall, or as wide as the room beside it allows.
