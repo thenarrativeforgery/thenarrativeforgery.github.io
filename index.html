@@ -593,6 +593,65 @@ html.view-phone .dossier.is-landing .vinyl, html.view-phone .dossier.is-landing 
 .plate .bk-flow img{width:100%; height:100%; mix-blend-mode:normal; filter:url(#goop); transform:translateZ(0);}
 /* only while the book is on screen — the field is repainted every frame */
 .bk-stage:not(.is-live) .bk-flow{display:none;}
+/* "we could die" glitches as the man at the bar does (see noirbar-glitch),
+   every 15s once the book has landed, 1.5s after. The words are drawn into
+   the book, so four copies of it stand over them, each clipped to them (in
+   the drawing's pixels, x 270-412, y 800-829): the patch is the blank ruled
+   paper 150px to their left, slid over them, normal and not multiplied, so
+   it cuts the gap (the rules run level, so they meet); two copies carry
+   the torn bands in black, their grey rules lifted out (#wcdInk) so only
+   ink multiplies in; one carries a crimson ghost (#wcdRed), since the
+   drawing is all white paper and a drop-shadow would trace the box. */
+.plate .wcd{position:absolute; top:0; left:0; width:calc(690 / var(--sw) * 100%); height:100%; visibility:hidden; pointer-events:none;}
+.plate .wcd--patch{mix-blend-mode:normal;}
+.plate .wcd--a, .plate .wcd--b{filter:url(#wcdInk);}
+.plate .wcd--red{filter:url(#wcdRed);}
+@keyframes wcd-patch{
+  0%{visibility:visible; clip-path:inset(79.365% 62.029% 19.246% 17.391%); transform:translateX(21.739%);}
+  .5%{clip-path:inset(80.159% 62.029% 18.651% 17.391%);}
+  1%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(80.754% 62.029% 17.758% 17.391%);}
+  1.9%{clip-path:inset(79.365% 62.029% 17.758% 17.391%);}
+  2.4%{visibility:hidden;}
+  2.8%{visibility:visible; clip-path:inset(79.365% 62.029% 19.246% 17.391%);}
+  3.3%{clip-path:inset(79.365% 62.029% 17.758% 17.391%);}
+  3.8%, 100%{visibility:hidden;}
+}
+@keyframes wcd-a{
+  0%{visibility:visible; clip-path:inset(79.365% 40.29% 19.246% 39.13%); transform:translateX(-3%);}
+  .5%{clip-path:inset(80.159% 40.29% 18.651% 39.13%); transform:translateX(3.5%);}
+  1%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(80.754% 40.29% 17.758% 39.13%); transform:translateX(-4%);}
+  1.9%{clip-path:inset(79.365% 40.29% 17.758% 39.13%); transform:translateX(1.5%);}
+  2.4%{visibility:hidden;}
+  2.8%{visibility:visible; clip-path:inset(79.365% 40.29% 19.246% 39.13%); transform:translateX(3%) skewX(-12deg);}
+  3.3%{clip-path:inset(79.365% 40.29% 17.758% 39.13%); transform:translateX(-2%);}
+  3.8%, 100%{visibility:hidden;}
+}
+@keyframes wcd-red{
+  0%{visibility:visible; clip-path:inset(79.365% 40.29% 19.246% 39.13%); transform:translateX(-2%);}
+  .5%{clip-path:inset(80.159% 40.29% 18.651% 39.13%); transform:translateX(2.4%);}
+  1%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(80.754% 40.29% 17.758% 39.13%); transform:translateX(-2.8%);}
+  1.9%{clip-path:inset(79.365% 40.29% 17.758% 39.13%); transform:translateX(.6%);}
+  2.4%{visibility:hidden;}
+  2.8%{visibility:visible; clip-path:inset(79.365% 40.29% 19.246% 39.13%); transform:translateX(2%) skewX(-12deg);}
+  3.3%{clip-path:inset(79.365% 40.29% 17.758% 39.13%); transform:translateX(-.9%);}
+  3.8%{clip-path:inset(79.365% 40.29% 17.758% 39.13%); transform:translateX(1%); opacity:.75;}
+  4.3%, 100%{visibility:hidden; opacity:1;}
+}
+@keyframes wcd-b{
+  0%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(79.365% 40.29% 19.246% 39.13%); transform:translateX(1.5%);}
+  1.9%{visibility:hidden;}
+  3.3%{visibility:visible; clip-path:inset(80.754% 40.29% 17.758% 39.13%); transform:translateX(2.5%);}
+  3.8%, 100%{visibility:hidden;}
+}
+.bk-stage:not(.is-away):not(.is-landing) .wcd--patch{animation:wcd-patch 15s 1.5s step-end infinite;}
+.bk-stage:not(.is-away):not(.is-landing) .wcd--red{animation:wcd-red 15s 1.5s step-end infinite;}
+.bk-stage:not(.is-away):not(.is-landing) .wcd--a{animation:wcd-a 15s 1.5s step-end infinite;}
+.bk-stage:not(.is-away):not(.is-landing) .wcd--b{animation:wcd-b 15s 1.5s step-end infinite;}
+@media(prefers-reduced-motion:reduce){ .plate .wcd{animation:none !important;} }
 /* each line runs from just short of the list to the stage's edge, so the
    white its name comes up in is part of it */
 .bk-rows{position:absolute; left:40%; right:0; top:10.923%; height:83.482%; display:flex; flex-direction:column; --num-x:10.556%; --name-x:32%;}
@@ -3736,6 +3795,24 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
     art.after(flow);
     if(!('IntersectionObserver' in window)){ stage.classList.add('is-live'); return; }
     new IntersectionObserver(es => es.forEach(e => stage.classList.toggle('is-live', e.isIntersecting)), {rootMargin:'10% 0px'}).observe(stage);
+  })();
+
+  // "we could die" glitches (see .wcd): four copies of the book over the
+  // words, and the two filters that keep only their ink, black and crimson
+  (function(){
+    const art = fig.querySelector('.bk-art');
+    if(!art) return;
+    const ink = '<feComponentTransfer><feFuncR type="linear" slope="1.8" intercept="-.1"/><feFuncG type="linear" slope="1.8" intercept="-.1"/><feFuncB type="linear" slope="1.8" intercept="-.1"/></feComponentTransfer>';
+    document.body.insertAdjacentHTML('beforeend', '<svg width="0" height="0" style="position:absolute" aria-hidden="true">'
+      + '<filter id="wcdInk" color-interpolation-filters="sRGB">' + ink + '</filter>'
+      + '<filter id="wcdRed" color-interpolation-filters="sRGB">' + ink
+      + '<feColorMatrix type="matrix" values=".278 0 0 0 .722  0 .859 0 0 .141  0 0 .898 0 .102  0 0 0 1 0"/></filter></svg>');
+    const copies = ['patch', 'red', 'a', 'b'].map(k => {
+      const im = art.cloneNode(false);
+      im.className = 'wcd wcd--' + k; im.alt = ''; im.setAttribute('aria-hidden', 'true');
+      return im;
+    });
+    (stage.querySelector('.bk-flow') || art).after(...copies);
   })();
 
   function close(refocus){
