@@ -239,6 +239,50 @@ section#intro{position:relative; overflow:hidden; padding-top:calc(var(--sec-pad
   .noirbar.is-landing .noirbar-piece--clock .noirbar-mover, .noirbar.is-landing .noirbar-piece--poster .noirbar-mover{animation:noirbar-fade .5s .1s ease-out both;}
   .noirbar.is-landing .noirbar-piece--tt .noirbar-mover{animation:noirbar-fade .5s .2s ease-out both;}
 }
+/* once he has landed, the man glitches every 15s: for about two thirds of
+   a second bands of him tear out and jump sideways, split into the one red
+   and a black ghost, then snap back. The picture under him has him painted
+   out, so a band cut from his cutout (a gap in the polygon) leaves bare
+   wall, and the band itself rides, shifted, on one of two copies of the
+   cutout (made by the script after the bar's landing, so the page carries
+   the picture once). The clock starts again each time he lands; the first
+   tear comes 1.5s after. */
+.noirbar-glitch{left:43.229%; top:11.574%; width:39.258%; height:75.231%; visibility:hidden;}
+@keyframes noirbar-glitch{
+  0%{clip-path:polygon(0 0,100% 0,100% 8%,0 8%,0 26%,100% 26%,100% 100%,0 100%); transform:none; opacity:1; filter:drop-shadow(-2px 0 rgba(184,36,26,.9));}
+  .5%{clip-path:polygon(0 0,100% 0,100% 38%,0 38%,0 56%,100% 56%,100% 100%,0 100%);}
+  1%{clip-path:none; filter:none;}
+  1.4%{clip-path:polygon(0 0,100% 0,100% 60%,0 60%,0 80%,100% 80%,100% 100%,0 100%); filter:drop-shadow(2px 0 rgba(184,36,26,.9));}
+  1.9%{clip-path:none; transform:translateX(1.2%); filter:drop-shadow(-4px 0 rgba(184,36,26,.9)) drop-shadow(4px 0 rgba(0,0,0,.55));}
+  2.4%{transform:none; filter:none;}
+  2.8%{clip-path:polygon(0 0,100% 0,100% 20%,0 20%,0 40%,100% 40%,100% 100%,0 100%); filter:drop-shadow(-2px 0 rgba(184,36,26,.9));}
+  3.3%{clip-path:polygon(0 0,100% 0,100% 0,0 0,0 15%,100% 15%,100% 100%,0 100%);}
+  3.8%{clip-path:none; transform:translateX(-.8%); opacity:.85; filter:drop-shadow(-3px 0 rgba(184,36,26,.9)) drop-shadow(3px 0 rgba(0,0,0,.55));}
+  4.3%, 100%{clip-path:none; transform:none; opacity:1; filter:none;}
+}
+@keyframes noirbar-glitch-a{
+  0%{visibility:visible; clip-path:inset(8% 0 74% 0); transform:translateX(-4%) skewX(-4deg); filter:drop-shadow(-6px 0 rgba(184,36,26,.9)) drop-shadow(6px 0 rgba(0,0,0,.55));}
+  .5%{clip-path:inset(38% 0 44% 0); transform:translateX(5%); filter:drop-shadow(6px 0 rgba(184,36,26,.9)) drop-shadow(-6px 0 rgba(0,0,0,.55));}
+  1%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(60% 0 20% 0); transform:translateX(-6%); filter:drop-shadow(-7px 0 rgba(184,36,26,.9)) drop-shadow(7px 0 rgba(0,0,0,.55));}
+  1.9%{visibility:hidden;}
+  2.8%{visibility:visible; clip-path:inset(20% 0 60% 0); transform:translateX(4.5%) skewX(6deg); filter:drop-shadow(5px 0 rgba(184,36,26,.9)) drop-shadow(-5px 0 rgba(0,0,0,.55));}
+  3.3%{clip-path:inset(0 0 85% 0); transform:translateX(-3%); filter:drop-shadow(-5px 0 rgba(184,36,26,.9)) drop-shadow(5px 0 rgba(0,0,0,.55));}
+  3.8%, 100%{visibility:hidden;}
+}
+@keyframes noirbar-glitch-b{
+  0%{visibility:hidden;}
+  .5%{visibility:visible; clip-path:inset(70% 0 22% 0); transform:translateX(-3%); opacity:.8; filter:drop-shadow(-5px 0 rgba(184,36,26,.9)) drop-shadow(5px 0 rgba(0,0,0,.55));}
+  1%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(24% 0 68% 0); transform:translateX(3.5%); filter:drop-shadow(5px 0 rgba(184,36,26,.9)) drop-shadow(-5px 0 rgba(0,0,0,.55));}
+  1.9%{visibility:hidden;}
+  3.3%{visibility:visible; clip-path:inset(44% 0 48% 0); transform:translateX(-5%); filter:drop-shadow(-6px 0 rgba(184,36,26,.9)) drop-shadow(6px 0 rgba(0,0,0,.55));}
+  3.8%, 100%{visibility:hidden;}
+}
+.noirbar:not(.is-away):not(.is-landing) .noirbar-cut--man{animation:noirbar-glitch 15s 1.5s step-end infinite;}
+.noirbar:not(.is-away):not(.is-landing) .noirbar-glitch--a{animation:noirbar-glitch-a 15s 1.5s step-end infinite;}
+.noirbar:not(.is-away):not(.is-landing) .noirbar-glitch--b{animation:noirbar-glitch-b 15s 1.5s step-end infinite;}
+@media(prefers-reduced-motion:reduce){ .noirbar-cut--man, .noirbar-glitch{animation:none !important;} }
 /* the stool in front of the bar is the way in: it opens "What is the
    Narrative Forgery?". Only its seat shows, cut off by the foot of the
    picture, 1012-1339 x 792-864 of the photo (see .noirbar-cut--seat): cut
@@ -3563,6 +3607,24 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
   bar.__lands = true;
   landOnReturn(bar, bar, Array.prototype.slice.call(bar.querySelectorAll('.noirbar-photo, .noirbar-cut')), 1400, .3, null,
     () => ['papers', 'brain', 'clock', 'record', 'sign'].map(k => bar.querySelector(k === 'brain' ? '.noirbar-brain' : '.noirbar-hot--' + k)));
+})();
+
+// the man's glitch (see .noirbar-glitch): two copies of his cutout carry
+// the bands that tear off him
+(function(){
+  const man = document.querySelector('.noirbar-cut--man');
+  if(!man) return;
+  ['a', 'b'].forEach(k => {
+    const im = man.cloneNode(false);
+    im.className = 'noirbar-cut noirbar-glitch noirbar-glitch--' + k;
+    man.parentNode.appendChild(im);
+  });
+  // the gaps in him and the bands on the copies must keep one clock: if he
+  // is already standing, start all three over together
+  const all = man.parentNode.querySelectorAll('.noirbar-cut--man, .noirbar-glitch');
+  all.forEach(im => { im.style.animation = 'none'; });
+  void man.offsetWidth;
+  all.forEach(im => { im.style.animation = ''; });
 })();
 
 // the bar's record player plays The Meta Theory. It and the dossier's record
