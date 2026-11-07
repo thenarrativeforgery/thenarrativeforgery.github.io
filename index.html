@@ -181,8 +181,9 @@ section#intro{position:relative; overflow:hidden; padding-top:calc(var(--sec-pad
    from the same picture stand on it: the clock, the sign's poster, the man
    and the record player, so at rest it is the picture. Whenever the bar
    comes back into view the set goes up again: he rises from behind the
-   counter, the clock and the poster slide in from the left together, and
-   the record player comes down the bar from the right. Each piece moves a
+   counter, the clock slides in from the left as the poster slides into its
+   frame from the right, and the record player rises from the bottom of the
+   picture. Each piece moves a
    box the size of the photo, so what rides on it (the poster's sayings)
    keeps its place in the photo's own percentages; the box around that
    clips it: to the photo, to the frame's inside for the poster, to the
@@ -221,14 +222,17 @@ section#intro{position:relative; overflow:hidden; padding-top:calc(var(--sec-pad
 .noirbar-piece--man .noirbar-mover{height:115.508%;}
 @keyframes noirbar-rise{from{transform:translateY(78%);} to{transform:translateY(0);}}
 @keyframes noirbar-from-left{from{transform:translateX(-24%);} to{transform:translateX(0);}}
-@keyframes noirbar-from-right{from{transform:translateX(100%);} to{transform:translateX(0);}}
+@keyframes noirbar-from-right{from{transform:translateX(24%);} to{transform:translateX(0);}}
+@keyframes noirbar-from-below{from{transform:translateY(42%);} to{transform:translateY(0);}}
 .noirbar.is-away .noirbar-piece--man .noirbar-mover{transform:translateY(78%);}
-.noirbar.is-away .noirbar-piece--clock .noirbar-mover, .noirbar.is-away .noirbar-piece--poster .noirbar-mover{transform:translateX(-24%);}
-.noirbar.is-away .noirbar-piece--tt .noirbar-mover{transform:translateX(100%);}
+.noirbar.is-away .noirbar-piece--clock .noirbar-mover{transform:translateX(-24%);}
+.noirbar.is-away .noirbar-piece--poster .noirbar-mover{transform:translateX(24%);}
+.noirbar.is-away .noirbar-piece--tt .noirbar-mover{transform:translateY(42%);}
 .noirbar.is-landing .noirbar-mover{will-change:transform;}
 .noirbar.is-landing .noirbar-piece--man .noirbar-mover{animation:noirbar-rise .85s cubic-bezier(.2,1.12,.4,1) both;}
-.noirbar.is-landing .noirbar-piece--clock .noirbar-mover, .noirbar.is-landing .noirbar-piece--poster .noirbar-mover{animation:noirbar-from-left .8s .12s cubic-bezier(.2,1.12,.4,1) both;}
-.noirbar.is-landing .noirbar-piece--tt .noirbar-mover{animation:noirbar-from-right 1s .2s cubic-bezier(.2,1.06,.35,1) both;}
+.noirbar.is-landing .noirbar-piece--clock .noirbar-mover{animation:noirbar-from-left .8s .12s cubic-bezier(.2,1.12,.4,1) both;}
+.noirbar.is-landing .noirbar-piece--poster .noirbar-mover{animation:noirbar-from-right .8s .12s cubic-bezier(.2,1.12,.4,1) both;}
+.noirbar.is-landing .noirbar-piece--tt .noirbar-mover{animation:noirbar-from-below .9s .2s cubic-bezier(.2,1.06,.35,1) both;}
 /* with reduced motion asked for, and on a touch screen, the pieces fade up
    where they stand */
 @keyframes noirbar-fade{from{opacity:0;} to{opacity:1;}}
