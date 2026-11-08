@@ -356,7 +356,10 @@ html.view-phone .intro-poster{display:block; position:relative; max-width:560px;
    the note glows the same red while the song plays */
 .intro-poster-hot--intro{animation:intro-poster-glow 2.8s ease-in-out infinite;}
 @keyframes intro-poster-glow{0%,100%{box-shadow:0 0 0 0 rgba(184,36,26,0);} 50%{box-shadow:0 0 0 2px rgba(184,36,26,.85), 0 0 22px 2px rgba(184,36,26,.35);}}
-.intro-poster-hot--music.is-playing{box-shadow:0 0 0 2px rgba(184,36,26,.85), 0 0 26px 4px rgba(184,36,26,.4);}
+/* while the song plays the note itself turns crimson: a crimson copy of the
+   note, cut from the poster, laid exactly over it (no ring around it) */
+.intro-poster-note{position:absolute; left:8%; top:83.037%; width:8.778%; height:8.667%; pointer-events:none; opacity:0; transition:opacity .3s ease;}
+.intro-poster-hot--music.is-playing ~ .intro-poster-note{opacity:1;}
 @media(prefers-reduced-motion:reduce){ .intro-poster-hot--intro{animation:none; box-shadow:0 0 0 2px rgba(184,36,26,.85);} }
 /* the intro film, offered at the head of the introduction in the phone
    layout: a link until it is asked for, then the player, 16:9 */
@@ -1357,6 +1360,7 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
       <a class="intro-poster-hot intro-poster-hot--book" href="#chapters" aria-label="The redacted book, &ldquo;what happened&rdquo;: go to the chapters"></a>
       <a class="intro-poster-hot intro-poster-hot--brain" href="#compendium" aria-label="The brain: go to the compendium"></a>
       <button type="button" class="intro-poster-hot intro-poster-hot--music" id="posterMusic" aria-pressed="false" aria-label="The music note: play The Meta Theory"></button>
+      <img class="intro-poster-note" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE8AAAB1CAYAAAAP1bxNAAAEaElEQVR42u2dPWhTURTHf7FCxKFSaPETkfoBgToUpR3EQRAsKC6CtIM4KN0Eu3XqLg5KBcGh0EFxEARBoSKoOCiKgkMRURA7CIUGpRWkFYMOuaUhpi959+V+vvOHR9K+5N7kl3PuPee89+4rzOzbgUhPGwSBwHOijYJgXe0EHtb83S/wWtMJYKbufw+BU+K2jXUZ+Ku2GXHb1nQBmAQ2y5jXmo4CL1K+ZyXvs+1p5ZYvNN77M4/wOoCbCtoDCVVa0zHgaRvb250Hy5tUVvbUQNtFtUVneXeBYUnP9GIz0+AqoY153TXPy+pxAHjt4LOU68OVkNy2BHyQwkA6PQP6fPxgPsLbD9yoSdB90UoI8D556gEDPs62OxWw1VkzGLm0vKBA+RDnnQ/RwnywvA8q3IhGtiyvLzZwsRYGTGlW4AVoeT8FXr61IvD0VRF4+vrjCt7WAOAcBA4n7O8Uy/tfF4FNwOcmsehmn3Jb1+phrTrt9Wz7ziPXLKitnLUxW/B6HUPrV8Bmm7xuPmFfOU9uW2izh3THPGGUlVvu0QQHycdKumKFd1FNALPAXIZ2imleHLLbDgIf1fMlyW2b6xywXbnlR8t9z4dqeWPA7boZz4S1LcXittfV4zgNKho+yFd4Q8BzB/3+ChXefeCM488wGyK8Av7rd8xBsmn9EXjJ2pawryTwAgySOwVe/PqRsG9O4CVrJQ1Ygde6ZMLIoB6qNb0ugddYSfU8Z5XkX4HAG0jY1+EqPfsRgeX99z1sWV63xHn66hJ4+gqlYp00vMhZUhnkDF5HBPCkJNXO1E3gtS5nleS5QACligrE8mTMcyNb8ZevuW2xbkJIOuGxVywvWQs+jnm+WN4w8JW1y1aXa7bTLVhptIvSJGmR5gehUq8zZcvyBhyMZcUaKzNy9M6G5bk67LhsOsuIdcJYttGJLXivLIKztn6BDXhLNFh7zpCuxRgk26gkTwKXbMKLZczrtg0uJngLLjqNIcNwdgZWu8e82nJ7xWLKZUNfYnRbW5ZnrAzfqVKwZ8B3tS1SXYy+ZHi2vRqS265WFXqBiSZuc1JtMahtl08dBZ6QL93J6rajKm/MGziA6SyWN011/bu8SvuMgUM5B/dSN0geBd6Sbx3RhXcr5+Cu6KZnfxGN68C7K9z4rFsYGA7kCw4ZbPuADryQ4rjHhtpteg1wLPW8LS7S1kbwSsDxwOAtAY/aaHEVXXgTgVrfKeBehvefJeXl+oUG97d1EZ60e42BtPcDKhjzbcN6b6DNEbWVVGp5nOrdD1Y1R3X9qWy/eJ3lFbF0tL1GB0m5JIcv8mG2nQ91ivcBXjkWeLbXbOoPObh0bXnvBZ6eBkNPa1zBGwPexAhvl4V+b8SQUDeC981wn9GcRL6e244b6m+IiLQevCsG8s0xqrW3CvZOAorChXoIZ4WLts22Wa1vSv1A0YFr1fIKpL8hbxnYi6PFn32L894oiCOsX7GdYu12CT2xg4PGxVBRILmtwBN4otT6B+WNsRqIYXfWAAAAAElFTkSuQmCC" width="79" height="117" alt="" aria-hidden="true">
       <button type="button" class="intro-poster-hot intro-poster-hot--intro" id="posterIntro" aria-label="Intro: open the introduction, with the intro film"></button>
     </div>
   </div>
