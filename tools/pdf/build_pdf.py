@@ -270,6 +270,15 @@ PREFATORY = ["This compendium exists because the preceding eighteen chapters hav
              "The mechanisms described here are not theories invented to explain the preceding chapters’ findings. They are established constructs from cognitive psychology, social psychology, behavioral neuroscience, and radicalization research — documented in peer-reviewed literature, replicated across experimental conditions, and cited in academic contexts entirely unrelated to the political events this document examines. They are presented as an analytical framework for understanding why the operations documented in the preceding chapters worked — why millions of intelligent, educated, engaged citizens processed fabricated narratives as established fact, why documented primary source contradictions failed to dislodge entrenched beliefs, and why the most analytically sophisticated individuals were in many cases the most resistant to correction.",
              "Understanding the machinery’s psychological architecture is not an academic exercise. It is the prerequisite for dismantling it."]
 
+# Closes the Prefatory Note: why every mechanism here runs in both audiences of a polarized public.
+TWO_AUDIENCE = [
+             "The eighteen mechanisms in this compendium are documented in the brain of a reader, not the brain of a partisan. For a standalone reference that distinction is decisive. Every mechanism described here runs in both audiences of a polarized information environment at the same time: the audience that trusted the institutions this book examines, and the audience that stopped trusting them.",
+             "Finkel and colleagues, writing in Science in 2020 with co-authors from six disciplines, named the combined condition political sectarianism. They identified three ingredients. Othering is the tendency to see opposing partisans as alien. Aversion is the tendency to dislike and distrust them. Moralization is the tendency to see them as iniquitous. Each ingredient maps onto this compendium. Othering is what schema-driven caricature produces. Aversion is what emotional contagion produces in a feed that rewards hostility toward the out-group. Moralization is what atrocity framing and moral disengagement produce.",
+             "The measured feature of that environment is that each side’s picture of the other is wrong, and wrong in the same direction. Ahler and Sood found Americans estimated that 32 percent of Democrats are LGBT (actual: 6 percent) and that 38 percent of Republicans earn more than $250,000 a year (actual: 2 percent). Moore-Berg and colleagues found Democrats and Republicans dislike and dehumanize each other at equal levels. Each side believes the other’s prejudice and dehumanization is roughly twice what the other actually reports. Mernyk and colleagues found partisans overestimated rival partisans’ support for political violence by 245 to 442 percent.",
+             "The mechanisms do not need a coordinator to produce this. They need two audiences, each processing the other through mechanisms it cannot see operating on itself. The receipts in this book document one direction of that traffic. The mechanisms run in both."
+]
+TWO_AUDIENCE_SOURCE = "Finkel, E. J., Bail, C. A., Cikara, M., Ditto, P. H., Iyengar, S., Klar, S., Mason, L., McGrath, M. C., Nyhan, B., Rand, D. G., Skitka, L. J., Tucker, J. A., Van Bavel, J. J., Wang, C. S., & Druckman, J. N. (2020). Political sectarianism in America. Science, 370(6516), 533–536."
+
 EXHIBITS = {n: [f'exhibit-{n:02d}.jpg'] for n in range(1, 19)}
 EXHIBITS[11] = ['exhibit-11a.jpg', 'exhibit-11b.jpg']
 MECH_IMG = {n: f'mechanism-{n:02d}.jpg' for n in (1, 2, 3, 4, 5, 6, 7, 9)}
@@ -297,7 +306,9 @@ def story():
     # volume two
     f += [State(mark='vol2', vol=2), FullPage(vol2cover), PageBreak()]
     f += opening('VOLUME TWO · THE NEURAL ARCHITECTURE OF DECEPTION', 'Prefatory Note', mark='pref', header='Prefatory Note', vol=2)
-    f += [Paragraph(esc(PREFATORY[0]), ST['lead'])] + [Paragraph(esc(p), ST['body']) for p in PREFATORY[1:]] + [PageBreak()]
+    f += [Paragraph(esc(PREFATORY[0]), ST['lead'])] + [Paragraph(esc(p), ST['body']) for p in PREFATORY[1:]]
+    f += [Spacer(1, 8), Paragraph('THE TWO-AUDIENCE PROBLEM', ST['sub'])] + [Paragraph(esc(p), ST['body']) for p in TWO_AUDIENCE]
+    f += [Paragraph(esc(TWO_AUDIENCE_SOURCE), ST['src']), PageBreak()]
     for m in MS:
         n = m['n']; d = MF[str(n)]
         box = Box('CROSS-REFERENCED IN', 'Chapters ' + ' · '.join(f'{c:02d}' for c in m['chapters']), ST['boxtext2'])
