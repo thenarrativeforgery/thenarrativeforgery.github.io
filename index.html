@@ -562,15 +562,6 @@ html.view-phone .intro-poster{display:block; position:relative; max-width:560px;
    in Bebas Neue, like the posters. */
 .mband{border-top:1px solid #2A2A28;}
 .mband-h{font:inherit;}
-/* over the bands: the switch between reading them by typology or by stage */
-.mband-switch{display:flex; justify-content:flex-end; padding:12px 22px; border-top:1px solid #2A2A28;}
-.mband-switch button{margin:0; padding:7px 14px 6px; background:#000; color:var(--cap-dark); border:1px solid #2A2A28; border-radius:0; cursor:pointer;
-  font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; transition:background .2s ease, color .2s ease; -webkit-tap-highlight-color:transparent;}
-.mband-switch button + button{border-left:0;}
-.mband-switch button:hover{color:#F4F4F2;}
-.mband-switch button[aria-pressed="true"]{background:#F4F4F2; color:#000; border-color:#F4F4F2; cursor:default;}
-.mband-switch button:focus-visible{outline:2px solid var(--red); outline-offset:2px;}
-@media(max-width:600px){ .mband-switch{justify-content:center; padding:10px 14px;} }
 .mband-head{display:flex; align-items:center; justify-content:space-between; width:100%; margin:0; padding:13px 22px 11px; background:#000; border:0; border-radius:0; color:#F4F4F2; cursor:pointer; text-align:left;
   font-family:var(--poster); font-size:31px; font-weight:400; line-height:1; letter-spacing:.015em; text-transform:uppercase; transition:background .2s ease; -webkit-tap-highlight-color:transparent;}
 .mband-head:hover{background:#151515;}
@@ -1791,18 +1782,14 @@ const TONEARM_SVG = '<svg class="vinyl-arm" viewBox="0 0 100 160" preserveAspect
   + '<path d="M44 134l-3 6" stroke="#F4F4F2" stroke-width="1.6" stroke-linecap="round"/>'
   + '</g></svg>';
 
-/* Volume Two's menu: the eighteen mechanisms in the book's five bands. The
-   same five read two ways, by a switch over them: by typology (what kind of
-   mechanism each is) or by stage (the order the book builds them in). */
+/* Volume Two's menu: the eighteen mechanisms in the book's five bands */
 const MECH_BANDS = [
-  {name:'Foundational', stage:'Foundational',        from:1,  to:4},
-  {name:'Architecture', stage:'Architecture',        from:5,  to:7},
-  {name:'Social',       stage:'Social Architecture', from:8,  to:9},
-  {name:'Persistence',  stage:'Advanced',            from:10, to:12},
-  {name:'Compounding',  stage:'Extended',            from:13, to:18}
+  {name:'Foundational', from:1,  to:4},
+  {name:'Architecture', from:5,  to:7},
+  {name:'Social',       from:8,  to:9},
+  {name:'Persistence',  from:10, to:12},
+  {name:'Compounding',  from:13, to:18}
 ];
-const mbandLabel = (b, i, view) => (view === 'stage' ? 'Stage ' + (i + 1) + ': ' + b.stage : b.name)
-  + ' mechanisms ' + pad2(b.from) + '&ndash;' + pad2(b.to);
 const MBAND_CHEVRON = '<svg class="mband-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function buildDossier(){
   const host = document.getElementById('dossier');
@@ -1905,19 +1892,14 @@ function buildDossier(){
     const at = t.search(/ & |: /);
     return at < 0 ? esc(t) : esc(t.slice(0, at + 2).trim()) + '<br> ' + esc(t.slice(at + 2).trim());
   };
-  let mview = 'type';
-  try{ if(localStorage.getItem('tnf-mband-view') === 'stage') mview = 'stage'; }catch(e){}
-  if(bands) bands.innerHTML = '<div class="mband-switch" role="group" aria-label="Group the mechanisms by">'
-    + '<button type="button" data-view="type" aria-pressed="' + (mview === 'type') + '">Typology</button>'
-    + '<button type="button" data-view="stage" aria-pressed="' + (mview === 'stage') + '">Stages</button></div>'
-    + MECH_BANDS.map((b, i) => {
+  if(bands) bands.innerHTML = MECH_BANDS.map((b, i) => {
     const id = 'mband' + i, list = MECHANISMS.filter(m => m.n >= b.from && m.n <= b.to);
     const cards = list.map(m =>
       '<button type="button" class="dcard" data-mech="' + m.n + '" aria-label="' + pad2(m.n) + ': ' + esc(m.title) + '">'
       + pad2(m.n) + ' &ndash; ' + cardName(m.title) + '</button>').join('');
     return '<div class="mband">'
       + '<h3 class="mband-h"><button type="button" class="mband-head" id="' + id + 'h" aria-expanded="false" aria-controls="' + id + '">'
-      + '<span class="mband-name">' + mbandLabel(b, i, mview) + '</span>' + MBAND_CHEVRON + '</button></h3>'
+      + '<span>' + b.name + ' mechanisms ' + pad2(b.from) + '&ndash;' + pad2(b.to) + '</span>' + MBAND_CHEVRON + '</button></h3>'
       + '<div class="mband-panel" id="' + id + '" role="region" aria-labelledby="' + id + 'h" hidden>'
       + '<div class="mband-cards cols-' + list.length + '">' + cards + '</div><div class="dossier-note"></div></div></div>';
   }).join('');
@@ -2084,15 +2066,6 @@ function buildDossier(){
   // so opening one shuts the other at once, and the bar you clicked stays
   // where it was under your pointer. A card opens its mechanism.
   bands.addEventListener('click', e => {
-    // the switch relabels the bars in place; an open band stays open
-    const sw = e.target.closest('.mband-switch button');
-    if(sw){
-      const view = sw.dataset.view;
-      Array.prototype.forEach.call(bands.querySelectorAll('.mband-switch button'), x => x.setAttribute('aria-pressed', x === sw ? 'true' : 'false'));
-      Array.prototype.forEach.call(bands.querySelectorAll('.mband-name'), (s, i) => { s.innerHTML = mbandLabel(MECH_BANDS[i], i, view); });
-      try{ localStorage.setItem('tnf-mband-view', view); }catch(err){}
-      return;
-    }
     const head = e.target.closest('.mband-head');
     if(head){
       const band = head.closest('.mband'), open = !band.classList.contains('is-open');
