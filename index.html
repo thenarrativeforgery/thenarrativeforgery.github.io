@@ -233,10 +233,10 @@ section#intro{position:relative; overflow:hidden; padding-top:calc(var(--sec-pad
 .noirbar.is-landing .noirbar-piece--clock .noirbar-mover{animation:noirbar-from-left .8s .12s cubic-bezier(.2,1.12,.4,1) both;}
 .noirbar.is-landing .noirbar-piece--poster .noirbar-mover{animation:noirbar-from-right .8s .12s cubic-bezier(.2,1.12,.4,1) both;}
 .noirbar.is-landing .noirbar-piece--tt .noirbar-mover{animation:noirbar-from-below .9s .2s cubic-bezier(.2,1.06,.35,1) both;}
-/* with reduced motion asked for, and on a touch screen, the pieces fade up
-   where they stand */
+/* with reduced motion asked for the pieces fade up where they stand; a
+   touch screen gets the landing itself, as a desktop does */
 @keyframes noirbar-fade{from{opacity:0;} to{opacity:1;}}
-@media(prefers-reduced-motion:reduce), (hover:none){
+@media(prefers-reduced-motion:reduce){
   .noirbar.is-away .noirbar-piece--man .noirbar-mover, .noirbar.is-away .noirbar-piece--clock .noirbar-mover,
   .noirbar.is-away .noirbar-piece--poster .noirbar-mover, .noirbar.is-away .noirbar-piece--tt .noirbar-mover{transform:none; opacity:0;}
   .noirbar.is-landing .noirbar-piece--man .noirbar-mover{animation:noirbar-fade .5s ease-out both;}
@@ -361,6 +361,95 @@ html.view-phone .intro-poster{display:block; position:relative; max-width:560px;
 .intro-poster-note{position:absolute; left:8%; top:83.037%; width:8.778%; height:8.667%; pointer-events:none; opacity:0; transition:opacity .3s ease;}
 .intro-poster-hot--music.is-playing ~ .intro-poster-note{opacity:1;}
 @media(prefers-reduced-motion:reduce){ .intro-poster-hot--intro{animation:none; box-shadow:0 0 0 2px rgba(184,36,26,.85);} }
+/* the poster lands as the bar does (see landOnReturn), each time it comes
+   back into view: it cuts in, torn into bands that jump sideways and settle
+   in about half a second, and then the book, the brain and the note are
+   lit one after another by the crimson trace. On the poster's white the
+   trace is all crimson, inside the thing and round it; a finger pressing
+   one lights it the same way. */
+.intro-poster.is-away .intro-poster-art{opacity:0;}
+.intro-poster.is-away .intro-poster-hot--intro, .intro-poster.is-landing .intro-poster-hot--intro{animation:none;}
+.intro-poster.is-landing .intro-poster-art{animation:poster-in .56s step-end both;}
+@keyframes poster-in{
+  0%{clip-path:inset(0 0 72% 0); transform:translateX(-3%);}
+  14%{clip-path:inset(22% 0 38% 0); transform:translateX(4%);}
+  28%{clip-path:inset(0 0 30% 0); transform:translateX(-2%);}
+  42%{clip-path:inset(46% 0 0 0); transform:translateX(2.5%);}
+  56%{clip-path:inset(0 0 0 0); transform:translateX(-1%);}
+  70%{clip-path:inset(0 0 0 0); transform:none;}
+  78%{clip-path:inset(58% 0 14% 0); transform:translateX(3%);}
+  88%, 100%{clip-path:inset(0 0 0 0); transform:none;}
+}
+@keyframes poster-trace{0%,100%{box-shadow:inset 0 0 0 0 rgba(184,36,26,0), 0 0 0 0 rgba(184,36,26,0);} 40%,60%{box-shadow:inset 0 0 34px 0 rgba(184,36,26,.5), 0 0 26px 2px rgba(184,36,26,.45);}}
+.intro-poster-hot.is-traced{animation-name:poster-trace;}
+@media(hover:none){ .intro-poster-hot:not(.intro-poster-hot--intro):active{box-shadow:inset 0 0 30px 0 rgba(184,36,26,.45), 0 0 22px 2px rgba(184,36,26,.4);} }
+/* the poster glitches as the man at the bar does (see noirbar-glitch), every
+   15s once it has landed, 1.5s after: its title and the man walking away
+   tear into bands that jump sideways, split into the one red and a black
+   ghost, and snap back. Four copies of the poster stand over it (made by
+   the script, so the page carries the picture once), each clipped to a band
+   of the title (x 32-71%, y 15.3-28.6%) or of the man (x 37-66%, y 33-79%).
+   The title stands on bare paper, so the patch, the bare paper above it
+   slid down over it, cuts the gap a band leaves; the man has a street behind
+   him, so his bands ride over him and stand out past his edges. Two copies
+   carry the torn bands in black and one a crimson ghost, their paper lifted
+   out (#pgInk, #pgRed) so only ink multiplies in. */
+.intro-poster-pg{position:absolute; top:0; left:0; display:block; width:100%; height:100%; visibility:hidden; pointer-events:none;}
+.pg--patch{transform:translateY(14%);}
+.pg--a, .pg--b{mix-blend-mode:multiply; filter:url(#pgInk);}
+.pg--red{mix-blend-mode:multiply; filter:url(#pgRed);}
+@keyframes pg-patch{
+  0%{visibility:visible; clip-path:inset(1.3% 29% 94.1% 32%);}
+  .5%{clip-path:inset(5.9% 29% 89.8% 32%);}
+  1%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(10.2% 29% 85.4% 32%);}
+  1.9%{clip-path:inset(1.3% 29% 85.4% 32%);}
+  2.4%{visibility:hidden;}
+  2.8%{visibility:visible; clip-path:inset(5.9% 29% 89.8% 32%);}
+  3.3%{clip-path:inset(1.3% 29% 94.1% 32%);}
+  3.8%, 100%{visibility:hidden;}
+}
+@keyframes pg-a{
+  0%{visibility:visible; clip-path:inset(15.3% 29% 80.1% 32%); transform:translateX(-5%);}
+  .5%{clip-path:inset(19.9% 29% 75.8% 32%); transform:translateX(6%);}
+  1%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(24.2% 29% 71.4% 32%); transform:translateX(-7%);}
+  1.9%{clip-path:inset(15.3% 29% 71.4% 32%); transform:translateX(2%);}
+  2.4%{visibility:hidden;}
+  2.8%{visibility:visible; clip-path:inset(40% 34% 50% 37%); transform:translateX(-6%) skewX(-6deg);}
+  3.3%{clip-path:inset(58% 34% 30% 37%); transform:translateX(5%);}
+  3.8%, 100%{visibility:hidden;}
+}
+@keyframes pg-b{
+  0%{visibility:visible; clip-path:inset(36% 34% 56% 37%); transform:translateX(4%);}
+  .5%{clip-path:inset(52% 34% 40% 37%); transform:translateX(-5%);}
+  1%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(64% 34% 28% 37%); transform:translateX(6%);}
+  1.9%{visibility:hidden;}
+  2.8%{visibility:visible; clip-path:inset(19.9% 29% 75.8% 32%); transform:translateX(4%);}
+  3.3%{clip-path:inset(15.3% 29% 80.1% 32%); transform:translateX(-3%);}
+  3.8%, 100%{visibility:hidden;}
+}
+@keyframes pg-red{
+  0%{visibility:visible; clip-path:inset(36% 34% 56% 37%); transform:translateX(-3%);}
+  .5%{clip-path:inset(52% 34% 40% 37%); transform:translateX(3%);}
+  1%{visibility:hidden;}
+  1.4%{visibility:visible; clip-path:inset(24.2% 29% 71.4% 32%); transform:translateX(3%);}
+  1.9%{clip-path:inset(33% 34% 21% 37%); transform:translateX(-1.6%);}
+  2.4%{visibility:hidden;}
+  2.8%{visibility:visible; clip-path:inset(40% 34% 50% 37%); transform:translateX(4%);}
+  3.3%{clip-path:inset(15.3% 29% 80.1% 32%); transform:translateX(2.5%);}
+  3.8%{clip-path:inset(33% 34% 21% 37%); transform:translateX(1.2%); opacity:.75;}
+  4.3%, 100%{visibility:hidden; opacity:1;}
+}
+.intro-poster:not(.is-away):not(.is-landing) .pg--patch{animation:pg-patch 15s 1.5s step-end infinite;}
+.intro-poster:not(.is-away):not(.is-landing) .pg--red{animation:pg-red 15s 1.5s step-end infinite;}
+.intro-poster:not(.is-away):not(.is-landing) .pg--a{animation:pg-a 15s 1.5s step-end infinite;}
+.intro-poster:not(.is-away):not(.is-landing) .pg--b{animation:pg-b 15s 1.5s step-end infinite;}
+@media(prefers-reduced-motion:reduce){
+  .intro-poster.is-landing .intro-poster-art{animation:noirbar-fade .5s ease-out both;}
+  .intro-poster-pg{animation:none !important;}
+}
 /* the intro film, offered at the head of the introduction in the phone
    layout: a link until it is asked for, then the player, 16:9 */
 .intro-film{margin:0 0 24px;}
@@ -408,6 +497,17 @@ html.view-phone .intro-poster{display:block; position:relative; max-width:560px;
 /* on a phone the bar is slimmer and every title keeps to one line, the
    longest ("The Receipts Ledger") down to a 320px screen */
 @media(max-width:720px){ .section-bar{padding:12px 12px; outline-offset:-6px; font-size:17px; font-size:clamp(14px, 4.4vw, 19px); letter-spacing:.12em; white-space:nowrap;} }
+/* on a touch screen and in the phone layout each title is struck through
+   in the one red as it comes into view, and stands once the bar has passed,
+   as the chapters' numbers are un-redacted in black (see bk-bar). The
+   script marks the bars (rv-bar) and says when each is in view (rv-in), so
+   without it, or with reduced motion asked for, they just stand. */
+.section-bar.rv-bar{position:relative;}
+.section-bar.rv-bar::after{content:""; position:absolute; top:9px; right:9px; bottom:9px; left:9px; background:var(--red); transform:scaleX(0); pointer-events:none;}
+.section-bar.rv-bar:not(.rv-in){color:transparent;}
+.section-bar.rv-bar.rv-in{animation:bar-ink .7s both;}
+.section-bar.rv-bar.rv-in::after{animation:bk-bar .7s ease-in-out both;}
+@keyframes bar-ink{0%, 49%{color:transparent;} 50%, 100%{color:#fff;}}
 /* the Book's, the Compendium's and the Ledger's titles stay under the nav
    while their sections scroll by, on a phone as on a desktop, so you know
    where you are. What the page scrolls to inside one (the ledger's search
@@ -454,9 +554,10 @@ html.view-phone .intro-poster{display:block; position:relative; max-width:560px;
 .dossier.is-landing .vinyl{animation:dossier-from-right .9s cubic-bezier(.2,1.1,.4,1) both;}
 .dossier.is-landing .dossier-pitch{animation:dossier-from-right .9s .14s cubic-bezier(.2,1.1,.4,1) both;}
 .dossier.is-landing .dossier-cover-wrap{animation:noirbar-fade 2.2s .1s ease-in-out both;}
-/* with reduced motion asked for, and on a touch screen, the record and the
-   pitch fade up where they stand; the cover fades as it always does */
-@media(prefers-reduced-motion:reduce), (hover:none){
+/* with reduced motion asked for the record and the pitch fade up where they
+   stand; the cover fades as it always does. (In the phone layout they are a
+   screen below the cover, so each comes in for itself: see .rv) */
+@media(prefers-reduced-motion:reduce){
   .dossier.is-away .vinyl, .dossier.is-away .dossier-pitch{transform:none; opacity:0;}
   .dossier.is-landing .vinyl{animation:noirbar-fade .5s ease-out both;}
   .dossier.is-landing .dossier-pitch{animation:noirbar-fade .5s .1s ease-out both;}
@@ -591,9 +692,24 @@ html.view-phone .intro-poster{display:block; position:relative; max-width:560px;
 .dcard:focus-visible{transform:translateY(-2px); border-color:var(--red); box-shadow:0 0 0 1px var(--red), 0 10px 22px rgba(0,0,0,.14); outline:none;}
 .dcard:active{transform:scale(.98);}
 @media(prefers-reduced-motion:reduce){ .mband.is-open .mband-cards{animation:none;} .mband-chev, .dcard, .mband-panel{transition:none;} }
-/* on a touch screen a band opens at once (see slide) and its cards fade up
-   where they stand */
-@media(hover:none){ .mband.is-open .mband-cards{animation-name:noirbar-fade;} .mband-chev, .dcard{transition:none;} }
+/* on a touch screen a band's drawer slides as a desktop's does, and its
+   cards are dealt out one after another rather than dropping in as a row;
+   a finger pressing a bar or a card lights it crimson, where a mouse would
+   have hovered (a glow, never a line: see the crimson trace) */
+@keyframes dcard-in{from{opacity:0; transform:translateY(-10px) scale(.96);}}
+@media(hover:none) and (prefers-reduced-motion:no-preference){
+  .mband.is-open .mband-cards{animation:none;}
+  .mband.is-open .dcard{animation:dcard-in .34s cubic-bezier(.2,.9,.3,1) backwards;}
+  .mband.is-open .dcard:nth-child(2){animation-delay:.05s;}
+  .mband.is-open .dcard:nth-child(3){animation-delay:.1s;}
+  .mband.is-open .dcard:nth-child(4){animation-delay:.15s;}
+  .mband.is-open .dcard:nth-child(5){animation-delay:.2s;}
+  .mband.is-open .dcard:nth-child(6){animation-delay:.25s;}
+}
+@media(hover:none){
+  .mband-head:active{background:#151515; box-shadow:inset 0 0 28px 0 rgba(184,36,26,.6);}
+  .dcard:active{box-shadow:0 0 20px 2px rgba(184,36,26,.6);}
+}
 @media(max-width:1000px){
   .mband-cards.cols-4{grid-template-columns:repeat(2, 1fr);}
   .mband-cards.cols-6{grid-template-columns:repeat(3, 1fr);}
@@ -640,6 +756,12 @@ html.view-phone .dossier-pitch-frame{border-width:1px 0 0;}
 /* down there they are well past the cover, so they don't land with it */
 html.view-phone .dossier.is-away .vinyl, html.view-phone .dossier.is-away .dossier-pitch{transform:none; opacity:1;}
 html.view-phone .dossier.is-landing .vinyl, html.view-phone .dossier.is-landing .dossier-pitch{animation:none;}
+/* instead each comes in for itself as it is scrolled to (rv, and rv-in once
+   in view: see the phone's reveals), the record from the right and the
+   pitch from the left; the black box clips them as they come */
+html.view-phone .mech-map-wrap .vinyl.rv:not(.rv-in), html.view-phone .mech-map-wrap .dossier-pitch.rv:not(.rv-in){opacity:0; transform:translateX(44px);}
+html.view-phone .mech-map-wrap .dossier-pitch.rv:not(.rv-in){transform:translateX(-44px);}
+html.view-phone .mech-map-wrap .rv.rv-in{transition:opacity .55s ease-out, transform .75s cubic-bezier(.2,1.1,.4,1);}
 
 
 /* THE PLATES — the volumes drawn without their titles: the book alone,
@@ -778,6 +900,12 @@ html.view-phone .dossier.is-landing .vinyl, html.view-phone .dossier.is-landing 
 /* a finger can't hover, so on a touch screen each number is underlined in
    crimson, as a link */
 @media(hover:none){ .bk-num{text-decoration:underline; text-decoration-color:rgba(184,36,26,.55); text-decoration-thickness:1px; text-underline-offset:.2em;} }
+/* and a touched number goes crimson under the finger, then is struck through
+   in crimson as its card comes out, where a mouse would have had its name */
+@media(hover:none){
+  .bk-row:active .bk-num{color:var(--red);}
+  .bk-row.is-open .bk-num::after{background:var(--red); animation:bk-bar .5s ease-in-out both;}
+}
 .bk-stage.is-away .bk-num{color:transparent; text-decoration-color:transparent;}
 .bk-stage.is-landing .bk-num{animation:bk-ink .6s calc(var(--i) * 50ms + 100ms) both;}
 .bk-stage.is-landing .bk-num::after{animation:bk-bar .6s calc(var(--i) * 50ms + 100ms) ease-in-out both;}
@@ -1376,10 +1504,14 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 // effects switched off). Should
 // that script never run, the set goes back up on its own.
 (function(){
-  var bar = document.getElementById('noirBar');
+  var bar = document.getElementById('noirBar'), poster = document.getElementById('introPoster');   // the phone's poster lands too
   if(!bar || !('IntersectionObserver' in window) || !window.Promise) return;
   bar.classList.add('is-away');
-  window.addEventListener('load', function(){ setTimeout(function(){ if(!bar.__lands) bar.classList.remove('is-away'); }, 1500); });
+  if(poster) poster.classList.add('is-away');
+  window.addEventListener('load', function(){ setTimeout(function(){
+    if(!bar.__lands) bar.classList.remove('is-away');
+    if(poster && !poster.__lands) poster.classList.remove('is-away');
+  }, 1500); });
 })();
 </script>
 
@@ -2061,8 +2193,8 @@ function buildDossier(){
   bands.addEventListener('mouseleave', clearNotes);
   // a band's drawer slides open from its bar, or shut into it: its height
   // runs from where it is to its cards' (or to nothing), then lets go
-  // (not with reduced motion, nor on a touch screen, where it opens at once)
-  const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce), (hover: none)').matches;
+  // (not with reduced motion, where it opens at once)
+  const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   const slide = (panel, open) => {
     clearTimeout(panel.__slide);
     if(still){ panel.hidden = !open; panel.style.height = ''; return; }
@@ -3629,13 +3761,12 @@ function chapterCardHtml(n){
    slowly shifting flow field, so neighbours take the same path and the thread
    curls as one wisp: tight and quick at the tray, slower, wider and fainter
    as it climbs. Each frame the canvas fades a little rather than clearing,
-   which draws the wisps as trails. Nothing runs off screen, under reduced
-   motion or on a touch screen — the photo keeps its own still smoke either
-   way. */
+   which draws the wisps as trails. Nothing runs off screen or under reduced
+   motion — the photo keeps its own still smoke either way. */
 (function buildBarSmoke(){
   const bar = document.getElementById('noirBar');
   if(!bar || !window.requestAnimationFrame) return;
-  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce), (hover: none)').matches) return;
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const cv = document.createElement('canvas');
   cv.className = 'noirbar-smoke';
   cv.setAttribute('aria-hidden', 'true');
@@ -3731,8 +3862,7 @@ function chapterCardHtml(n){
    soon as it shows, while its pieces may be a screen below, so each waits
    for itself to be in view. */
 function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
-  // on a touch screen the pieces fade rather than move (see the CSS), and
-  // they start as soon as any of the set shows: waiting for its share to be
+  // on a touch screen the pieces start as soon as any of the set shows: waiting for its share to be
   // in view left a phone looking at an empty room on its way up the screen
   if(window.matchMedia && matchMedia('(hover: none)').matches) need = 0;
   // (a hidden page may hold its decoding back, so don't wait past 2s)
@@ -3758,7 +3888,7 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
     items.forEach(it => { clearTimeout(it.__trace); it.classList.remove('is-traced'); });
   }
   // the trace: the pieces move into place for .9s, or fade for .5s
-  const settle = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce), (hover: none)').matches ? 500 : 900;
+  const settle = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches ? 500 : 900;
   let items = [], landedAt = 0, startedAt = 0, gap = 150, pace = 150, settling = 0;
   const ring = new Map(), shown = new Set(), traced = new Set();
   function traceShown(){
@@ -3815,6 +3945,48 @@ function landOnReturn(watch, el, imgs, ms, need, mayStrike, trace){
   bar.__lands = true;
   landOnReturn(bar, bar, Array.prototype.slice.call(bar.querySelectorAll('.noirbar-photo, .noirbar-cut')), 1400, .3, null,
     () => ['papers', 'brain', 'clock', 'record', 'sign'].map(k => bar.querySelector(k === 'brain' ? '.noirbar-brain' : '.noirbar-hot--' + k)));
+})();
+
+// the poster's landing and its glitch (see .intro-poster-pg): four copies of
+// the poster carry the patch and the torn bands, and two filters keep only
+// their ink, black and crimson. The book, the brain and the note take the
+// crimson trace; the box marked "intro" never stops glowing.
+(function(){
+  const poster = document.getElementById('introPoster');
+  const art = poster && poster.querySelector('.intro-poster-art');
+  if(!art) return;
+  const ink = '<feComponentTransfer><feFuncR type="linear" slope="1.8" intercept="-.1"/><feFuncG type="linear" slope="1.8" intercept="-.1"/><feFuncB type="linear" slope="1.8" intercept="-.1"/></feComponentTransfer>';
+  document.body.insertAdjacentHTML('beforeend', '<svg width="0" height="0" style="position:absolute" aria-hidden="true">'
+    + '<filter id="pgInk" color-interpolation-filters="sRGB">' + ink + '</filter>'
+    + '<filter id="pgRed" color-interpolation-filters="sRGB">' + ink
+    + '<feColorMatrix type="matrix" values=".278 0 0 0 .722  0 .859 0 0 .141  0 0 .898 0 .102  0 0 0 1 0"/></filter></svg>');
+  art.after(...['patch', 'red', 'a', 'b'].map(k => {
+    const im = art.cloneNode(false);
+    im.className = 'intro-poster-pg pg--' + k; im.alt = ''; im.setAttribute('aria-hidden', 'true');
+    return im;
+  }));
+  if(!poster.classList.contains('is-away')) return;
+  poster.__lands = true;
+  landOnReturn(poster, poster, [art], 700, 0, null,
+    () => ['book', 'brain', 'music'].map(k => poster.querySelector('.intro-poster-hot--' + k)));
+})();
+
+// the phone's reveals (see .rv-bar and .rv): on a touch screen and in the
+// phone layout, each section's title, and the compendium's record and
+// pitch, come in as they are scrolled to, and are struck again once wholly
+// off screen, so coming back to one brings it in afresh. Not with reduced
+// motion asked for.
+(function(){
+  if(!('IntersectionObserver' in window) || !window.matchMedia) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if(!matchMedia('(hover: none)').matches && !document.documentElement.classList.contains('view-phone')) return;
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if(!e.isIntersecting) e.target.classList.remove('rv-in');
+    else if(e.intersectionRatio >= .2) e.target.classList.add('rv-in');
+  }), {threshold: [0, .2]});
+  const mark = (sel, cls) => Array.prototype.forEach.call(document.querySelectorAll(sel), el => { el.classList.add(cls); io.observe(el); });
+  mark('.section-bar', 'rv-bar');
+  mark('#dossier .vinyl, #dossier .dossier-pitch', 'rv');
 })();
 
 // the man's glitch (see .noirbar-glitch): two copies of his cutout carry
