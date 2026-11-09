@@ -1250,6 +1250,10 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
 .bk-card .cd-note{min-width:0; font-family:var(--serif); font-size:15px; line-height:1.3; color:#D9D9D4;}
 .bk-card .cd-audiobook{margin:0 0 14px;}
 .bk-card .cd-audiobook audio{display:block; width:100%; height:40px; margin-top:6px; color-scheme:dark;}
+/* a recording of the text, at the head of the reader: the writing, read aloud */
+.reader-audiobook{margin:0 0 30px; max-width:66ch;}
+.reader-audiobook .rab-note{display:inline-flex; align-items:center; gap:6px; font-family:var(--sans); font-size:13px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--navy);}
+.reader-audiobook audio{display:block; width:100%; height:40px; margin-top:8px;}
 .bk-card .media-btn{border-color:#8A8A86; color:#ECECE8; background:none; font-size:13px; padding:6px 12px;}
 .bk-card .media-btn:hover{border-color:#fff; text-decoration:none;}
 .bk-card .media-btn.read{border-color:var(--red); color:var(--red);}
@@ -1596,6 +1600,15 @@ document.querySelector('.type-scale').addEventListener('click', e => {
   if(b){ readerScale = parseFloat(b.dataset.scale); applyReaderScale(); }
 });
 
+// the writing read aloud, where it has been recorded: preload="none", so the
+// page fetches none of it until someone presses play. A chapter keeps its
+// recording on its "audiobook" in CHAPTERS; the introduction keeps its here
+const INTRO_AUDIOBOOK = {src: "audio/introduction.m4a", mins: 13};
+function audiobookHtml(book, what, cls, noteCls){
+  return '<div class="' + cls + '"><span class="' + noteCls + '">' + AUDIO_ICON + ' ' + what + ', read aloud &middot; ' + book.mins + ' min</span>'
+    + '<audio controls preload="none" src="' + esc(book.src) + '"></audio></div>';
+}
+
 function openReader(chNum){
   const ch = CHAPTERS.find(c=>c.n===chNum);
   const text = CHAPTER_TEXT[chNum];
@@ -1611,7 +1624,7 @@ function openReader(chNum){
       ).join('')
     : '';
 
-  showReader(proseHtml(text));
+  showReader((ch.audiobook ? audiobookHtml(ch.audiobook, 'The chapter', 'reader-audiobook', 'rab-note') : '') + proseHtml(text));
   setReaderPos('book', chNum);
 }
 
@@ -1658,6 +1671,7 @@ function closeOverlay(ov){
   ov.classList.remove('open');
   document.body.style.overflow = '';
   ov.querySelectorAll('.intro-film iframe').forEach(f => f.remove());   // the intro film stops with its reader
+  ov.querySelectorAll('audio').forEach(a => a.pause());   // and a recording with it
   const from = ov.__from; ov.__from = null;
   if(from && document.contains(from)) from.focus({preventScroll:true});
 }
@@ -2156,7 +2170,7 @@ function openIntroReader(){
   const film = document.documentElement.classList.contains('view-phone')
     ? '<div class="intro-film"><button type="button" class="media-btn intro-film-link" data-vimeo="1216849175" data-title="The Narrative Forgery: the intro film">&#9654; Watch the intro film</button></div>'
     : '';
-  showReader(film + proseHtml(INTRO_TEXT).replace('A video exists',
+  showReader(film + audiobookHtml(INTRO_AUDIOBOOK, 'The introduction', 'reader-audiobook', 'rab-note') + proseHtml(INTRO_TEXT).replace('A video exists',
     'A <a href="https://www.c-span.org/clip/campaign-2024/user-clip-look-if-we-finally-beat-medicare/5122591" target="_blank" rel="noopener" data-text="video">video</a> exists'));
   vimeoFacade(document.querySelector('#readerBody .intro-film-link'));
 }
@@ -3594,10 +3608,7 @@ function chapterCardHtml(n){
   ).join('');
   // the chapter read aloud, where it has been recorded: preload="none", so the
   // page fetches none of it until someone presses play
-  const book = ch.audiobook
-    ? '<div class="cd-audiobook"><span class="cd-note">' + AUDIO_ICON + ' The chapter, read aloud &middot; ' + ch.audiobook.mins + ' min</span>'
-      + '<audio controls preload="none" src="' + esc(ch.audiobook.src) + '"></audio></div>'
-    : '';
+  const book = ch.audiobook ? audiobookHtml(ch.audiobook, 'The chapter', 'cd-audiobook', 'cd-note') : '';
   const read = CHAPTER_TEXT[n]
     ? '<button type="button" class="media-btn read" data-read="' + n + '">READ CHAPTER &rarr;</button>'
     : '';
