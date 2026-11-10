@@ -747,7 +747,8 @@ html.view-phone .mech-map-wrap{display:flex; flex-direction:column; overflow:hid
 html.view-phone .dossier, html.view-phone .dossier-head, html.view-phone .dossier-side{display:contents;}
 /* the cover and the pitch run the box's whole width, as a phone shows a
    picture or a film, up to a tablet's comfortable size */
-html.view-phone .dossier-cover-wrap{order:1; align-self:center; width:100%; max-width:720px; margin:0;}
+/* the cover a tenth smaller than the box, so the brain stands nearer the book's size above it */
+html.view-phone .dossier-cover-wrap{order:1; align-self:center; width:90%; max-width:648px; margin:0;}
 html.view-phone .dossier-cover{border:0;}
 html.view-phone .mbands{order:2; border-bottom:1px solid #2A2A28;}
 html.view-phone .vinyl{order:3; align-self:center; margin-top:28px;}
