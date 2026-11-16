@@ -1226,48 +1226,69 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
    sheet dropped in under the book, in a phone's own sizes, since a finger
    needs room to land. */
 .bk-card{
-  position:absolute; z-index:6; width:360px; width:min(360px, 40%); box-sizing:border-box;
-  background:#050505; border:1px solid #8E8E8A; box-shadow:0 24px 60px rgba(0,0,0,.85);
-  padding:16px 20px 18px; color:#ECECE8;
+  position:absolute; z-index:6; width:380px; width:min(380px, 42%); box-sizing:border-box;
+  background:#070707; border:1px solid #2C2C2A; border-top:2px solid var(--red);
+  box-shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 28px 70px rgba(0,0,0,.55), 0 6px 18px rgba(0,0,0,.35);
+  color:#ECECE8; overflow:hidden; outline:none;
 }
 .bk-card[hidden]{display:none;}
+.bk-card .cd-body{padding:18px 22px 6px;}
 .bk-card .cd-head{display:flex; align-items:center; justify-content:space-between; gap:10px;}
-.bk-card .cd-num{font-family:var(--mono); letter-spacing:.12em; color:var(--red); font-size:13px;}
-.bk-card .cd-x{flex:none; display:flex; align-items:center; justify-content:center; width:40px; height:40px; margin:-6px -8px -6px 0; padding:0 0 2px; background:none; border:1px solid #55554F; border-radius:50%; cursor:pointer; color:#F4F4F2; font-family:var(--sans); font-size:26px; line-height:1; transition:background .15s ease, border-color .15s ease;}
-.bk-card .cd-x:hover{background:var(--red); border-color:var(--red); color:#fff;}
+.bk-card .cd-num{font-family:var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--red); font-size:12px;}
+.bk-card .cd-of{color:#5E5E5A;}
+.bk-card .cd-x{flex:none; display:flex; align-items:center; justify-content:center; width:34px; height:34px; margin:-6px -10px -6px 0; padding:0 0 2px; background:none; border:0; border-radius:50%; cursor:pointer; color:#8E8E8A; font-family:var(--sans); font-size:26px; line-height:1; transition:color .15s ease, background .15s ease;}
+.bk-card .cd-x:hover{color:#fff; background:#1C1C1A;}
 .bk-card .cd-x:focus:not(:focus-visible){outline:none;}
 .bk-card .cd-x:focus-visible{outline:2px solid var(--red); outline-offset:2px;}
-.bk-card h4{font-family:var(--sans); font-size:22px; font-weight:600; color:#fff; margin:5px 0 12px; line-height:1.25;}
-.bk-card .cd-label{display:block; font-family:var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--cap-dark); font-size:11px; margin:0 0 7px;}
-.bk-card .chip-row{gap:6px 8px; margin-bottom:14px;}
-.bk-card .chip{background:#141414; border-color:#3A3A38; color:#ECECE8; font-size:14px;}
-.bk-card .chip:hover{border-color:#8A8A86;}
-.bk-card .chip.reflective{background:#161C22; border-color:#3D5A73;}
-.bk-card .media-row{gap:8px; margin-top:0;}
-/* each recording on a line, its button and a word on what it is */
-.bk-card .cd-media{list-style:none; margin:0 0 12px; padding:0;}
-.bk-card .cd-media li{display:flex; align-items:center; gap:12px; margin:0 0 8px;}
-.bk-card .cd-media .media-btn{flex:none; min-width:128px;}
-.bk-card .cd-note{min-width:0; font-family:var(--serif); font-size:15px; line-height:1.3; color:#D9D9D4;}
-.bk-card .cd-audiobook{margin:0 0 14px;}
-.bk-card .cd-audiobook audio{display:block; width:100%; height:40px; margin-top:6px; color-scheme:dark;}
+.bk-card h4{font-family:var(--serif); font-size:32px; font-weight:500; color:#fff; margin:6px 0 16px; line-height:1.08; letter-spacing:-.005em;}
+.bk-card .cd-label{display:block; font-family:var(--mono); letter-spacing:.14em; text-transform:uppercase; color:#7A7A76; font-size:10.5px; margin:0 0 6px;}
+/* the mechanisms as a typed line, not a row of boxes */
+.bk-card .cd-mechs{display:flex; flex-wrap:wrap; gap:2px 2px; margin:0 0 16px 0;}
+.bk-card .chip{background:none; border:0; border-radius:2px; padding:3px 6px; margin-left:-6px; margin-right:6px; font-size:14px; letter-spacing:.04em; color:#D6D6D2; text-decoration:underline; text-decoration-color:#3A3A38; text-underline-offset:4px; transition:color .15s ease, text-decoration-color .15s ease;}
+.bk-card .chip:hover{background:none; color:#fff; text-decoration-color:var(--red);}
+.bk-card .chip.reflective{background:none; color:#9DB4C6; text-decoration-color:#3D5A73;}
+.bk-card .chip.reflective:hover{background:none; color:#fff; text-decoration-color:#9DB4C6;}
+.bk-card .chip:focus-visible{outline:2px solid var(--red); outline-offset:1px;}
+/* each recording a ruled row: icon, name, a word on what it is, an arrow */
+.bk-card .cd-media{list-style:none; margin:0; padding:0; border-top:1px solid #222220;}
+.bk-card .cd-media li{border-bottom:1px solid #222220;}
+.bk-card .cd-media li:last-child{border-bottom:0;}
+.bk-card .cd-row{display:flex; align-items:center; gap:10px; margin:0 -22px; padding:13px 22px; color:#ECECE8; text-decoration:none; transition:background .15s ease;}
+.bk-card .cd-row .media-icon{color:#8E8E8A; transition:color .15s ease;}
+.bk-card .cd-row-name{flex:none; font-family:var(--sans); font-size:13px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;}
+.bk-card .cd-row-note{flex:1 1 auto; min-width:0; font-family:var(--serif); font-style:italic; font-size:15px; line-height:1.3; color:#9A9A96;}
+.bk-card .cd-row-go{flex:none; font-family:var(--sans); font-size:16px; color:#6A6A66; transition:transform .2s ease, color .15s ease;}
+.bk-card a.cd-row:hover{background:#121211; text-decoration:none;}
+.bk-card a.cd-row:hover .media-icon, .bk-card a.cd-row:hover .cd-row-go{color:var(--red);}
+.bk-card a.cd-row:hover .cd-row-go{transform:translateX(3px);}
+.bk-card a.cd-row:focus-visible{outline:2px solid var(--red); outline-offset:-2px;}
+.bk-card .cd-row.is-pending{cursor:default; color:#6A6A66;}
+.bk-card .cd-row.is-pending .cd-row-note{color:#5A5A56;}
+.bk-card .cd-row.is-pending .cd-row-go{font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:#5A5A56;}
+.bk-card .cd-audiobook{padding:13px 0 12px;}
+.bk-card .cd-audiobook .cd-row-note{display:flex; align-items:center; gap:8px; font-style:normal; font-family:var(--sans); font-size:13px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:#ECECE8;}
+.bk-card .cd-audiobook .media-icon{color:#8E8E8A;}
+.bk-card .cd-audiobook audio{display:block; width:100%; height:36px; margin-top:9px; color-scheme:dark;}
+/* the chapter itself: a red bar along the card's foot */
+.bk-card .cd-read{display:flex; align-items:center; justify-content:space-between; width:100%; margin:0; padding:15px 22px; border:0; border-radius:0; background:var(--red); color:#fff; cursor:pointer; font-family:var(--sans); font-size:14px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; transition:background .15s ease;}
+.bk-card .cd-read-go{font-size:18px; transition:transform .2s ease;}
+.bk-card .cd-read:hover{background:#9A1D14;}
+.bk-card .cd-read:hover .cd-read-go{transform:translateX(4px);}
+.bk-card .cd-read:focus-visible{outline:2px solid #fff; outline-offset:-4px;}
+.bk-card .cd-body:last-child{padding-bottom:14px;}
+@media(prefers-reduced-motion:reduce){ .bk-card .cd-row-go, .bk-card .cd-read-go{transition:none;} }
 /* a recording of the text, at the head of the reader: the writing, read aloud */
 .reader-audiobook{margin:0 0 30px; max-width:66ch;}
 .reader-audiobook .rab-note{display:inline-flex; align-items:center; gap:6px; font-family:var(--sans); font-size:13px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--navy);}
 .reader-audiobook audio{display:block; width:100%; height:40px; margin-top:8px;}
-.bk-card .media-btn{border-color:#8A8A86; color:#ECECE8; background:none; font-size:13px; padding:6px 12px;}
-.bk-card .media-btn:hover{border-color:#fff; text-decoration:none;}
-.bk-card .media-btn.read{border-color:var(--red); color:var(--red);}
-.bk-card .media-btn.read:hover{border-color:var(--red); background:var(--red); color:var(--cream);}
-.bk-card .media-btn.pending{color:#9A9A96; border-color:#4A4A46;}
-.bk-card.is-sheet{position:relative; width:auto; margin-top:12px; padding:14px 16px 16px;}
-.bk-card.is-sheet .cd-num{font-size:12px;}
-.bk-card.is-sheet .cd-x{width:44px; height:44px; font-size:28px; margin:-8px -6px -8px 0;}
-.bk-card.is-sheet h4{font-size:20px; margin:2px 0 12px;}
-.bk-card.is-sheet .cd-label{margin:0 0 8px;}
-.bk-card.is-sheet .chip-row{gap:6px;}
-.bk-card.is-sheet .chip{font-size:13px; padding:9px 10px;}
-.bk-card.is-sheet .media-btn{font-size:12px; padding:12px 12px;}
+.bk-card.is-sheet{position:relative; width:auto; margin-top:12px;}
+.bk-card.is-sheet .cd-body{padding:14px 16px 4px;}
+.bk-card.is-sheet .cd-body:last-child{padding-bottom:12px;}
+.bk-card.is-sheet .cd-x{width:44px; height:44px; font-size:28px; margin:-10px -10px -10px 0;}
+.bk-card.is-sheet h4{font-size:28px; margin:4px 0 14px;}
+.bk-card.is-sheet .chip{font-size:14px; padding:9px 8px; margin-left:-8px; margin-right:4px;}
+.bk-card.is-sheet .cd-row{margin:0 -16px; padding:15px 16px;}
+.bk-card.is-sheet .cd-read{padding:17px 16px;}
 
 </style>
 </head>
@@ -3602,29 +3623,36 @@ document.getElementById('ledgerCards').addEventListener('click', (e)=>{
    itself. */
 function chapterCardHtml(n){
   const ch = CHAPTERS.find(c => c.n === n), mechs = MECHANISMS.filter(m => m.chapters.includes(n));
+  // each recording a ruled row across the card: its icon and name, a word on
+  // what it is, and an arrow (or "soon", where it has no link yet)
+  const row = (label, inner) => {
+    const k = MEDIA_KINDS[label];
+    return (k ? k[0] : '') + '<span class="cd-row-name">' + (k ? k[1] : esc(label)) + '</span>'
+      + (MEDIA_NOTES[label] ? '<span class="cd-row-note">' + MEDIA_NOTES[label] + '</span>' : '<span class="cd-row-note"></span>')
+      + inner;
+  };
   const media = ch.media.map(m => '<li>' + (m.url
-    ? '<a class="media-btn" href="' + esc(m.url) + '" target="_blank" rel="noopener">' + mediaLabelHtml(m.label) + '</a>'
-    : '<span class="media-btn pending" title="URL pending">' + mediaLabelHtml(m.label) + '</span>')
-    + (MEDIA_NOTES[m.label] ? '<span class="cd-note">' + MEDIA_NOTES[m.label] + '</span>' : '') + '</li>'
+    ? '<a class="cd-row" href="' + esc(m.url) + '" target="_blank" rel="noopener">' + row(m.label, '<span class="cd-row-go" aria-hidden="true">&rarr;</span>') + '</a>'
+    : '<span class="cd-row is-pending" title="Not out yet">' + row(m.label, '<span class="cd-row-go">soon</span>') + '</span>')
+    + '</li>'
   ).join('');
   // the chapter read aloud, where it has been recorded: preload="none", so the
   // page fetches none of it until someone presses play
-  const book = ch.audiobook ? audiobookHtml(ch.audiobook, 'The chapter', 'cd-audiobook', 'cd-note') : '';
+  const book = ch.audiobook ? audiobookHtml(ch.audiobook, 'The chapter', 'cd-audiobook', 'cd-row-note') : '';
   const read = CHAPTER_TEXT[n]
-    ? '<button type="button" class="media-btn read" data-read="' + n + '">READ CHAPTER &rarr;</button>'
+    ? '<button type="button" class="cd-read" data-read="' + n + '"><span>Read chapter ' + pad2(n) + '</span><span class="cd-read-go" aria-hidden="true">&rarr;</span></button>'
     : '';
-  return '<div class="cd-head"><span class="cd-num">CHAPTER ' + pad2(n) + '</span>'
+  return '<div class="cd-body"><div class="cd-head"><span class="cd-num">Chapter ' + pad2(n) + '<span class="cd-of"> / ' + CHAPTERS.length + '</span></span>'
     + '<button type="button" class="cd-x" data-close="1" aria-label="Close chapter">&times;</button></div>'
     + '<h4>' + esc(ch.title) + '</h4>'
     + (mechs.length
-        ? '<span class="cd-label">Mechanisms deployed</span><div class="chip-row">'
+        ? '<span class="cd-label">Mechanisms deployed</span><div class="cd-mechs">'
           + mechs.map(m => '<button type="button" class="chip' + (isReflective(m.n, n) ? ' reflective' : '') + '" data-mech="' + m.n + '" title="' + esc(m.title) + '">M' + pad2(m.n) + '</button>').join('')
           + '</div>'
         : '')
-    + '<span class="cd-label">In the chapter</span>'
-    + book
-    + (media ? '<ul class="cd-media">' + media + '</ul>' : '')
-    + (read ? '<div class="media-row">' + read + '</div>' : '');
+    + (book || media ? '<ul class="cd-media">' + (book ? '<li>' + book + '</li>' : '') + media + '</ul>' : '')
+    + '</div>'
+    + read;
 }
 /* The bar's smoke. Particles leave the tray in a steady thread and ride a
    slowly shifting flow field, so neighbours take the same path and the thread
