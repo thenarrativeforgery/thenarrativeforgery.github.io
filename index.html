@@ -1222,10 +1222,12 @@ html.view-desktop .ledger-table-wrap{display:block !important;}
    would blur stretched that wide, and stand three lines tall.) */
 .brand-text{display:none;}
 @media(max-width:720px){
-  html.view-phone #nav .brand{flex:1 1 auto; min-width:0;}
-  html.view-phone #nav .brand .brand-icon{height:36px;}
+  /* the icon moves to the far end, in a box the size of the menu button,
+     so the two frame the title evenly and the title is centred between */
+  html.view-phone #nav .brand{flex:1 1 auto; min-width:0; gap:12px;}
+  html.view-phone #nav .brand .brand-icon{order:2; flex:0 0 44px; width:44px; height:36px; object-fit:contain;}
   html.view-phone #nav .brand .brand-title{display:none;}
-  html.view-phone #nav .brand-text{display:block; flex:1 1 auto; min-width:0; overflow:hidden; container-type:inline-size;}
+  html.view-phone #nav .brand-text{order:1; display:flex; justify-content:center; flex:1 1 auto; min-width:0; overflow:hidden; container-type:inline-size;}
   html.view-phone #nav .brand-text span{display:block; width:max-content; font-family:var(--serif); font-weight:500; text-transform:uppercase; letter-spacing:.06em; margin-right:-.06em; line-height:1; white-space:nowrap; color:var(--cream); font-size:4vw; font-size:min(7cqw, 30px);}
   html.view-phone #nav .nav-tools{flex:0 0 auto;}
 }
