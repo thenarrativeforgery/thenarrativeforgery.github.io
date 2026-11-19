@@ -106,7 +106,6 @@ FAC-057, FAC-022
 - Ch 10 (FAC-095): the chapter uses "evoked"; CNBC prints "evoked" and NY1 prints "invoked" for Harris on The View. No official video found.
 - Ch 3 (FAC-035): the chapter says the V-safe protocol of January 28, 2021 listed fifteen conditions. The copy read is v3 (May 20, 2021); the Jan 28 version has not been seen.
 - Ch 3 (FAC-027): the Commission page gives June 22, 2021 for Daszak's recusal; Science's timeline says June 28. The chapter says only "until June 2021."
-- Ch 3 (FAC-029): the chapter says Bhattacharya's work was "algorithmically suppressed"; Weiss's tweet says the Trends Blacklist "prevented his tweets from trending." Proposed tightening is in the row notes.
 - Ch 3 (FAC-201): the chapter says Collins spoke to The Washington Post "on October 13" and "five days later" than Oct 8; the retrieved article header is dated Oct 14 (may be an updated stamp). Settle the publication date.
 - Ledger FAC-055: the line "No primary document ties Collins's email directly to institutional response" is too categorical (a court appendix and the House report link the Oct 8 exchange to later public statements). Ch 3 makes no causal claim, so no chapter change.
 - Ledger FAC-200: Fauci's reply is dated Apr 16, 10:45 PM in the production header (Apr 17, 2:45 AM UTC); the ledger basis was amended. Ch 3 does not date the reply.
@@ -117,5 +116,6 @@ FAC-057, FAC-022
 - Ch 3 (FAC-032): the six-foot "arbitrary" wording is attributed to the Subcommittee's press release; the report's own heading is "Was Not Supported by Science."
 - Ch 6 and the Compendium card (FAC-058): "ASPA and its contractor, Fors Marsh" now reads "researchers from ASPA and from the firm Fors Marsh."
 - Ch 14 (FAC-139): the sentencing filing says Boelter "expressed great disdain for the political party he opposed"; the chapter now quotes it as written.
-- Nov 19 run (unreached rows): no chapter text changed. Ledger `sourceBasis` amended for FAC-013, 019, 020, 055, 198 and 200 (case numbers, MUR numbers, page pins, the Fauci reply time, the FAC-055 note).
+- Ch 3 (FAC-029, Nov 19, author decision): "his work algorithmically suppressed" now reads: Bari Weiss's thread said Twitter had done so "secretly," and that the flag "prevented his tweets from trending."
+- Nov 19 run (unreached rows): the only chapter change is the FAC-029 sentence above. Ledger `sourceBasis` amended for FAC-013, 019, 020, 055, 198 and 200 (case numbers, MUR numbers, page pins, the Fauci reply time, the FAC-055 note).
 - Ledger fields: FAC-154 event relabelled (USDA OIG is not named in the DOJ release); FAC-071, 072, 096 dates; page pins in FAC-003, 004, 005, 007, 008, 009, 011, 189, 190, 191, 194, 199.
