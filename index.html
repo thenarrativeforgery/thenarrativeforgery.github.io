@@ -412,12 +412,21 @@ html.view-phone .intro-poster{display:block; position:relative; max-width:560px;
    while their sections scroll by, on a phone as on a desktop, so you know
    where you are. What the page scrolls to inside one (the ledger's search
    and controls) lands below its title: --sec-bar-h, measured with the nav's. */
-#chapters .section-bar, #compendium .section-bar, #ledger .section-bar{position:sticky; top:var(--nav-h, 72px); z-index:50;}
+#intro .section-bar, #chapters .section-bar, #compendium .section-bar, #ledger .section-bar{position:sticky; top:var(--nav-h, 72px); z-index:50;}
 /* each holds until the next one meets it: its section's column runs on,
    moving nothing, to where the next title starts (the section's foot and
    the next one's head, --sec-pad each, and the title's own --bar-gap) */
 #chapters > .wrap, #compendium > .wrap{margin-bottom:calc(-2 * var(--sec-pad) - var(--bar-gap));}
 #chapters > .wrap::after, #compendium > .wrap::after{content:""; display:block; height:calc(2 * var(--sec-pad) + var(--bar-gap));}
+/* the Intro's too. Its section clips only sideways, for a sticky title
+   needs no scroll box between it and the page, and has no foot of its own,
+   so its column runs on one --sec-pad less. (Where a browser can't clip
+   one way only, the section clips as before and its title scrolls away.) */
+@supports (overflow-x:clip){
+  section#intro{display:flow-root; overflow:visible; overflow-x:clip;}
+  #intro > .wrap{margin-bottom:calc(-1 * var(--sec-pad) - var(--bar-gap));}
+  #intro > .wrap::after{content:""; display:block; height:calc(var(--sec-pad) + var(--bar-gap));}
+}
 
 /* THE TIERS — what each one means, in a pop-up: opened from the ledger's
    Tier heading, or by clicking any tier badge (the phone's cards have no
