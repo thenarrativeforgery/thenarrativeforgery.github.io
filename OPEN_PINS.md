@@ -1,6 +1,6 @@
 # Open pins
 
-Where further precision can be added to the receipts. Generated Nov 19, 2026 (after the Perplexity runs of Nov 18 and Nov 19 and the retry run) from the ledger in `index.html` (`LEDGER`). Each row below carries an `openPin` field and an `OPEN PIN (as of Nov 18, 2026)` or `OPEN PIN (as of Nov 19, 2026)` line in its `notes`. The site search indexes both. When a pin is closed, delete `openPin` and add a `PIN <date> —` note saying what was seen.
+Where further precision can be added to the receipts. Generated Nov 19, 2026 (after the Perplexity runs of Nov 18 and Nov 19 the retry run and the uploaded-PDF pass) from the ledger in `index.html` (`LEDGER`). Each row below carries an `openPin` field and an `OPEN PIN (as of Nov 18, 2026)` or `OPEN PIN (as of Nov 19, 2026)` line in its `notes`. The site search indexes both. When a pin is closed, delete `openPin` and add a `PIN <date> —` note saying what was seen.
 
 Method: a pin is "SEEN in primary" only where a session read the document itself. Anything read through a search snippet, news report, archive copy or summary is labelled that way in the row's notes.
 
@@ -8,9 +8,9 @@ Method: a pin is "SEEN in primary" only where a session read the document itself
 
 | Ledger row | Ch | What is still open |
 | --- | --- | --- |
-| FAC-013 | 2 | SSCI Vol. 5 (Aug 2020) pages for the Simpson testimony on the Perkins Coie to Fusion GPS to Steele chain, and the case name and filing reference Vol. 5 cites for Steele's UK court acknowledgment (the Aven v Orbis case seen in a snippet is unconfirmed). Also the printed page in the DOJ OIG FISA report for "July 5, 2016" (the passage sits in a file headed Chapter Three; Executive Summary p. v is pinned). |
-| FAC-016 | 2 | Halper and Clovis names: the OIG report does not name them; find a primary document that does (Durham Report, a congressional release or a court record). |
-| FAC-020 | 2 | Read ECF 113 (RECAP; Oct 11, 2022, Vol. 1, PM session, pp. 86–255) and pin the page:line for Auten on the $1 million offer, Steele's failure to supply proof, and nonpayment (press reports put it in Vol. 1 PM, Auten direct by Durham). The verdict is now pinned (ECF 129, p. 1226:1–17). Author to decide on a one-line note of Steele's Oct 19, 2022 denial of the $1 million account. |
+| FAC-013 | 2 | Steele's UK court acknowledgment: read the Gubarev v Orbis filings (Claim HQ17D00413; the defence of Apr 4, 2017 is cited at SSCI Vol. 5 p. 922 fn. 6144) or the later judgment and confirm Steele acknowledges the Fusion GPS engagement; decide whether Ch 2's two attributions need the edits proposed in the row notes. The OIG pages and the Simpson pages are pinned. |
+| FAC-016 | 2 | Halper and Clovis names: neither the OIG report nor the Durham Report (full text searched) names Halper, and Clovis appears in Durham only in an unrelated footnote. Find a primary that names them (a congressional release, court record or Horowitz testimony), or attribute the names to press reports in the text. |
+| FAC-020 | 2 | Read ECF 113 (RECAP; Oct 11, 2022, Vol. 1, PM session, pp. 86–255) for Auten's own words on the offer and pin the page:line; it settles "up to $1 million" (chapter) vs "in excess of $1,000,000" (Durham Report pp. 11, 118, 236). Author to decide on a one-line note of Steele's Oct 19, 2022 denial. |
 | FAC-022 | 3 | FOIA PDF page number for the Feb 5, 2020 mask email (BuzzFeed/DocumentCloud copy). |
 | FAC-023 | 3 | Cochrane pub6: confirm the 9-trial (influenza-like illness) and 6-trial (lab-confirmed) counts and the 78-RCT total in the full text; read only through a machine extraction of the abstract. |
 | FAC-024 | 3 | Garry message date; printed page numbers for the interim report (pp. 10 and 12 are inferred as PDF page minus 2). |
@@ -47,12 +47,12 @@ Method: a pin is "SEEN in primary" only where a session read the document itself
 | FAC-167 | 18 | NYT "From the Editors" (May 26, 2004): Wayback only, ¶8 onward unverified; no Pulitzer Board statement located. |
 | FAC-172 | 18 | EIP closure is undated site text only; no Stanford primary statement for SIO. |
 | FAC-192 | 1 | Play the official Fox upload (video 6394670343112, May 5, 2026, 1:49) or find the full Hang Out with Sean Hannity episode and pin timestamps for "weren't burned" and "off the map. It wasn't on our blueprint. And nobody had access to it." Confirm the clip and the podcast are the same broadcast. |
-| FAC-197 | 2 | Official July 12, 2018 hearing transcript page:line (GPO print) or a timestamp in the C-SPAN archive.org recordings; Page July 13, 2018 interview page:line for "how quickly to operate" (Lawfare hosts the PDFs); printed page in the Durham Report for the hostile-feelings sentence (PDF p. 19 of 316, Executive Summary). |
+| FAC-197 | 2 | Official July 12, 2018 hearing transcript page:line (GPO print) or a timestamp in the C-SPAN archive.org recordings; Page July 13, 2018 interview page:line for "how quickly to operate" (Lawfare hosts the PDFs). The Durham page is pinned (p. 9). |
 | FAC-198 | 2 | Low priority. Complaint date: the FEC index says Aug 1, 2018, the Mar 29, 2022 notice says Sept 2, 2018 (read the complaint in the MUR 7449 file); date the agreements first appeared on the public record; respondent signature dates. |
 | FAC-200 | 3 | Open the House production part 8 PDF for SSCP_NIH010573–74: PDF page numbers, the time zone of the header (Apr 16, 10:45 PM vs Apr 17, 2:45 AM vs "the morning of April 17" in the press), and whether the reply reads "in time" or "in times"; original FOIA-release filename; video timestamp in the Apr 17, 2020 briefing for "a group of highly qualified evolutionary virologists." |
 | FAC-201 | 3 | Washington Post original (washingtonpost.com): the paragraph for Collins's words and any "updated" stamp (author decision: leave Ch 3's Oct 13). ABC Good Morning America Oct 15, 2020: official upload and a verified timestamp for "total nonsense" (Berkshire Edge points to about 4:20). |
 
-## Pinned, but from an archive, OCR or news copy (34 rows)
+## Pinned, but from an archive, OCR or news copy (31 rows)
 
 These pins are closed (the page or timestamp is known) but were read in a Wayback capture, an OCR text, a cached page or a news report. Upgrade the label if a live primary is read.
 
@@ -61,10 +61,8 @@ These pins are closed (the page or timestamp is known) but were read in a Waybac
 | FAC-001 | 1 | Wayback copies of the USAO-CT releases (plea and sentencing). |
 | FAC-011 | 2 | OCR; the p. xiii/xiv question needs the printed page. |
 | FAC-012 | 2 | Wayback copy of the USAO-CT plea release. |
-| FAC-013 | 2 | July 5, 2016 OIG passage read only as indexed text; SSCI Vol. 5 PDF not loaded. |
 | FAC-015 | 2 | OCR text of the OIG FISA report. |
-| FAC-017 | 2 | Durham Report pp. 8–10 read in a Wayback copy of the DOJ PDF; confirm on justice.gov. |
-| FAC-020 | 2 | NPR and CNN reports; ECF 113 cover only. |
+| FAC-020 | 2 | NPR and CNN reports; Auten's own words not yet read (ECF 113). |
 | FAC-024 | 3 | OCR text; printed page numbers inferred. |
 | FAC-030 | 3 | MMWR p. 1063 read in an archive PDF (the CDC web page has the same wording). |
 | FAC-033 | 3 | MMWR p. 495 and the Maddow transcript are archive copies. |
@@ -87,8 +85,7 @@ These pins are closed (the page or timestamp is known) but were read in a Waybac
 | FAC-179 | 12 | OCR text of ECF 2. |
 | FAC-192 | 1 | Fox article and Fox accompanying article (news reports); Fox video page read as metadata only. |
 | FAC-195 | 2 | News report (NPR). |
-| FAC-196 | 2 | Same as FAC-017. |
-| FAC-197 | 2 | TPM, Fox and Deseret News reports. |
+| FAC-197 | 2 | TPM, Fox and Deseret News reports for the hearing and Page pins; the Durham page is pinned in the PDF. |
 | FAC-200 | 3 | House production Bates numbers read as snippets; White House transcript passage from indexed text. |
 | FAC-201 | 3 | ABC live blog and House-filed material; Post article header only. |
 | FAC-202 | 3 | Wayback copy of the pardon warrant. |
@@ -120,6 +117,8 @@ FAC-057, FAC-022
 - Ch 6 and the Compendium card (FAC-058): "ASPA and its contractor, Fors Marsh" now reads "researchers from ASPA and from the firm Fors Marsh."
 - Ch 14 (FAC-139): the sentencing filing says Boelter "expressed great disdain for the political party he opposed"; the chapter now quotes it as written.
 - Ch 3 (FAC-029, Nov 19, author decision): "his work algorithmically suppressed" now reads: Bari Weiss's thread said Twitter had done so "secretly," and that the flag "prevented his tweets from trending."
+- Ch 2 (FAC-013): the chapter says the funding chain is documented "in the Fusion GPS principals' Senate testimony" and "in Steele's own acknowledgment … in British court proceedings." SSCI Vol. 5 (pp. 857–860) cites only Simpson's transcript, and its only UK court cite (p. 922 fn. 6144, the Gubarev defence) is for another point. Proposed edits are in the row notes, not applied.
+- Ch 2 (FAC-020): the chapter says the FBI offered Steele "up to $1 million" (Auten's testimony); the Durham Report (pp. 11, 118, 236) says "in excess of $1,000,000" / "$1 million or more." Settle against ECF 113 before editing.
 - Ch 9 (FAC-086, Nov 19, author edit): "completed its autopsy on April 19, 2021" now reads "released its autopsy findings on April 19, 2021."
 - Nov 19 runs (unreached rows and retry): the only chapter changes are the FAC-029 and FAC-086 sentences above. Ledger `sourceBasis` amended for FAC-013, 019, 020, 055, 198 and 200 (case numbers, MUR numbers, page pins, the Fauci reply time, the FAC-055 note).
 - Ledger fields: FAC-154 event relabelled (USDA OIG is not named in the DOJ release); FAC-071, 072, 096 dates; page pins in FAC-003, 004, 005, 007, 008, 009, 011, 189, 190, 191, 194, 199.
