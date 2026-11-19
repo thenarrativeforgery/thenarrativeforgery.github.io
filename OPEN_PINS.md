@@ -1,16 +1,16 @@
 # Open pins
 
-Where further precision can be added to the receipts. Generated Nov 19, 2026 (after the Perplexity runs of Nov 18 and Nov 19) from the ledger in `index.html` (`LEDGER`). Each row below carries an `openPin` field and an `OPEN PIN (as of Nov 18, 2026)` or `OPEN PIN (as of Nov 19, 2026)` line in its `notes`. The site search indexes both. When a pin is closed, delete `openPin` and add a `PIN <date> —` note saying what was seen.
+Where further precision can be added to the receipts. Generated Nov 19, 2026 (after the Perplexity runs of Nov 18 and Nov 19 and the retry run) from the ledger in `index.html` (`LEDGER`). Each row below carries an `openPin` field and an `OPEN PIN (as of Nov 18, 2026)` or `OPEN PIN (as of Nov 19, 2026)` line in its `notes`. The site search indexes both. When a pin is closed, delete `openPin` and add a `PIN <date> —` note saying what was seen.
 
 Method: a pin is "SEEN in primary" only where a session read the document itself. Anything read through a search snippet, news report, archive copy or summary is labelled that way in the row's notes.
 
-## Open pins (42 rows)
+## Open pins (43 rows)
 
 | Ledger row | Ch | What is still open |
 | --- | --- | --- |
-| FAC-013 | 2 | SSCI Vol. 5 (Aug 2020) pages for the Simpson testimony on the Perkins Coie to Fusion GPS to Steele chain, and the case name and filing reference Vol. 5 cites for Steele's UK court acknowledgment (official PDF would not load). Also the body page in the DOJ OIG FISA report for "July 5, 2016" (Handling Agent 1); Executive Summary p. v is pinned. |
+| FAC-013 | 2 | SSCI Vol. 5 (Aug 2020) pages for the Simpson testimony on the Perkins Coie to Fusion GPS to Steele chain, and the case name and filing reference Vol. 5 cites for Steele's UK court acknowledgment (the Aven v Orbis case seen in a snippet is unconfirmed). Also the printed page in the DOJ OIG FISA report for "July 5, 2016" (the passage sits in a file headed Chapter Three; Executive Summary p. v is pinned). |
 | FAC-016 | 2 | Halper and Clovis names: the OIG report does not name them; find a primary document that does (Durham Report, a congressional release or a court record). |
-| FAC-020 | 2 | Read ECF 113 (RECAP; Oct 11, 2022, Vol. 1, PM session, pp. 86–255) and pin the page:line for Auten on the $1 million offer, Steele's failure to supply proof, and nonpayment; confirm Auten testified in this volume. Find the verdict ECF (docket page 2). |
+| FAC-020 | 2 | Read ECF 113 (RECAP; Oct 11, 2022, Vol. 1, PM session, pp. 86–255) and pin the page:line for Auten on the $1 million offer, Steele's failure to supply proof, and nonpayment (press reports put it in Vol. 1 PM, Auten direct by Durham). The verdict is now pinned (ECF 129, p. 1226:1–17). Author to decide on a one-line note of Steele's Oct 19, 2022 denial of the $1 million account. |
 | FAC-022 | 3 | FOIA PDF page number for the Feb 5, 2020 mask email (BuzzFeed/DocumentCloud copy). |
 | FAC-023 | 3 | Cochrane pub6: confirm the 9-trial (influenza-like illness) and 6-trial (lab-confirmed) counts and the 78-RCT total in the full text; read only through a machine extraction of the abstract. |
 | FAC-024 | 3 | Garry message date; printed page numbers for the interim report (pp. 10 and 12 are inferred as PDF page minus 2). |
@@ -30,6 +30,7 @@ Method: a pin is "SEEN in primary" only where a session read the document itself
 | FAC-071 | 7 | CNN chyron: no official CNN upload of the Aug 25, 2020, 5:06 AM ET live shot. |
 | FAC-072 | 7 | Lemon: video time-code for "it's showing up in the polling" (the transcript gives no minute). |
 | FAC-078 | 8 | Ratcliffe, Fox Business, Oct 19, 2020: listen at 00:01:18 to settle "there's no intelligence" (machine transcript) vs "there is no intelligence" (Fox article; Ch 8). |
+| FAC-086 | 9 | Read the D.C. OCME's own April 19, 2021 release or report and the Washington Post Diaz interview; the release date and findings are confirmed only through news reports (AP, NPR, CNBC, DCist). |
 | FAC-095 | 10 | Harris on The View: no official ABC upload; settle "evoked" vs "invoked" from the video (CNBC and NY1 differ; Ch 10 uses "evoked"). |
 | FAC-103 | 11 | Jan 10, 2025 sentencing transcript: page:line for the sentencing remarks. |
 | FAC-106 | 11 | Bates numbers in the AFL / Just the News production. |
@@ -46,12 +47,12 @@ Method: a pin is "SEEN in primary" only where a session read the document itself
 | FAC-167 | 18 | NYT "From the Editors" (May 26, 2004): Wayback only, ¶8 onward unverified; no Pulitzer Board statement located. |
 | FAC-172 | 18 | EIP closure is undated site text only; no Stanford primary statement for SIO. |
 | FAC-192 | 1 | Play the official Fox upload (video 6394670343112, May 5, 2026, 1:49) or find the full Hang Out with Sean Hannity episode and pin timestamps for "weren't burned" and "off the map. It wasn't on our blueprint. And nobody had access to it." Confirm the clip and the podcast are the same broadcast. |
-| FAC-197 | 2 | Official July 12, 2018 hearing transcript page:line or C-SPAN timestamp for Strzok's explanation; Page interview Day 1 (July 13) or Day 2 (July 16, 2018) page:line for "how quickly to operate"; Durham Report page for "at a minimum, had pronounced hostile feelings toward Trump." |
+| FAC-197 | 2 | Official July 12, 2018 hearing transcript page:line (GPO print) or a timestamp in the C-SPAN archive.org recordings; Page July 13, 2018 interview page:line for "how quickly to operate" (Lawfare hosts the PDFs); printed page in the Durham Report for the hostile-feelings sentence (PDF p. 19 of 316, Executive Summary). |
 | FAC-198 | 2 | Low priority. Complaint date: the FEC index says Aug 1, 2018, the Mar 29, 2022 notice says Sept 2, 2018 (read the complaint in the MUR 7449 file); date the agreements first appeared on the public record; respondent signature dates. |
-| FAC-200 | 3 | Open the House production part 8 PDF for SSCP_NIH010573–74: PDF page numbers and the time zone of the header (Apr 16, 10:45 PM vs Apr 17, 2:45 AM); original FOIA-release filename; White House Apr 17, 2020 transcript PDF and video timestamp for "a group of highly qualified evolutionary virologists." |
-| FAC-201 | 3 | Washington Post article: the paragraph with Collins's words, and whether Oct 13 or Oct 14 is the publication date (published vs updated stamp); Ch 3 says Oct 13 and "five days later." ABC Good Morning America Oct 15, 2020: official video upload and the timestamp for "total nonsense." |
+| FAC-200 | 3 | Open the House production part 8 PDF for SSCP_NIH010573–74: PDF page numbers, the time zone of the header (Apr 16, 10:45 PM vs Apr 17, 2:45 AM vs "the morning of April 17" in the press), and whether the reply reads "in time" or "in times"; original FOIA-release filename; video timestamp in the Apr 17, 2020 briefing for "a group of highly qualified evolutionary virologists." |
+| FAC-201 | 3 | Washington Post original (washingtonpost.com): the paragraph for Collins's words and any "updated" stamp (author decision: leave Ch 3's Oct 13). ABC Good Morning America Oct 15, 2020: official upload and a verified timestamp for "total nonsense" (Berkshire Edge points to about 4:20). |
 
-## Pinned, but from an archive, OCR or news copy (33 rows)
+## Pinned, but from an archive, OCR or news copy (34 rows)
 
 These pins are closed (the page or timestamp is known) but were read in a Wayback capture, an OCR text, a cached page or a news report. Upgrade the label if a live primary is read.
 
@@ -76,6 +77,7 @@ These pins are closed (the page or timestamp is known) but were read in a Waybac
 | FAC-072 | 7 | News report (LA Times). |
 | FAC-077 | 8 | Politico-hosted copy of the letter. |
 | FAC-085 | 9 | Wayback captures of the NYT story. |
+| FAC-086 | 9 | News reports (AP, CNBC, DCist, NPR); the OCME release itself not read. |
 | FAC-093 | 10 | Wayback copy of the KTSM article. |
 | FAC-095 | 10 | News report (CNBC). |
 | FAC-096 | 10 | Wayback copy of the KTSM article. |
@@ -108,7 +110,8 @@ FAC-057, FAC-022
 - Ch 3 (FAC-027): the Commission page gives June 22, 2021 for Daszak's recusal; Science's timeline says June 28. The chapter says only "until June 2021."
 - Ch 3 (FAC-201): the chapter says Collins spoke to The Washington Post "on October 13" and "five days later" than Oct 8; the retrieved article header is dated Oct 14 (may be an updated stamp). Settle the publication date.
 - Ledger FAC-055: the line "No primary document ties Collins's email directly to institutional response" is too categorical (a court appendix and the House report link the Oct 8 exchange to later public statements). Ch 3 makes no causal claim, so no chapter change.
-- Ledger FAC-200: Fauci's reply is dated Apr 16, 10:45 PM in the production header (Apr 17, 2:45 AM UTC); the ledger basis was amended. Ch 3 does not date the reply.
+- Ledger FAC-200: Fauci's reply is dated Apr 16, 10:45 PM in the production header, Apr 17, 2:45 AM in a filed account, and "the morning of April 17" in the New York Post; the basis now says "late Apr. 16 or early Apr. 17." The wording is "in time" in some sources and "in times" in others. Ch 3 quotes neither.
+- Ch 2 (FAC-020): Auten's $1 million testimony is stated as testimony, which is accurate; Steele publicly disputed the account on Oct 19, 2022 (Washington Examiner). A one-line note is proposed in the row notes, not applied.
 - Ch 15 (FAC-143): Gallup's 2014 figure is 59 in the 2025 topline and 58 in Gallup's 2022 article; the chapter uses 59.
 
 ## Text changed Nov 18, 2026 on source evidence (Perplexity run)
@@ -117,5 +120,6 @@ FAC-057, FAC-022
 - Ch 6 and the Compendium card (FAC-058): "ASPA and its contractor, Fors Marsh" now reads "researchers from ASPA and from the firm Fors Marsh."
 - Ch 14 (FAC-139): the sentencing filing says Boelter "expressed great disdain for the political party he opposed"; the chapter now quotes it as written.
 - Ch 3 (FAC-029, Nov 19, author decision): "his work algorithmically suppressed" now reads: Bari Weiss's thread said Twitter had done so "secretly," and that the flag "prevented his tweets from trending."
-- Nov 19 run (unreached rows): the only chapter change is the FAC-029 sentence above. Ledger `sourceBasis` amended for FAC-013, 019, 020, 055, 198 and 200 (case numbers, MUR numbers, page pins, the Fauci reply time, the FAC-055 note).
+- Ch 9 (FAC-086, Nov 19, author edit): "completed its autopsy on April 19, 2021" now reads "released its autopsy findings on April 19, 2021."
+- Nov 19 runs (unreached rows and retry): the only chapter changes are the FAC-029 and FAC-086 sentences above. Ledger `sourceBasis` amended for FAC-013, 019, 020, 055, 198 and 200 (case numbers, MUR numbers, page pins, the Fauci reply time, the FAC-055 note).
 - Ledger fields: FAC-154 event relabelled (USDA OIG is not named in the DOJ release); FAC-071, 072, 096 dates; page pins in FAC-003, 004, 005, 007, 008, 009, 011, 189, 190, 191, 194, 199.
